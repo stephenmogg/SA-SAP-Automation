@@ -1,6 +1,6 @@
 :useCase: FixMe
 
-:title: Digital Tranformation - FixMe
+:title: Digital Transformation - FixMe
 
 ////
 :author: TBD

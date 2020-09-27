@@ -90,67 +90,9 @@ endif::Technology[]
 ifdef::Physical[]
 include::./vi-Physical/SA.adoc[]
 
-ifdef::Availability[]
-include::./vi-Physical/SA-Availability.adoc[]
-endif::Availability[]
-
-ifdef::Performance[]
-include::./vi-Physical/SA-Performance.adoc[]
-endif::Performance[]
-
-ifdef::Security[]
-include::./vi-Physical/SA-Security.adoc[]
-endif::Security[]
-
-ifdef::Integrity[]
-include::./vi-Physical/SA-Integrity.adoc[]
-endif::Integrity[]
-
-ifdef::PoC[]
-include::./vi-Physical/SA-PoC.adoc[]
-endif::PoC[]
-
-ifdef::Production[]
-include::./vi-Physical/SA-Production.adoc[]
-endif::Production[]
-
-ifdef::Scaling[]
-include::./vi-Physical/SA-Scaling.adoc[]
-endif::Scaling[]
-endif::Physical[]
-
 // Migration
 ifdef::Migration[]
 include::./vii-Migration/SA.adoc[]
-
-ifdef::Availability[]
-include::./vii-Migration/SA-Availability.adoc[]
-endif::Availability[]
-
-ifdef::Performance[]
-include::./vii-Migration/SA-Performance.adoc[]
-endif::Performance[]
-
-ifdef::Security[]
-include::./vii-Migration/SA-Security.adoc[]
-endif::Security[]
-
-ifdef::Integrity[]
-include::./vii-Migration/SA-Integrity.adoc[]
-endif::Integrity[]
-
-ifdef::PoC[]
-include::./vii-Migration/SA-PoC.adoc[]
-endif::PoC[]
-
-ifdef::Production[]
-include::./vii-Migration/SA-Production.adoc[]
-endif::Production[]
-
-ifdef::Scaling[]
-include::./vii-Migration/SA-Scaling.adoc[]
-endif::Scaling[]
-endif::Migration[]
 
 == Summary
 

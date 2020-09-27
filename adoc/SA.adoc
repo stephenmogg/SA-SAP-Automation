@@ -89,10 +89,12 @@ endif::Technology[]
 // Physical
 ifdef::Physical[]
 include::./vi-Physical/SA.adoc[]
+endif::Physical[]
 
 // Migration
 ifdef::Migration[]
 include::./vii-Migration/SA.adoc[]
+endif::Migration[]
 
 == Summary
 

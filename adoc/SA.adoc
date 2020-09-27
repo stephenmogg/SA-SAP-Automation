@@ -80,6 +80,7 @@ endif::Business[]
 // Application
 ifdef::Application[]
 include::./iv-Application/SA.adoc[]
+endif::Application[]
 
 // Technology
 ifdef::Technology[]

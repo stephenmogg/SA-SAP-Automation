@@ -19,8 +19,8 @@ An example template of files for a comprehensive solution architecture in a docu
   - [adoc/SA.adoc](./adoc/SA.adoc) : the main document
 - every portion of text that cites "FixMe" is a flag to encourage modification
 - as you edit the modular text content snippets, create an output format
-  - daps --force -d DC-SA <format>
-    - where <format> might be "pdf", "html", "html --single" and many others are also available
+  - daps --force -d DC-SA format
+    - where format might be "pdf", "html", "html --single" and many others are also available
 - you can also add images/media content as needed in those subdirectories
 
 # Feedback

@@ -1,0 +1,17 @@
+:useCase: FixMe
+
+:title: Digital Tranformation - FixMe
+
+////
+:author: TBD
+:authorEmail: TBD
+////
+
+# :authorGHURL: <FixMe>
+
+:imagesdir: ../media/
+
+ifdef::env-github[]
+:imagesdir: {authorGHURL}/blob/master/SA-{useCase}/media/
+endif::[]
+

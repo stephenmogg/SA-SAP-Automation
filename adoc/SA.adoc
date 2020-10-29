@@ -9,9 +9,13 @@ include::./SA_vars.adoc[]
 :doctype: book
 
 [preface]
-= Preface
+Preface
 
-FixMe - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+This Document will contain best practices and planning considerations when using SUSE's Automation templates for the SAP Landscape. 
+The Document is targeted at Consultants and End-customers who are deploying SAP Landscapes in the public cloud.  
+Guidance will be provided on how the Terraforms, SALT, and other components work together to provide consistent and validated architecture. 
+
+The document can be used as a guide for a workshop to enable partners regarding the proper use of these tools.
 
 The following, layered footnote:Archimate[link: https://pubs.opengroup.org/architecture/archimate3-doc[Archimate Enterprise Architecture]] aspects will be covered:
 
@@ -32,7 +36,7 @@ ifdef::Physical[]
 * *_Where_* the resulting solution may physically or virtually reside
 endif::Physical[]
 
-Additional characteristics, like decision factors such as:
+//Additional characteristics, like decision factors such as:
 
 ifdef::Availability[]
 * availability
@@ -47,7 +51,7 @@ ifdef::Integrity[]
 * integrity
 endif::Integrity[]
 
-are also described and incorporated in the respective layers.  Deployment aspect flavors along the lines of
+//are also described and incorporated in the respective layers.  Deployment aspect flavors along the lines of
 
 ifdef::PoC[]
 * proof-of-concept
@@ -62,7 +66,7 @@ ifdef::Migration[]
 * migration
 endif::Migration[]
 
-implementations and considerations may also be covered.
+//implementations and considerations may also be covered.
 
 // Introduction
 include::./i-Introduction/SA.adoc[]

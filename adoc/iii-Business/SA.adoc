@@ -5,9 +5,33 @@
 Business Layer elements are used to model the operational organization of an enterprise in a technology-independent manner, whereas strategy elements are used to model the strategic direction and choices of the enterprise.
 ////
 
-FixMe - Nascetur ridiculus mus mauris vitae ultricies leo integer malesuada. Ornare lectus sit amet est placerat. Luctus venenatis lectus magna fringilla urna porttitor rhoncus dolor purus. At imperdiet dui accumsan sit amet nulla facilisi morbi. Ornare lectus sit amet est placerat in egestas erat imperdiet. Egestas egestas fringilla phasellus faucibus scelerisque eleifend. In hac habitasse platea dictumst quisque sagittis purus. Ut sem nulla pharetra diam sit amet nisl suscipit adipiscing. Auctor elit sed vulputate mi sit amet mauris commodo. Ullamcorper eget nulla facilisi etiam dignissim diam. Laoreet non curabitur gravida arcu ac. Id eu nisl nunc mi ipsum faucibus vitae aliquet nec. Neque convallis a cras semper. Maecenas accumsan lacus vel facilisis. Lectus proin nibh nisl condimentum id venenatis a condimentum vitae. Massa massa ultricies mi quis. Adipiscing enim eu turpis egestas pretium aenean pharetra magna.
+What we cover with the automation
 
-image::SA-Business.png[title="Solution Architecture - {useCase} Business", scaledwidth=80%]
+SAP HANA and Netweaver applications can be deployed in many different scenarios and combinations between them. So we have created building blocks which are modular and reusable to attend from single install to full cluster deployment.
+
+As of today we take care of 
+
+* HANA single node
+* HANA HA Scale-up Systemreplication 
+** Performance Optimized Scenario 
+*** active/passive
+*** active/readonly
+** Cost Optimized Scenario
+
+* Netweaver
+* Netweaver HA with Enqueue Replication Version (ENSA1)
+* S/4 HANA
+
+The solutions will get extended continuously depending on demands of customers and partners
+and in development is already Netweaver HA with ENSA2 ( Enqueue Standalone Architecture 2).
+
+If you want to know more about the ENSA2 details please have a look at a blog of my colleagues https://www.suse.com/c/suse-ha-sap-certified
+
+The overall landscape which get deployed look like this
+
+image:SAP_Overview.png[width="80%"]
+
+//image::SA-Business.png[title="Solution Architecture - {useCase} Business", scaledwidth=80%]
 
 === Roles and Collaboration
 

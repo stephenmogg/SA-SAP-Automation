@@ -31,9 +31,9 @@ As SUSE Linux Enterprise Server and many other SUSE products ship with a univers
 This configuration infrastructure management system is called Salt from SaltStack and provides a highly scalable, powerful and fast infrastructure automation and management, built on a dynamic communication bus.
 Salt can be used for data-driven orchestration, remote execution for any infrastructure, configuration management for any app stack, and much more.
 
-Combining this management system with a infrastructure deployment solution like Terraform makes it possible to do a hands free setup of an SAP Landscape, ready to login to start customizing your SAP System.
+Combining this management system with a infrastructure deployment solution like Terraform from Hashicorp makes it possible to do a hands free setup of an SAP Landscape, ready to login to start customizing your SAP System.
 
 Such a number of systems have an additional challenge - getting an overview whats going on after the install is done. 
 
-Therefor we added the possibility to allow insights into your SAP Landscape with comprehensive dashboards, realtime and historic views and active alerts and reporting based on flexible and powerful open-source projects Prometheus and Grafana.
+Therefore we added the possibility to allow insights into your SAP Landscape with comprehensive dashboards, realtime and historic views and active alerts and reporting based on flexible and powerful open-source projects Prometheus and Grafana.
 The deployment automation can be configured to also setup a monitoring environment for the clusters, HANA and Netweaver.

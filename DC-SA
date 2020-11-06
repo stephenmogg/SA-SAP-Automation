@@ -41,7 +41,7 @@ ADOC_ATTRIBUTES+=" --attribute Physical=1"
 #	then add respective IHV/CSP attributes/parameters
 
 ## Migration
-#ADOC_ATTRIBUTES+=" --attribute Migration=1"
+ADOC_ATTRIBUTES+=" --attribute Migration=1"
 
 ## Glossary
 ADOC_ATTRIBUTES+=" --attribute Glossary=1"

@@ -3,11 +3,167 @@
 
 ////
 The Application Layer elements are typically used to model the Application Architecture that describes the structure, behavior, and interaction of the applications of the enterprise.
+
+* *_What_* software and applications this is relevant to accomplish
+
+Application workloads will consider the components, these will include, but not limited to SLES4SAP, SALT, TF, Repos, etc. Considerations for Availability, Performance, should be outlined here.
+
+# Application (Workloads)
+#ADOC_ATTRIBUTES+=" --attribute Terraform=1"
+#ADOC_ATTRIBUTES+=" --attribute SUSE Linux=1"
+#ADOC_ATTRIBUTES+=" --attribute SALT=1"
+#ADOC_ATTRIBUTES+=" --attribute SAP=1"
+#ADOC_ATTRIBUTES+=" --attribute Netweaver=1"
+#ADOC_ATTRIBUTES+=" --attribute HA=1"
+ 
 ////
 
-FixMe - Varius sit amet mattis vulputate. Nisi scelerisque eu ultrices vitae auctor eu augue ut. Integer vitae justo eget magna fermentum iaculis eu non diam. Rhoncus urna neque viverra justo. Elementum tempus egestas sed sed risus. Porta nibh venenatis cras sed felis eget velit aliquet sagittis. Venenatis a condimentum vitae sapien pellentesque. Magna ac placerat vestibulum lectus mauris ultrices eros in cursus. Nibh cras pulvinar mattis nunc. Tempor orci dapibus ultrices in iaculis nunc. Sapien nec sagittis aliquam malesuada bibendum arcu vitae elementum. Nisi porta lorem mollis aliquam. Laoreet id donec ultrices tincidunt arcu non sodales.
+=== SAP Application
 
-image::SA-Application.png[title="Solution Architecture - {useCase} Application", scaledwidth=80%]
+In order to use the project some preliminary steps are required. One of them is to prepare the SAP installation software. The SAP software can be downloaded from https://launchpad.support.sap.com/#/softwarecenter and need to be done in manually before you can use the automation.
+
+=== Cloud share for SAP Media
+
+After downloading the needed SAP software, the files must be copied to a storage in the cloud to be accessable from the new installed virtual machines.
+
+ifeval::[ "{cloud}" == "Azure" ]
+
+Azure offers shared storage (Azure Files) for applications using the Server Message Block (SMB) protocol which is a simple way to upload the SAP Media to it an use it from the installed machines for the SAP installation.
+
+To use Azure Storage, you need to create first a storage account.
+
+https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction
+
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+AWS - S3 bucket
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+GCP - GCP storage
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+Libvirt - NFS share
+endif::[]
+
+=== Terraform
+
+Terraform is an open source tool created by HashiCorp for building, changing and versioning infrastructure.
+
+As a infrastructure provisioning tool, it is responsible for creating the servers, but also load balancers, queues, monitoring, subnet configurations, firewall settings, routing rules, SSL certificates, and many other aspects of a infrastructure.
+
+Terraform is more or less cloud-agnostic and allows a single configuration to be used to manage multiple providers, and to even handle cross-cloud dependencies. This simplifies management and orchestration, helping operators build large-scale multi-cloud infrastructures.
+
+But it's not a tool to simple create a landscape with a press of a button in another cloud. The cloud providers don’t offer the same types of infrastructure. For example the VMs, load balancers and other services offered by AWS, are very different as those in Azure and Google Cloud looking at the details of features and configuration or management or security or scalability, etc.
+
+Terraform’s approach is that you write code which is specific to a (cloud)provider and take advantage of the provider’s unique functionality, but to use the same language and toolset for all providers.
+Therefor the natural name for such modules is "provider". So for example the _Azure Provider_ can be used to configure infrastructure in Microsoft Azure using the Azure Resource Manager API's.
+
+Configuration files describe to Terraform which components need to run for your application. Then you run the main terraform command to generate an execution plan which describes what Terraform will do to get to the planned desired state and then you execute this plan to create the described infrastructure.
+
+We provide terraform configuration files for AWS, Azure, GCE and libvirt.
+
+=== SALT
+
+SaltStack’s configuration management system lets you define the applications, files, and other settings that should be in place on a specific system. The system is continuously evaluated against the defined configuration, and changes are made as needed.
+
+ * Salt works with so-called "States" which express the state a host should be in, using small, easy to read, easy to understand configuration files.
+ * The automation is written as "formulas" which are a collection of pre-written Salt States and Salt "Pillar" files.
+ * The Pillar files are the variables and data to build the system.
+
+The good thing is that SLES-for-SAP Applications does ship all these tools as part of the product, so you can set up as you need.
+
+==== Netweaver
+
+The Netweaver formula for bootstrapping and managing the SAP Netweaver platform takes care of:
+
+ * Extract the required SAP files for SAP Medias (.tar,.sar,.exe)
+ * and setting up
+ ** ASCS instance
+ ** ERS instance
+ ** PAS instance
+ ** AAS instance
+ ** Database instance (currently only HANA)
+
+Besides that, the formula sets up all of the pre-requirements as:
+
+ * Hostnames
+ * Virtual addresses
+ * NFS mounts
+ * Shared disks
+ * SWAP partition space
+
+The formula follows the best practices defined in the official SUSE documentation http://documentation.suse.com/sbp
+
+==== HANA
+
+The HANA formula takes care of the following:
+
+* Extract the required SAP files for SAP Medias (.tar,.sar,.exe)
+* Installs SAP HANA.
+* Apply "saptune" for HANA to configure and tune the OS for HANA usage
+* Configures system replication.
+* Preconfigure the High Availability cluster requirements.
+* Configures the SAP HANA Prometheus exporter
+
+==== HA
+
+The HA bootstrap formula takes care of creating and managing a high availability cluster
+
+ * Creates and configures the High Availability cluster, like pacemaker, corosync, SBD and resource agents.
+ * Adjustments for the Azure Infrastructure
+ * Handle Netweaver, HANA and DRBD
+
+Depending on the cloud requirements it may need an iSCSI server to be able to provide a shared disk for fencing where we use the iscsi-formula from SaltStack
+
+===== Other depended services 
+
+====== HA NFS Service 
+
+To build a HA NFS Service if there is none available, we can create one with help of 3 Linux services and the following
+
+ * DRBD formula
+ * HA formula
+ * NFS formula from  SaltStack
+
+====== iSCSI Service
+The iSCSI-formula from SaltStack is able to deploy iSNS, iSCSI initiator, and iSCSI target packages, manage configuration files and then starts the associated iSCSI services.
+
+====== NFS formula
+A SaltStack formula to install and configure nfs server and client.
+
+=== Monitoring
+Starting from the idea of improving user experience, SUSE worked on how to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver in a modern way. For monitoring, we use the Prometheus toolkit and the Grafana project to visualize the data.
+To be able to monitor the clusters on either HANA or Netweaver we have written Prometheus exporters for it.
+
+==== SAP HANA Database Exporter
+The exporter provide metrics from more than one database or tenant. It provides
+
+ * Memory metrics
+ * CPU metrics
+ * Disk usage metrics
+ * I/O metrics
+ * Network metrics
+ * Top queries consuming time and memory
+
+==== High Availability Cluster Exporter
+Enables monitoring of Pacemaker, Corosync, SBD, DRBD and other components of High Availability clusters. This provides the ability to easily monitor cluster status and health.
+
+ * Pacemaker cluster summary, nodes, and resource status
+ * Corosync ring errors and quorum votes. Currently, only Corosync version 2 is supported.
+ * Health status of SBD devices.
+ * DRBD resources and connections status. Currently, only DRBD version 9 is supported.
+
+==== SAP Host Exporter
+Enables the monitoring of SAP Netweaver, SAP HANA, and other applications. The gathered metrics are the data that can be obtained by running the sapcontrol command.
+
+ * SAP start service process list
+ * SAP enqueue server metrics
+ * SAP application server dispatcher metrics
+ * SAP internal alerts
+
 
 ifdef::Availability[]
 include::./Availability/SA.adoc[]

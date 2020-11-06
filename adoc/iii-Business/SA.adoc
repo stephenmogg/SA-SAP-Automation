@@ -3,6 +3,17 @@
 
 ////
 Business Layer elements are used to model the operational organization of an enterprise in a technology-independent manner, whereas strategy elements are used to model the strategic direction and choices of the enterprise.
+
+* *_Who_* to engage with, inform and collaborate with
+* *_What_* key factors are important and *_When_* to consider them
+
+Business Considerations for this solution, which teams/resources should be included and consulted.
+Who to engage with, inform, and collaborate with
+What key factors are important and 
+When to consider them
+
+Determine landscape impact, Factors Flavors, Deployment types.
+ 
 ////
 
 What we cover with the automation
@@ -22,16 +33,32 @@ As of today we take care of
 * Netweaver HA with Enqueue Replication Version (ENSA1)
 * S/4 HANA
 
-The solutions will get extended continuously depending on demands of customers and partners
-and in development is already Netweaver HA with ENSA2 ( Enqueue Standalone Architecture 2).
+The solutions will get extended continuously depending on demands of customers and partners and in development is already Netweaver HA with ENSA2 ( Enqueue Standalone Architecture 2).
 
 If you want to know more about the ENSA2 details please have a look at a blog of my colleagues https://www.suse.com/c/suse-ha-sap-certified
 
 The overall landscape which get deployed look like this
 
-image:SAP_Overview.png[width="80%"]
+image::SAP_Overview.png[Instance overview,width="80%"]
 
 //image::SA-Business.png[title="Solution Architecture - {useCase} Business", scaledwidth=80%]
+
+=== Prerequisites for SAP workloads in public clouds
+
+There are a few general prerequisites to get a supported SAP Landscape in public cloud environments:
+
+. You need to have a SAP license for the SAP software to be deployed.
+
+. You need to know the resource requirements of your SAP workloads and have done a SAP system sizing
+
+. You need to use certified VM instance types and know the capacity required by SAP software
+
+. You need to provide the right network connectivity (bandwidth, latency, and package loss) within the cloud environment for your SAP workloads.
+
+. You need certified operating systems on which the SAP workloads will be deployed.
+
+. You should have knowledge of Linux and a of operation of SAP systems and the cloud infrastructure.
+
 
 === Roles and Collaboration
 

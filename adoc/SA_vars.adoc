@@ -15,6 +15,7 @@ ifdef::env-github[]
 :imagesdir: {authorGHURL}/blob/master/SA-{useCase}/media/
 endif::[]
 
+// could be "Azure","AWS","GCE" or "libvirt"
 :cloud: Azure
 :sles: SUSE Linux Enterprise Server
 :sles4sap: {sles} for SAP Applications

@@ -3,6 +3,8 @@
 
 ////
 The strategy elements are typically used to model the strategic direction and choices of an enterprise, as far as the impact on its architecture is concerned. They can be used to express how the enterprise wants to create value for its stakeholders, the capabilities it needs for that, the resources needed to support these capabilities, and how it plans to configure and use these capabilities and resources to achieve its aims. Strategy elements are used to model the strategic direction and choices of the enterprise, whereas Business Layer elements are used to model the operational organization of an enterprise.
+
+Why one should consider this strategy
 ////
 
 Most of the SAP services are deployed on premise with well known procedures, but you need to plan and size the needed hardware several years ahead and estimate the maximal workload e.g. for the next 5 years. You need to look at capacities, as also on other increasing demands and more or less guess this right values, because you do never know what will happen in the future.
@@ -11,18 +13,46 @@ In the current time, with quickly changing environments, many businesses have th
 
 With moving there products and services into the cloud, which is a actual modern trend in organizations, they can make there businesses meet the changing demand and to become flexible and agile in making business decisions.
 
-As one example here, you do not need anymore plan the hardware size for the next 5 years, as a bigger and faster or smaller is only one reboot away. So you only need to do "rightsizing" as
-you can change it quickly.
+As one example here, you do not need anymore plan the hardware size for the next 5 years, as a bigger and faster or smaller is only one reboot away. So you only need to do "rightsizing" as you can change the virtual hardware quickly - its only one reboot and you have changed the "hardware".
+
+It is important that you have such changes in mind when migrating to the cloud, as not takeing care of such cloud benefits could be a huge cost factor - companies which do “rightsize” their workloads are able to cut costs by of 30% - 60%.
 
 //image::SA-Strategy.png[title="Solution Architecture - {useCase} Strategy", scaledwidth=80%]
 
-////
+
 === Context
 
-FixMe - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Libero nunc consequat interdum varius. Et magnis dis parturient montes nascetur ridiculus mus mauris. Morbi tincidunt ornare massa eget egestas purus viverra. Ac feugiat sed lectus vestibulum mattis. Arcu cursus euismod quis viverra nibh cras pulvinar mattis. Mauris nunc congue nisi vitae suscipit tellus mauris a. Amet consectetur adipiscing elit pellentesque habitant morbi tristique. Tellus mauris a diam maecenas sed. Tincidunt vitae semper quis lectus nulla at volutpat diam ut. Felis eget velit aliquet sagittis id consectetur. Urna et pharetra pharetra massa. Interdum varius sit amet mattis vulputate enim. Leo in vitae turpis massa sed elementum tempus. Sed arcu non odio euismod. Ut sem viverra aliquet eget sit amet tellus. Purus in mollis nunc sed id semper. Dictum sit amet justo donec enim diam vulputate ut.
+There are quite many benefits by moving your SAP workloads to the cloud:
 
+Quick deployment:: If you need fast application implementation and deployment, cloud is the best choice. You can set up a cloud environment within a few hours, whereas, in-house IT infrastructure set-up takes days and sometimes month order it and to set up. With the cloud, IT teams can easily configure and manage the setup remotely.
++    
+It is a part where SUSE can help with our automation solution for SAP.
+
+Reduce Cost:: Many businesses spent a lot of their capital on maintaining their IT Infrastructure. With help of the cloud, they can transform their CapEx (Capital Expenditure) to stable OpEx (Operating Expenditure).
+The costs can be controlled since, the cloud model is a ‘pay as you use’ scenario. Many cloud vendors provide a few more payment options to provide more choice to there customers. 
+But this also means you need to adapt how you use the resources and the SAP software.
++    
+It is a part where SUSE can help together with the cloud provider to offer different payment options.
+    
+Scalability & Flexibility:: With the cloud, you can scale up your system as and when required. Add or remove resources when the business demands it and what we have mentioned above with "rightsizing" too.
++    
+With SUSE ready to run images in the cloud providers marketplaces and infrastructure its easy to scale.
+        
+Maintenance:: With the cloud, your IT department doesn’t have to worry about managing and maintaining the hardware and parts of the infrastructure, the cloud service provider will handle it for your organization and you free up resources to focus on your business.
+      
+Resiliency:: For businesses these days, uptime is of prime importance to run the daily business smoothly. Moving to the cloud maximizes uptime and reduces downtime.
+And the cloud could improve disaster recovery and business continuity without spend a huge amount of their capital on robust disaster recovery tool to save themselves from any security threat by using the offerings from the provider.
++
+SUSE can help here with our SAP HA automation to help to provide less downtime of your application.
+    
+Remote access:: With the cloud, your employees can access data from anywhere, and at any time via internet making business more flexible and increase the productivity of the employees.
++    
+SUSE products provides natively many options for remote access and control.
+    
+So overall, public clouds could offer significant benefits for all customers regardless of there size. The use of public cloud resources can lower there infrastructure costs and improve the scalability, agility, flexibility and availablity of applications. 
+
+////
 === Categories and Variants
 
 FixMe - Libero id faucibus nisl tincidunt eget nullam non nisi est. Vulputate enim nulla aliquet porttitor lacus luctus accumsan tortor posuere. Consequat nisl vel pretium lectus quam id leo in. Vel fringilla est ullamcorper eget nulla. Pellentesque sit amet porttitor eget dolor. Vulputate ut pharetra sit amet aliquam id diam. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit. Posuere morbi leo urna molestie at elementum eu facilisis. Eget nunc scelerisque viverra mauris. Mattis ullamcorper velit sed ullamcorper morbi tincidunt. Sit amet commodo nulla facilisi nullam. Aliquet bibendum enim facilisis gravida neque. Orci a scelerisque purus semper eget duis at tellus at. Eget mauris pharetra et ultrices neque ornare aenean euismod. Vel quam elementum pulvinar etiam non quam. Arcu dictum varius duis at consectetur. Enim nunc faucibus a pellentesque.
-
- ////
+////

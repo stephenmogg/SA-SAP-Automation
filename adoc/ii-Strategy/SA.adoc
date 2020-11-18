@@ -4,7 +4,7 @@
 ////
 The strategy elements are typically used to model the strategic direction and choices of an enterprise, as far as the impact on its architecture is concerned. They can be used to express how the enterprise wants to create value for its stakeholders, the capabilities it needs for that, the resources needed to support these capabilities, and how it plans to configure and use these capabilities and resources to achieve its aims. Strategy elements are used to model the strategic direction and choices of the enterprise, whereas Business Layer elements are used to model the operational organization of an enterprise.
 
-Why one should consider this strategy
+*Why* one should consider this strategy
 ////
 
 Most of the SAP services are deployed on premise with well known procedures, but you need to plan and size the needed hardware several years ahead and estimate the maximal workload e.g. for the next 5 years. You need to look at capacities, as also on other increasing demands and more or less guess this right values, because you do never know what will happen in the future.

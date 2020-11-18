@@ -8,8 +8,7 @@ include::./SA_vars.adoc[]
 :favicon:
 :doctype: book
 
-[preface]
-Preface
+== preface
 
 This Document will contain best practices and planning considerations when using SUSE's Automation templates for the SAP Landscape. 
 The Document is targeted at Consultants and End-customers who are deploying SAP Landscapes in the public cloud.  

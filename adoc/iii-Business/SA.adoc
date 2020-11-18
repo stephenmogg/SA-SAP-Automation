@@ -5,7 +5,8 @@
 Business Layer elements are used to model the operational organization of an enterprise in a technology-independent manner, whereas strategy elements are used to model the strategic direction and choices of the enterprise.
 
 * *_Who_* to engage with, inform and collaborate with
-* *_What_* key factors are important and *_When_* to consider them
+* *_What_* key factors are important 
+* and *_When_* to consider them
 
 Business Considerations for this solution, which teams/resources should be included and consulted.
 Who to engage with, inform, and collaborate with
@@ -16,7 +17,32 @@ Determine landscape impact, Factors Flavors, Deployment types.
  
 ////
 
-What we cover with the automation
+The Document is targeted at Consultants and End-customers who are deploying SAP Landscapes in the public cloud. Within Cloud environments there is no strict separation of responsible teams (like Network,DB,OS,Application) anymore as all can be done from a central place. But this should not make special knowledge not needed anymore. Such Teams still exist and still need to work together - best in a DevOps approach with Infrastructure-as-Code.
+
+This mean you still need knowledge of the cloud infrastructure and there possibilities, as also details of the operating system and the tooling around like for HighAvailability. You also need to plan for the application usage and sizing.
+
+SAP architectures needs to be fine-tuned based on the customer’s requirement on system availability i.e 99.99% or 99.95% or 99.9%. So you need to identify the Single Point of Failures (SPOF) in the components and services. Such SPOF's then need to be in a HA cluster
+and all other infrastructure SPOF's need to have some degree of redundancy.
+
+If you look at a typical SAP implementation you will find
+1 SAP Central Services
+2 a Database (e.g. HANA)
+3 a Primary Application Server (PAS)
+4 and some shared storage (NFS)
+
+where the points 1,2 and 4 are potential SPOF's.
+
+With our automation we try to eliminate all of these single-point-of-failures by providing HA cluster implementations to ensure automated failover, data protection and higher system availability.
+
+SAP Central Services:: You need at least 2 VMs (Virtual Machines) to configure an ASCS/ERS high availability cluster. Depending on the SAP versions, you can configure the ASCS/ERS cluster in either ENSA 1 or ENSA 2 architecture which could be automated with the SUSE HA Extension (HAE).
+
+Database layer:: You need at least 2 VMs (Virtual Machines) to configure SAP HANA HA/DR cluster in a scale-up deployment. The SUSE High Availability Extension is used to detect system failures and facilitate automatic failover.
+
+Depending on the services used or available from the cloud provider it could be that you need a third cluster providing a High Available NFS service.
+
+This is one of the main topics of the solution, that we are able to create all needed infrastructure and configurations to maximize the SAP System availablity.
+
+=== What we cover with the automation
 
 SAP HANA and Netweaver applications can be deployed in many different scenarios and combinations between them. So we have created building blocks which are modular and reusable to attend from single install to full cluster deployment.
 
@@ -33,9 +59,7 @@ As of today we take care of
 * Netweaver HA with Enqueue Replication Version (ENSA1)
 * S/4 HANA
 
-The solutions will get extended continuously depending on demands of customers and partners and in development is already Netweaver HA with ENSA2 ( Enqueue Standalone Architecture 2).
-
-If you want to know more about the ENSA2 details please have a look at a blog of my colleagues https://www.suse.com/c/suse-ha-sap-certified
+The solutions will get extended continuously depending on demands of customers and partners. 
 
 The overall landscape which get deployed look like this
 
@@ -58,6 +82,10 @@ There are a few general prerequisites to get a supported SAP Landscape in public
 . You need certified operating systems on which the SAP workloads will be deployed.
 
 . You should have knowledge of Linux and a of operation of SAP systems and the cloud infrastructure.
+
+. If there should be build high available systems, there need to be deep knowledge of the HA concepts and tooling and a good knowledge what is possible in the cloud infrastructure.
+
+
 
 
 === Roles and Collaboration

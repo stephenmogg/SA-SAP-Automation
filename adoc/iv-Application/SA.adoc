@@ -17,6 +17,10 @@ Application workloads will consider the components, these will include, but not 
 #ADOC_ATTRIBUTES+=" --attribute HA=1"
  
 ////
+=== SUSE Linux Enterprise Server for SAP Applications
+
+Is the bundle product for SAP users based on SUSE Linux Enterprise Server and the High Availablity Extension with many helpers for running SAP Application.
+
 
 === SAP Application
 
@@ -65,6 +69,19 @@ Configuration files describe to Terraform which components need to run for your 
 
 We provide terraform configuration files for AWS, Azure, GCE and libvirt.
 
+The open source version of the needed Terraform is shipped within the Public Cloud Module of {sles4sap}
+
+ifeval::[ "{cloud}" == "Azure" ]
+In addition Azure provide an easy to access web based commandline (cloudshell) where Terraform is already pre-installed.
+
+// FixMe provide link
+
+endif::[]
+
+{cloud} provides different types of storage that are suitable for VMs that are running SAP workloads, so you should get familiar with the SAP requirements for {cloud}.
+
+The suggestions from the terraform files for the storage configurations are meant as good directions to start with. But you still should analyzing the storage utilization patterns during runtime of the application. It could be the case that you realize that you are not utilizing all the storage bandwidth or IOPS provided. Therefore you might consider downsizing on storage or you will see the opposite way and your workload might need more storage throughput than suggested with these configurations. As a result, you might need to change the capacity, IOPS or throughput. Independent what you needs between storage capacity required, storage latency needed, storage throughput and IOPS required and least expensive configuration, {cloud} offers enough different storage types with different capabilities and different price points to find and adjust to the right compromise for you and your SAP workload.
+
 === SALT
 
 SaltStack’s configuration management system lets you define the applications, files, and other settings that should be in place on a specific system. The system is continuously evaluated against the defined configuration, and changes are made as needed.
@@ -74,6 +91,14 @@ SaltStack’s configuration management system lets you define the applications, 
  * The Pillar files are the variables and data to build the system.
 
 The good thing is that SLES-for-SAP Applications does ship all these tools as part of the product, so you can set up as you need.
+
+
+Salt formulas can be applied in two ways:
+
+Salt Master with Salt Client. All steps must be executed on the Salt Master machine.
+
+Salt Client (Minion) only. All steps in must be executed in all of the Salt clients where the formulas are going to be executed, wh is the approach we use here within the framework as we do not need a central master system.
+
 
 ==== Netweaver
 
@@ -108,6 +133,7 @@ The HANA formula takes care of the following:
 * Preconfigure the High Availability cluster requirements.
 * Configures the SAP HANA Prometheus exporter
 
+
 ==== HA
 
 The HA bootstrap formula takes care of creating and managing a high availability cluster
@@ -117,6 +143,18 @@ The HA bootstrap formula takes care of creating and managing a high availability
  * Handle Netweaver, HANA and DRBD
 
 Depending on the cloud requirements it may need an iSCSI server to be able to provide a shared disk for fencing where we use the iscsi-formula from SaltStack
+
+The formula provides the capability to create and configure a multi node HA cluster. Here are some of the features:
+
+* Initialize a cluster
+* Join a node to an existing cluster
+* Remove a node from an existing cluster
+* Configure the pre-requirements (install required packages, configure ntp/chrony, create ssh-keys, etc)
+* Auto detect if the cluster is running in a cloud provider (Azure, AWS, or GCP)
+* Configure SBD (if needed)
+* Configure Corosync
+* Configure the resource agents
+* Install and configure the monitoring ha_cluster_exporter
 
 ===== Other depended services 
 

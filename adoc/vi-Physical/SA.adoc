@@ -7,9 +7,12 @@ The physical elements are included as an extension to the Technology Layer for m
 * *_Where_* the resulting solution may physically or virtually reside
 ////
 
-ifeval::[ "{cloud}" == "Azure" ]
+The SAP automation consist, as we have see before, out of several building blocks. 
+First we want to look at the infrastructure deployment with terraform
 
-First make sure that all *pre-requirements* are done:
+=== First make sure that all *pre-requirements* are done:
+
+ifeval::[ "{cloud}" == "Azure" ]
 
 . Have an Azure account 
 . Have installed the Azure commandline tool _az_
@@ -34,8 +37,134 @@ ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt - NFS share
 endif::[]
 
+As suggestion, we recommend the following directory structure:
+//fixme directory structure
 
-FixMe - Varius sit amet mattis vulputate. Nisi scelerisque eu ultrices vitae auctor eu augue ut. Integer vitae justo eget magna fermentum iaculis eu non diam. Rhoncus urna neque viverra justo. Elementum tempus egestas sed sed risus. Porta nibh venenatis cras sed felis eget velit aliquet sagittis. Venenatis a condimentum vitae sapien pellentesque. Magna ac placerat vestibulum lectus mauris ultrices eros in cursus. Nibh cras pulvinar mattis nunc. Tempor orci dapibus ultrices in iaculis nunc. Sapien nec sagittis aliquam malesuada bibendum arcu vitae elementum. Nisi porta lorem mollis aliquam. Laoreet id donec ultrices tincidunt arcu non sodales.
+share+
+     + HANA
+     |  + xxxxxxx 
+     |
+     + NW
+        + sapkernel
+        + export
+        + client
+        + swpm
+
+        
+
+=== Get the project from the github site
+
+The project is hosted on a public github site where you can download it to your local machine.
+
+After moving into this directory you will see the following directory structure:
+
+----
+├── aws
+├── azure
+├── doc
+├── gcp
+├── generic_modules
+├── libvirt
+├── LICENSE
+├── pillar
+├── pillar_examples
+├── README.md
+└── salt
+----
+
+The directories with the names of the cloud provider are the terraform templates for the relevant provider. 
+
+The pillar, pillar_examples and the salt directory contain the part of the salt configuration management.
+
+
+=== Terraform
+
+Terraform relies on plugins called "providers" to interact with remote systems.
+
+Providers are plugins. They are released on a separate rhythm from Terraform itself, and each provider has its own series of version numbers.
+
+Each Terraform module must declare which providers it requires, so that Terraform can install and use them.
+
+The directory _generic_modules_ provides modules which get used by all building blocks, like common variables, local executed functions within the building block, dependent actions on destroy and the functions to start the SALT execution on the module building blocks.
+
+The _vendor_ directory consist of one directory (modules) and several .tf files which all together build the terraform template.
+
+├── infrastructure.tf
+├── main.tf
+├── modules
+├── outputs.tf
+├── README.md
+├── terraform.tfvars
+├── terraform.tfvars.example
+└── variables.tf
+
+The _infrastructure.tf_ file provides the cloud specific setup with the cloud relevant provider module of terraform and defines all the needed cloud specific entities.
+
+The _main.tf_ file provides all the values for the various variables needed for the modules.
+
+The _output.tf_ file provides the values handed out from the modules, e.g to be used or displayed.
+
+_terraform.tfvars_ is a variable definitions file which get automatically loaded instead of providing values manually
+
+_terraform.tfvars.example_ is a example file with many pre-filled key-value pairs to set up
+the solution. You can use this as starting point for your own file.
+
+_variables.tf_ provides all used input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
+
+A _module_ is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects.
+
+We use the modules as our technical building blocks e.g. a HANA node and the module directory consist again  _main.tf_, _variables.tf_, _outputs.tf_. 
+These are the recommended filenames for a minimal module, even if they're empty. _main.tf_ is the primary entrypoint how to build the infrastructure building block.
+
+In addition to the 3 above .tf files, we have one additional which takes care of handing over the needed values to the salt building blocks with a special terraform resource _null_provider_ to remote execute the salt run to configure the instances and run the application installation for the building block.
+
+
+ifeval::[ "{cloud}" == "Azure" ]
+
+The _infrastructure.tf_ provides the network setup with vnet,subnet and routing, the resourcegroup used, a storage account, the network security groups (nsg) being used and defines the jumphost.
+
+
+
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+AWS
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+GCP
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+Libvirt
+endif::[]
+
+==== SAP Sizing
+==== Building Blocks
+==== High Availability
+==== Additional Services
+===== NFS service
+===== Fencing service 
+===== Monitoring service
+
+
+ifeval::[ "{cloud}" == "Azure" ]
+Azure
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+AWS
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+GCP
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+Libvirt
+endif::[]
+
+
 
 image::SA-Physical.png[title="Solution Architecture - {useCase} Physical", scaledwidth=80%]
 

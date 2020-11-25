@@ -65,7 +65,7 @@ Static data about Salt clients. Grains contain information about the operating s
 
 Salt Formulas::
 Formulas are pre-written Salt States.
-
++
 For more information about Salt, refer to the upstream documentation at https://docs.saltstack.com.
 
 Salt Master::

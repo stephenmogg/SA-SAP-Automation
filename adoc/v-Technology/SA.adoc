@@ -16,53 +16,128 @@ Technology components utilized as a part of this solution: CSP Specific, Network
  
 ////
 
-The SAP automation consist, as we have see before, out of several building blocks. 
-First we want to look at the infrastructure deployment with terraform
+=== Terraform
+
+With help of terraform and the modules for the cloudprovider we create the infrastructure for the SAP application and some supporting services.
+
+The Terraform templates provide everything needed to create the right infrastructure components and provide in addition a lot of predefined possible choices to make it more simple to create the right virtual machines, disks, networks etc.
+
+==== SAP Sizing
+
+To make the SAP sizing more simple we have introduced pre-defined sizes with well known abbreviation from T-Shirt sizes *S*mall, *M*edium, *L*arge.
+
+The Small (S) size is thought for non productive scenarios, where as the Medium (M) and Large (L) sizes for production setups, where certified instance types being used.
+
+But you can also tweak such size or do complete your own settings.
+
+As sizing is important, you need to choose the right instance sizes from the cloud provider which are certified by SAP and choose the right number of disks to provide the right I/O, as similar the network throughput for the solution.
+
+==== Building Blocks
+
+The main building blocks for an SAP Landscape are the Netweaver based Central Services and a Database, which is in our case SAP HANA.
+
+==== High Availability
+
+Both could be made high available in order to have less downtime. As there are many scenarios available from SAP, we support the most used scenarios with the solution.
+
+For the Central Services this is Enqueue Replication and for the database its the HANA Systemreplication.
+
+This mean we need to create one additional machine for the building blocks to build a two-node cluster within the HA Scenarios.
 
 ifeval::[ "{cloud}" == "Azure" ]
 
-First make sure that all *pre-requirements* are done:
+To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic
+to only the active node.
 
-. Have an Azure account 
-. Have installed the Azure commandline tool _az_
-. Have installed _terraform_ (v12) (it comes with SLES within the public cloud module)
-. Have the SAP HANA install media downloaded from SAP
-. Have created an Azure File Share
-. Copy or write down the the name of the storage account and the storage key, which is similar to a password.
-. Copy the SAP HANA install media to the Azure fileshare
-. extract the install media
+image::azure_loadbalancer.png[]
 
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS - S3 bucket
+AWS
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP - GCP storage
+GCP
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
-Libvirt - NFS share
+Libvirt
 endif::[]
 
 
+==== Additional Services
 
-image::SA-Technology.png[title="Solution Architecture - {useCase} Technology", scaledwidth=80%]
+Depending on offered services from the cloud provider, we may need to build some services by our own if they are not there or use whats available.
 
-ifdef::Availability[]
-include::./Availability/SA.adoc[]
-endif::Availability[]
+===== NFS service
 
-ifdef::Performance[]
-include::./Performance/SA.adoc[]
-endif::Performance[]
+ifeval::[ "{cloud}" == "Azure" ]
 
-ifdef::Security[]
-include::./Security/SA.adoc[]
-endif::Security[]
+As we started with Azure, there was no NFS service available, so we need to build some with the tools we ship in {sles4sap}. As the NFS service should be high available, we need a second virtual machine to build a two node cluster.
 
-ifdef::Integrity[]
-include::./Integrity/SA.adoc[]
-endif::Integrity[]
+image::Azure_HA_NFS_Service.png[]
 
+Over the time, Azure provide more and more services. So as of time of writing, there is a native NFS service with help of Netapp available (Azure Netapp files ANF) and the Azure file service is extending in this direction too.
+
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+AWS
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+GCP
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+Libvirt
+endif::[]
+
+If the cloud native NFS service is used, not additional virtual machines will be created and the native service need to be set up in forehand.
+
+===== Fencing service 
+
+For high available clusters, we need a mechanism to switch off one machine in the case of a so called "split-brain", mean when they can not communicate with each other anymore. 
+
+There are several methods which can be used and it depends again of the possibilities of the infrastructure.
+
+ifeval::[ "{cloud}" == "Azure" ]
+As we started with Azure, Microsoft and SUSE created a fencing agent for the cluster. Such a fencing agent should be remove a machine as fast as possible (immediate) from the cluster, to make sure that there is only one active node, in order to avoid data corruption.
+
+Unfortunately the Azure infrastructure provided only a way to graceful shutdown a machine, which took roughly 10-15 minutes - which is by far too long for the fencing case.
+
+We need to create our own mechanism to fence machines. As one technology we provide within our HA Extension is using storage as additional communication between the nodes for such a split-brain case. This needs a raw shared disk, in order that both nodes can write messages to a central place.
+
+Unfortunately the Azure infrastructure did, at this point, not provide such a service, so we need to build it with the Linux tools we have in the distribution. With help of a iSCSI server, we can provide a raw shared disk within the cloud and therefore we are able to use the SBD fencing method which with help of the linux watchdog mechanism provides a fast and reliable fencing tooling.
+
+This mean one additional server to provide a iSCSI service.
+
+image::Azure_fence_iscsi.png[]
+
+// fixme - this is not implemented from the automation as of today
+In the meantime there is a way in the Azure API to "kill" a virtual machine, so that the fencing agent can make use of it and no additional machine is needed if the fence agent is used.
+The drawback here is, in order to talk to the Azure API, there is a need for public network connection.
+
+image::Azure_fence_arm.png[]
+
+So you can choose between two ways 
+. SDB fencing with help of an iSCSI service 
+. agent based fencing through API access
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+AWS
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+GCP
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+Libvirt
+endif::[]
+
+===== Monitoring service
+
+If you decide to use also the monitoring we provide with help of Prometheus and Grafana, we need a additional virtual machine for this service.

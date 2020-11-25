@@ -1,14 +1,13 @@
 
 == Introduction
 
-Maintaining a competitive advantage often depends on how quickly you can deliver new services. SAP applications are designed to help your business analyze data to anticipate new requirements, and rapidly deliver new products and services. This gives you the ability to keep your existing customers happy while attracting new business.
+*SUSE’s Vision is to Simplify, Modernize, Accelerate the business of our customers.*
 
-SUSE’s Vision is to Simplify, Modernize, Accelerate the business of our customers.
+Maintaining a competitive advantage often depends on how quickly you can deliver new services. SAP applications are designed to help your business analyze data to anticipate new requirements, and rapidly deliver new products and services. This gives you the ability to keep your existing customers happy while attracting new business.
 
 When we first released SUSE Linux Enterprise Server for SAP Applications, it included already automated installation features for the SAP software stack. Over the last 10 years, our SAP LinuxLab and development engineers have introduced several additional features to automate routine system administration.
 
-image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,width="80%"]
-
+image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,scaledwidth="80%"]
 
 *Simplify*::      the deployment of an SAP Landscape in Azure for dev, test, and production.
 
@@ -16,11 +15,13 @@ image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,width="80%"]
 
 *Accelerate*::    customer migrations to the cloud.
 
+Building the infrastructure to running SAP Applications can get quite complex and demands big effort if they get deployed manually, and in addition reproducing it, can be tedious and error-prone. 
+
+An additional challenge is to make the infrastructure high available, as this will add more complexity and tasks.
+
+Such a number of systems in SAP Landscapes have an further need - getting an overview whats going on after the install is done. Therefore we added the possibility to allow insights into your SAP Landscape with comprehensive dashboards, realtime and historic views and active alerts and reporting.
 
 Starting from the idea of simplifying and modernizing SAP HANA and SAP NetWeaver deployments, SUSE worked on rewriting the deployment wizards we had build.
-
-Building the infrastructure to running SAP Applications can get quite complex and demands big effort if they get deployed manually, and in addition reproducing it, can be tedious and error-prone. 
-An additional challenge is to make the infrastructure high available, as this will add more complexity and tasks.
 
 The major motivation was to improve, simplify and unify the installation of SAP Landscape on SUSE Linux Enterprise Server for SAP Applications and clearly standardize deployments and allow customers to use one level of tooling in various ways – from a Command Line interface, through some GUI driven process and SUSE Manager or other automation frameworks.
 
@@ -33,7 +34,7 @@ Salt can be used for data-driven orchestration, remote execution for any infrast
 
 Combining this management system with a infrastructure deployment solution like Terraform from Hashicorp makes it possible to do a hands free setup of an SAP Landscape, ready to login to start customizing your SAP System.
 
-Such a number of systems have an additional challenge - getting an overview whats going on after the install is done. 
-
-Therefore we added the possibility to allow insights into your SAP Landscape with comprehensive dashboards, realtime and historic views and active alerts and reporting based on flexible and powerful open-source projects Prometheus and Grafana.
 The deployment automation can be configured to also setup a monitoring environment for the clusters, HANA and Netweaver.
+
+The monitoring is based on the flexible and powerful open-source projects Prometheus and Grafana.
+

@@ -25,10 +25,11 @@ SAP architectures needs to be fine-tuned based on the customer’s requirement o
 and all other infrastructure SPOF's need to have some degree of redundancy.
 
 If you look at a typical SAP implementation you will find
-1 SAP Central Services
-2 a Database (e.g. HANA)
-3 a Primary Application Server (PAS)
-4 and some shared storage (NFS)
+
+1. SAP Central Services
+2. a Database (e.g. HANA)
+3. a Primary Application Server (PAS)
+4. and some shared storage (NFS)
 
 where the points 1,2 and 4 are potential SPOF's.
 
@@ -63,7 +64,7 @@ The solutions will get extended continuously depending on demands of customers a
 
 The overall landscape which get deployed look like this
 
-image::SAP_Overview.png[Instance overview,width="80%"]
+image::SAP_Overview.png[Instance overview,scaledwidth="80%"]
 
 //image::SA-Business.png[title="Solution Architecture - {useCase} Business", scaledwidth=80%]
 

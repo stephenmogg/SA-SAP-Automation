@@ -5,7 +5,7 @@ Maintaining a competitive advantage often depends on how quickly you can deliver
 
 SUSE’s Vision is to Simplify, Modernize, Accelerate the business of our customers.
 
-When we first released SUSE Linux Enterprise Server for SAP Applications, it included already automated installation features for the SAP software stack. Over the last 10 years, our SAP LinuxLab and development engineers have introduced several additional features to automate routine system administration.
+When we first released SUSE Linux Enterprise Server for SAP Applications, it already included automated installation features for the SAP software stack. Over the last 10 years, our SAP LinuxLab and development engineers have introduced several additional features to automate routine system administration.
 
 image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,width="80%"]
 
@@ -17,7 +17,7 @@ image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,width="80%"]
 *Accelerate*::    customer migrations to the cloud.
 
 
-Starting from the idea of simplifying and modernizing SAP HANA and SAP NetWeaver deployments, SUSE worked on rewriting the deployment wizards we had build.
+Starting from the idea of simplifying and modernizing SAP HANA and SAP NetWeaver deployments, SUSE worked on rewriting the deployment wizards we built.
 
 Building the infrastructure to running SAP Applications can get quite complex and demands big effort if they get deployed manually, and in addition reproducing it, can be tedious and error-prone. 
 An additional challenge is to make the infrastructure high available, as this will add more complexity and tasks.

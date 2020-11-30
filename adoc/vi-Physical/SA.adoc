@@ -39,7 +39,7 @@ endif::[]
 
 As suggestion, we recommend the following directory structure:
 //fixme directory structure
-
+----
 share+
      + HANA
      |  + xxxxxxx 
@@ -49,7 +49,7 @@ share+
         + export
         + client
         + swpm
-
+----
         
 
 === Get the project from the github site
@@ -79,16 +79,17 @@ The pillar, pillar_examples and the salt directory contain the part of the salt 
 
 === Terraform
 
-Terraform relies on plugins called "providers" to interact with remote systems.
+Terraform relies on so called "providers" to interact with remote systems.
 
-Providers are plugins. They are released on a separate rhythm from Terraform itself, and each provider has its own series of version numbers.
+Providers are plugins and released independent from Terraform itself, this mean that each provider has its own series of version numbers.
 
 Each Terraform module must declare which providers it requires, so that Terraform can install and use them.
 
-The directory _generic_modules_ provides modules which get used by all building blocks, like common variables, local executed functions within the building block, dependent actions on destroy and the functions to start the SALT execution on the module building blocks.
+The directory _generic_modules_ provides modules which get used by all cloud vendor templates, like common variables, local executed functions within the building block, dependent actions on destroy and the functions to start the SALT execution on the module building blocks.
 
 The _vendor_ directory consist of one directory (modules) and several .tf files which all together build the terraform template.
 
+----
 ├── infrastructure.tf
 ├── main.tf
 ├── modules
@@ -97,33 +98,265 @@ The _vendor_ directory consist of one directory (modules) and several .tf files 
 ├── terraform.tfvars
 ├── terraform.tfvars.example
 └── variables.tf
+----
 
-The _infrastructure.tf_ file provides the cloud specific setup with the cloud relevant provider module of terraform and defines all the needed cloud specific entities.
+The _infrastructure.tf_ file:: provides the cloud specific setup with the cloud relevant provider module of terraform and defines all the needed cloud specific entities.
 
-The _main.tf_ file provides all the values for the various variables needed for the modules.
+The _main.tf_ file:: provides all the values for the various variables needed for the modules.
 
-The _output.tf_ file provides the values handed out from the modules, e.g to be used or displayed.
+The _output.tf_ file:: provides the values handed out from the modules, e.g to be used or displayed.
 
-_terraform.tfvars_ is a variable definitions file which get automatically loaded instead of providing values manually
+_terraform.tfvars__:: is a variable definitions file which get automatically loaded instead of providing values manually
 
-_terraform.tfvars.example_ is a example file with many pre-filled key-value pairs to set up
+_terraform.tfvars.example_:: is a example file with many pre-filled key-value pairs to set up
 the solution. You can use this as starting point for your own file.
 
-_variables.tf_ provides all used input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
+_variables.tf_:: provides all used input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
 
-A _module_ is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects.
+A _module_:: is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects.
 
-We use the modules as our technical building blocks e.g. a HANA node and the module directory consist again  _main.tf_, _variables.tf_, _outputs.tf_. 
+We use the modules as our technical building blocks e.g. a HANA node and the module directory consist again  _main.tf_, _variables.tf_, _outputs.tf_.
+
 These are the recommended filenames for a minimal module, even if they're empty. _main.tf_ is the primary entrypoint how to build the infrastructure building block.
+There is one additional file, which take care of handing over the needed values to the salt building blocks, with help of a special terraform resource called _null_provider_, and  remote execute the salt run to configure the instances and execute the application installation for the building block.
 
-In addition to the 3 above .tf files, we have one additional which takes care of handing over the needed values to the salt building blocks with a special terraform resource _null_provider_ to remote execute the salt run to configure the instances and run the application installation for the building block.
 
 
-ifeval::[ "{cloud}" == "Azure" ]
 
 The _infrastructure.tf_ provides the network setup with vnet,subnet and routing, the resourcegroup used, a storage account, the network security groups (nsg) being used and defines the jumphost.
 
+There is the (default) possibility to autogenerate network addresses for all nodes.
+For that you need to remove or comment all the variables related to the ip addresses (more information in variables.tf). With this approach all the addresses will be retrieved based in the provided virtual network addresses range (vnet_address_range).
 
+ifeval::[ "{cloud}" == "Azure" ]
+
+.Autogenerated addresses example based on 10.74.0.0/16 vnet address range and 10.74.0.0/24 subnet address range
+[with="70%",options="header"]
+|==========================
+| Name         | Terraform variable | IP Address | Comment 
+| iSCSI server | iscsi_srv_ip       | 10.74.0.4  | needed for SBD device in HA configuration
+| Monitoring   | monitoring_srv_ip  | 10.74.0.5  | if monitoring is enabled
+| HANA IP's    | hana_ips           | 10.74.0.10, 10.74.0.11 | second only used in HA
+| Hana cluster virtual IP | hana_cluster_vip | 10.74.0.12 | Only used if HA is enabled in HANA 
+| Hana cluster virtual IP secondary | hana_cluster_vip_secondary | 10.74.0.13 | Only used if the Active/Active HA setup is enabled
+| DRBD IP's    | drbd_ips | 10.74.0.20, 10.74.0.21 | needed if HA NFS service for NW is used
+| DRBD cluster vIP | drbd_cluster_vip | 10.74.0.22 |needed if HA NFS service for NW is used
+| Netweaver IP's | netweaver_ips | 10.74.0.30, 10.74.0.31, 10.74.0.32, 10.74.0.33 | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines 
+| Netweaver virtual IP's | netweaver_virtual_ips | 10.74.0.34, 10.74.0.35, 10.74.0.36, 192.168.135.37 | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses 
+|==========================
+
+
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+AWS
+
+AWS has a pretty specific way of managing the addresses. Due to its architecture, each of the machines in a cluster must be in a different subnet to have HA capabilities. Besides that, the Virtual addresses must be outside of VPC address range too.
+
+Example based on `10.0.0.0/16` address range (VPC address range) and `192.168.1.0/24` as `virtual_address_range` (the default value):
+
+| Name | Substituted variable | Addresses | Comments |
+| :---: | :---: | :----: | :---: |
+| Iscsi server | `iscsi_srv_ip` | `10.0.0.4` ||
+| Monitoring | `monitoring_srv_ip` | `10.0.0.5` ||
+| Hana ips | `hana_ips` | `10.0.1.10`, `10.0.2.11` ||
+| Hana cluster vip | `hana_cluster_vip` | `192.168.1.10` | Only used if HA is enabled in HANA |
+| Hana cluster vip secondary | `hana_cluster_vip_secondary` | `192.168.1.11` | Only used if the Active/Active setup is used |
+| DRBD ips | `drbd_ips` | `10.0.5.20`, `10.0.6.21` ||
+| DRBD cluster vip | `drbd_cluster_vip` | `192.168.1.20` ||
+| Netweaver ips | `netweaver_ips` | `10.0.3.30`, `10.0.4.31`, `10.0.3.32`, `10.0.4.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
+| Netweaver virtual ips | `netweaver_virtual_ips` | `192.168.1.30`, `192.168.1.31`, `192.168.1.32`, `192.168.1.33` | The last number of the address will match with the regular address |
+
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+GCP
+
+Example based on `10.0.0.0/24` VPC address range. The virtual addresses must be outside of the VPC address range.
+
+| Name | Substituted variable | Addresses | Comments |
+| :---: | :---: | :----: | :---: |
+| Iscsi server | `iscsi_srv_ip` | `10.0.0.4` ||
+| Monitoring | `monitoring_srv_ip` | `10.0.0.5` ||
+| Hana ips | `hana_ips` | `10.0.0.10`, `10.0.0.11` ||
+| Hana cluster vip | `hana_cluster_vip` | `10.0.2.12` | Only used if HA is enabled in HANA |
+| Hana cluster vip secondary | `hana_cluster_vip_secondary` | `10.0.1.13` | Only used if the Active/Active setup is used |
+| DRBD ips | `drbd_ips` | `10.0.0.20`, `10.0.0.21` ||
+| DRBD cluster vip | `drbd_cluster_vip` | `10.0.1.22` ||
+| Netweaver ips | `netweaver_ips` | `10.0.0.30`, `10.0.0.31`, `10.0.0.32`, `10.0.0.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
+| Netweaver virtual ips | `netweaver_virtual_ips` | `10.0.1.34`, `10.0.1.35`, `10.0.1.36`, `10.0.1.37` | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses |
+
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+Libvirt
+
+Example based on `192.168.135.0/24` address range:
+
+| Name | Substituted variable | Addresses | Comments |
+| :---: | :---: | :----: | :---: |
+| Iscsi server | `iscsi_srv_ip` | `192.168.135.4` ||
+| Monitoring | `monitoring_srv_ip` | `192.168.135.5` ||
+| Hana ips | `hana_ips` | `192.168.135.10`, `192.168.135.11` ||
+| Hana cluster vip | `hana_cluster_vip` | `192.168.135.12` | Only used if HA is enabled in HANA |
+| Hana cluster vip secondary | `hana_cluster_vip_secondary` | `192.168.135.13` | Only used if the Active/Active setup is used |
+| DRBD ips | `drbd_ips` | `192.168.135.20`, `192.168.135.21` ||
+| DRBD cluster vip | `drbd_cluster_vip` | `192.168.135.22` ||
+| Netweaver ips | `netweaver_ips` | `192.168.135.30`, `192.168.135.31`, `192.168.135.32`, `192.168.135.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
+| Netweaver virtual ips | `netweaver_virtual_ips` | `192.168.135.34`, `192.168.135.35`, `192.168.135.36`, `192.168.135.37` | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses |
+
+endif::[]
+
+If you want to use already existing network resources (virtual network and subnets) it can be done by configuring the terraform.tfvars file and adjusting the responsible variables. 
+
++The example of how to use them is available at terraform.tfvars.example.
+
+[IMPORTANT]
+====
+If you are specifying the IP addresses manually, make sure these are valid IP addresses. They should not be currently in use by existing instances. In case of shared account usage in cloud providers, it is recommended to set unique addresses with each deployment to avoid using same addresses.
+====
+
+
+==== SAP Sizing
+
+ifeval::[ "{cloud}" == "Azure" ]
+
+To make it easier to deploy the right instance sizes with the right disks types and performance, and the right network settings, we introduced a simplified SAP sizing which well known T-Shirt sizes, S,M,L and a very small Demo size.
+
+Behind the sizes, are useful combinations to provide certain SAP performance scenarios. 
+Below is a simple reference of the possible performance values 
+
+* Demo
+* Small  <  30.000 SAPS
+* Medium <  70.000 SAPS
+* Large  < 180.000 SAPS
+
+You can simply customize the used settings within the terraform.tfvars, or more permanent in the variables file.
+
+The Demo and Small size are thought for non-production scenarios and do not use SAP certified instancetypes, whereas the Medium and Large are meant for production usage and therefor use SAP certified instance types. The setups also used the right disks and I/O behavior for production.
+
+
+===== HANA
+
+The map below, describes how the disks for SAP HANA will be used and created during the provisioning. Given that low storage latency is critical for database systems, even for in-memory systems as SAP HANA. The critical path in storage is usually around the transaction log writes of the DB systems, but other operations like savepoints or loading data in-memory after crash recovery can be critical. 
+
+Therefore, it is mandatory to leverage Azure premium storage or Ultra disk for /hana/data and /hana/log volumes. Depending on the performance requirements, we may need to build a RAID-0 stripe-set to aggregate IOPS and throughput to meet the application scenario need.
+
+The overall VM I/O throughput and IOPS limits need to kept in mind when deciding for a instance type.
+
+
+
+
+
+
+Actual recommendations could be looked at the following link
+https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-operations-storage
+
+
+
+disks_type:: as HANA has high I/O requirements the disk type Premium SSD need to be used
+disks_size:: is the size of the additional disk in GB, as every size has certain IOPS caps
+caching:: The caching recommendations for Azure premium disks are assuming the I/O 
+characteristics for SAP HANA
+/hana/data - no caching or read caching
+/hana/log - no caching - exception for M- and Mv2-Series VMs where Azure Write Accelerator should be enabled
+/hana/shared - read caching
+
+writeaccelerator:: Azure Write Accelerator is a functionality that is available for Azure M-Series VMs exclusively. As the name states, the purpose of the functionality is to improve I/O latency of writes against the Azure premium storage. For SAP HANA, Write Accelerator is supposed to be used against the /hana/log volume only. Therefore, the /hana/data and /hana/log are separate volumes with Azure Write Accelerator supporting the /hana/log volume only.
+
+Number of Disks::
+
+LogicalVolumes::  We are using LVM to build stripe sets across several Azure premium disks.These stripe sizes differ between /hana/data and /hana/log and the recommendations is 
+256 KB for /hana/data
+64 KB for /hana/log
+
+Name of the VolumeGroup:: 
+
+Mount path:: 
+
+The number of elements *must match* in all of them
+
+    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
+    
+    The number of groups splitted by "#" *must match* in all of the entries
+    
+    names -> The names of the volume groups (example datalog#shared#usrsap#backup#sapmnt)
+    
+    luns  -> The luns or disks used for each volume group. The number of luns must match with 
+        the configured in the previous disks variables (example 0,1,2#3#4#5#6)
+    
+    sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100#100)
+    
+    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+
+====== Demo 
+Here the detail for the demo size
+
+HANA instance size:: Standard_E4s_v3 with xx vCPU and yy GB memory
+Accelerated networking:: false
+
+.HANA disk configuration details
+----
+  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+  disks_size       = "128,128,128,128,128,128,128"
+  caching          = "None,None,None,None,None,None,None"
+  writeaccelerator = "false,false,false,false,false,false,false"
+  luns             = "0,1#2,3#4#5#6#7"
+  names            = "data#log#shared#usrsap#backup"
+  lv_sizes         = "100#100#100#100#100"
+  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+----
+
+====== Small
+
+HANA instance size:: Standard_E64s_v3 with xx vCPU and yy GB memory
+Accelerated networking:: true
+
+.HANA disk configuration details
+----
+  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+  disks_size       = "512,512,512,512,64,1024"
+  caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,ReadOnly,None"
+  writeaccelerator = "false,false,false,false,false,false"
+  luns             = "0,1,2#3#4#5"
+  names            = "datalog#shared#usrsap#backup"
+  lv_sizes         = "70,100#100#100#100"
+  paths            = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
+----
+
+====== Medium
+
+HANA instance size:: Standard_M64s with xx vCPU and yy GB memory
+Accelerated networking:: true
+
+.HANA disk configuration details
+----
+  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+  disks_size       = "512,512,512,512,512,512,1024,64,1024,1024"
+  caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,None,None,ReadOnly,ReadOnly,ReadOnly,ReadOnly"
+  writeaccelerator = "false,false,false,false,false,false,false,false,false,false"
+  luns             = "0,1,2,3#4,5#6#7#8,9"
+  names            = "data#log#shared#usrsap#backup"
+  lv_sizes         = "100#100#100#100#100"
+  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+----
+
+====== Large
+
+HANA instance size:: Standard_M128s with xx vCPU and yy GB memory
+Accelerated networking:: true
+
+.HANA disk configuration details
+----
+  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+  disks_size       = "1024,1024,1024,512,512,1024,64,2048,2048"
+  caching          = "ReadOnly,ReadOnly,ReadOnly,None,None,ReadOnly,ReadOnly,ReadOnly,ReadOnly"
+  writeaccelerator = "false,false,false,true,true,false,false,false,false"
+  luns             = "0,1,2#3,4#5#6#7,8"
+  names            = "data#log#shared#usrsap#backup"
+  lv_sizes         = "100#100#100#100#100"
+  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+----
 
 endif::[]
 
@@ -139,7 +372,7 @@ ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt
 endif::[]
 
-==== SAP Sizing
+
 ==== Building Blocks
 ==== High Availability
 ==== Additional Services

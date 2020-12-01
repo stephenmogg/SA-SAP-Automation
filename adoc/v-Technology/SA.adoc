@@ -24,7 +24,7 @@ The Terraform templates provide everything needed to create the right infrastruc
 
 ==== SAP Sizing
 
-To make the SAP sizing more simple we have introduced pre-defined sizes with well known abbreviation from T-Shirt sizes *S*mall, *M*edium, *L*arge.
+To make the SAP sizing more simple we have introduced pre-defined sizes with well known abbreviation from T-Shirt sizes Small (S), Medium (M), Large (L).
 
 The Small (S) size is thought for non productive scenarios, where as the Medium (M) and Large (L) sizes for production setups, where certified instance types being used.
 
@@ -34,11 +34,22 @@ As sizing is important, you need to choose the right instance sizes from the clo
 
 ==== Building Blocks
 
-The main building blocks for an SAP Landscape are the Netweaver based Central Services and a Database, which is in our case SAP HANA.
+The main building blocks for an SAP Landscape are the Application Layer based on Netweaver with SAP Central Services (xSCS), an Primary Application Server (PAS), and Additional application server (AAS) and the Database Layer, which is in our case SAP HANA.
+
+There are two possible models how you can deploy SAP Business Suite, a centralized deployment where all runs on one server or distributed deployment where every service has its own node.
+
+The centralized deployment is mostly used for non-production environments such as sandbox and development environments.
+
+//todo - picture
+
+The distributed deployment, is the recommend way for production environments where each of the SAP application layer components is independently installed on different instances.
+Which is the scenario we have choosen for the automation.
+
+//todo - picture
 
 ==== High Availability
 
-Both could be made high available in order to have less downtime. As there are many scenarios available from SAP, we support the most used scenarios with the solution.
+The two main building blocks could be made high available in order to have less downtime and eliminate single point of failures. As there are many scenarios available from SAP, we support the most used scenarios, with the solution.
 
 For the Central Services this is Enqueue Replication and for the database its the HANA Systemreplication.
 
@@ -48,6 +59,8 @@ ifeval::[ "{cloud}" == "Azure" ]
 
 To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic
 to only the active node.
+
+//todo - picture
 
 image::azure_loadbalancer.png[]
 
@@ -78,7 +91,8 @@ As we started with Azure, there was no NFS service available, so we need to buil
 
 image::Azure_HA_NFS_Service.png[]
 
-Over the time, Azure provide more and more services. So as of time of writing, there is a native NFS service with help of Netapp available (Azure Netapp files ANF) and the Azure file service is extending in this direction too.
+Over the time, Azure provide more and more services. So as of time of writing, there is a native NFS service with help of Netapp available (Azure Netapp files - ANF) and the Azure file service is extending in this direction too.
+//todo - link
 
 endif::[]
 
@@ -105,11 +119,11 @@ There are several methods which can be used and it depends again of the possibil
 ifeval::[ "{cloud}" == "Azure" ]
 As we started with Azure, Microsoft and SUSE created a fencing agent for the cluster. Such a fencing agent should be remove a machine as fast as possible (immediate) from the cluster, to make sure that there is only one active node, in order to avoid data corruption.
 
-Unfortunately the Azure infrastructure provided only a way to graceful shutdown a machine, which took roughly 10-15 minutes - which is by far too long for the fencing case.
+At this point of time, the Azure infrastructure provided only a way to graceful shutdown a machine, which took 10-15 minutes - which is by far too long for the split-brain case.
 
-We need to create our own mechanism to fence machines. As one technology we provide within our HA Extension is using storage as additional communication between the nodes for such a split-brain case. This needs a raw shared disk, in order that both nodes can write messages to a central place.
+We need to create our own mechanism to fence machines. One technology we provide within our HA Extension is, using storage as additional communication between the nodes for such a split-brain case. This needs a raw shared disk, in order that both nodes can write messages to a central place. It is called SBD - Stonith Block Device or Split Brain Detector.
 
-Unfortunately the Azure infrastructure did, at this point, not provide such a service, so we need to build it with the Linux tools we have in the distribution. With help of a iSCSI server, we can provide a raw shared disk within the cloud and therefore we are able to use the SBD fencing method which with help of the linux watchdog mechanism provides a fast and reliable fencing tooling.
+Unfortunately the Azure infrastructure did, at this point, not provide such a raw disk service, so we need to build it with the Linux tools we have in the distribution. With help of a iSCSI server, we can provide a raw shared disk within the cloud and therefore we are able to use the SBD fencing method which with help of the linux watchdog mechanism provides a fast and reliable fencing tooling.
 
 This mean one additional server to provide a iSCSI service.
 

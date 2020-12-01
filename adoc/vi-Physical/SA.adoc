@@ -40,15 +40,18 @@ endif::[]
 As suggestion, we recommend the following directory structure:
 //fixme directory structure
 ----
-share+
-     + HANA
-     |  + xxxxxxx 
-     |
-     + NW
-        + sapkernel
-        + export
-        + client
-        + swpm
+share
+  ├─ HANA
+  │    └─ ... 
+  └─ Netweaver
+       ├─ sapkernel
+       │    ├─ ...       
+       ├─ export
+       │    ├─ ...
+       ├─ client
+       │    ├─ ...      
+       └─ swpm
+            ├─ ...
 ----
         
 
@@ -72,9 +75,13 @@ After moving into this directory you will see the following directory structure:
 └── salt
 ----
 
-The directories with the names of the cloud provider are the terraform templates for the relevant provider. 
+The directories with the names of the _cloud provider_ (aws,azure,gcp,libvirt) are the terraform templates for the relevant provider. 
 
-The pillar, pillar_examples and the salt directory contain the part of the salt configuration management.
+The _doc_ directory has some short but important documents for certain parts of the solution
+
+The directory _generic_modules_ provides modules which get used by all cloud vendor templates, like common variables, local executed functions within the building block, dependent actions on destroy and the functions to start the SALT execution on the module building blocks.
+
+The other directories _pillar_, _pillar_examples_ and _salt_ contain the part of the salt configuration management.
 
 
 === Terraform
@@ -85,10 +92,9 @@ Providers are plugins and released independent from Terraform itself, this mean 
 
 Each Terraform module must declare which providers it requires, so that Terraform can install and use them.
 
-The directory _generic_modules_ provides modules which get used by all cloud vendor templates, like common variables, local executed functions within the building block, dependent actions on destroy and the functions to start the SALT execution on the module building blocks.
+If we switch to into a _cloud provider_ directory, we see one directory _modules_ and several _.tf_ files which all together build the terraform template.
 
-The _vendor_ directory consist of one directory (modules) and several .tf files which all together build the terraform template.
-
+When creating Terraform configurations, it's best practice to separate out parts of the configuration into individual .tf files. This provides better organization and readability. 
 ----
 ├── infrastructure.tf
 ├── main.tf
@@ -104,26 +110,34 @@ The _infrastructure.tf_ file:: provides the cloud specific setup with the cloud 
 
 The _main.tf_ file:: provides all the values for the various variables needed for the modules.
 
+The _modules_ directory:: provides more subdirectories which are the nested child modules which represent our technical building blocks
+
 The _output.tf_ file:: provides the values handed out from the modules, e.g to be used or displayed.
 
-_terraform.tfvars__:: is a variable definitions file which get automatically loaded instead of providing values manually
+_terraform.tfvars__:: is a variable definitions file which get automatically loaded instead of providing values manually and is the main file and maybe the only terrafrom file which should get changed.
 
 _terraform.tfvars.example_:: is a example file with many pre-filled key-value pairs to set up
 the solution. You can use this as starting point for your own file.
 
 _variables.tf_:: provides all used input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
 
+
 A _module_:: is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects.
-
++
 We use the modules as our technical building blocks e.g. a HANA node and the module directory consist again  _main.tf_, _variables.tf_, _outputs.tf_.
-
++
 These are the recommended filenames for a minimal module, even if they're empty. _main.tf_ is the primary entrypoint how to build the infrastructure building block.
 There is one additional file, which take care of handing over the needed values to the salt building blocks, with help of a special terraform resource called _null_provider_, and  remote execute the salt run to configure the instances and execute the application installation for the building block.
 
 
+==== Terraform file details
 
+All files in the Terraform directory using the .tf file format will be automatically loaded during operations.
 
-The _infrastructure.tf_ provides the network setup with vnet,subnet and routing, the resourcegroup used, a storage account, the network security groups (nsg) being used and defines the jumphost.
+The _infrastructure.tf_ provides the _data sources_ for the network setup, which are computed in other terraform parts and some _locals_ variables used for mainly for the autogeneration of the network. In addition it provides the _resources_ for the network setup with virtual network, the needed subnet and routing, the needed resourcegroup to be used, a storage account, the all the network security groups (nsg) being used and defines the jumphost.
+
+The _main.tf_ file is our main file and calls the child modules which consist of our building blocks and the required input and outpur variables defined by the child module.
+It in addition provides the calculation for the autogenerated ip addresses.
 
 There is the (default) possibility to autogenerate network addresses for all nodes.
 For that you need to remove or comment all the variables related to the ip addresses (more information in variables.tf). With this approach all the addresses will be retrieved based in the provided virtual network addresses range (vnet_address_range).
@@ -144,7 +158,6 @@ ifeval::[ "{cloud}" == "Azure" ]
 | Netweaver IP's | netweaver_ips | 10.74.0.30, 10.74.0.31, 10.74.0.32, 10.74.0.33 | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines 
 | Netweaver virtual IP's | netweaver_virtual_ips | 10.74.0.34, 10.74.0.35, 10.74.0.36, 192.168.135.37 | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses 
 |==========================
-
 
 endif::[]
 
@@ -207,14 +220,20 @@ Example based on `192.168.135.0/24` address range:
 
 endif::[]
 
-If you want to use already existing network resources (virtual network and subnets) it can be done by configuring the terraform.tfvars file and adjusting the responsible variables. 
+If you want to use already existing network resources (virtual network and subnets) it can be done by configuring the _terraform.tfvars_ file and adjusting the responsible variables. 
 
-+The example of how to use them is available at terraform.tfvars.example.
+The example of how to use them is available at _terraform.tfvars.example_.
 
 [IMPORTANT]
 ====
 If you are specifying the IP addresses manually, make sure these are valid IP addresses. They should not be currently in use by existing instances. In case of shared account usage in cloud providers, it is recommended to set unique addresses with each deployment to avoid using same addresses.
 ====
+
+The _output.tf_ file is a way to expose some of the internal attributes, and act like the return values of a terraform module to the user. It will return the IP address and node names created from the automation.
+
+The values defined in the _variables.tf_ file are used to avoid hard-coding parameters and provides all needed terraform input variables and there default values within the solution instead of having them in the main.tf file.
+
+As we have many variable values to input, so we define them in a variable definition file named _terraform.tfvars_ and terraform will automatically load the variable values from the variable definition file if it is named terraform.tfvars
 
 
 ==== SAP Sizing
@@ -244,14 +263,8 @@ Therefore, it is mandatory to leverage Azure premium storage or Ultra disk for /
 
 The overall VM I/O throughput and IOPS limits need to kept in mind when deciding for a instance type.
 
-
-
-
-
-
 Actual recommendations could be looked at the following link
 https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-operations-storage
-
 
 
 disks_type:: as HANA has high I/O requirements the disk type Premium SSD need to be used
@@ -270,24 +283,24 @@ LogicalVolumes::  We are using LVM to build stripe sets across several Azure pre
 256 KB for /hana/data
 64 KB for /hana/log
 
-Name of the VolumeGroup:: 
+Name of the VolumeGroup:: The name of the volume group used 
 
-Mount path:: 
+Mount path:: The mount point where the volume gets mounted
 
 The number of elements *must match* in all of them
 
-    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
+_#_ character:: is used to split the volume groups, 
+_,_:: is used to define the logical volumes for each group
     
-    The number of groups splitted by "#" *must match* in all of the entries
+The number of groups splitted by "#" *must match* in all of the entries
     
-    names -> The names of the volume groups (example datalog#shared#usrsap#backup#sapmnt)
+_names_:: The names of the volume groups (example datalog#shared#usrsap#backup#sapmnt)
     
-    luns  -> The luns or disks used for each volume group. The number of luns must match with 
-        the configured in the previous disks variables (example 0,1,2#3#4#5#6)
+_luns_:: The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5#6)
     
-    sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100#100)
+_sizes_:: The size dedicated for each logical volume and folder. Example 70,100#100#100#100#100
     
-    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+_paths_:: Folder where each volume group will be mounted. Example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/
 
 ====== Demo 
 Here the detail for the demo size

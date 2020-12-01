@@ -238,9 +238,20 @@ As we have many variable values to input, so we define them in a variable defini
 
 ==== SAP Sizing
 
+One of the very important points to consider of a SAP deployment is Sizing and applies across three key areas: compute power, storage space and i/o capacity and network bandwith.
+
+If this is a greenfield deployment, please use the SAP Quick Sizer tool to calculate the SAP Application Performance Standard (SAPS) compute requirement and choose the right instance types which have the closest match to the performance needed. 
+
+If you have an SAP system running that you want to extend with new functionality and/or add new users or migrate to SAP HANA perform brownfield sizing.
+
+Overall it is an iterative and constant process to translate your business requirements to  the right (virtual) hardware resources.
+
+This is a mandatory step and should not be underestimated.
+
+
 ifeval::[ "{cloud}" == "Azure" ]
 
-To make it easier to deploy the right instance sizes with the right disks types and performance, and the right network settings, we introduced a simplified SAP sizing which well known T-Shirt sizes, S,M,L and a very small Demo size.
+If you have some performance number, we want to make it easier to deploy the right instance sizes with the right disks types and performance, and the right network settings, we introduced a simplified SAP sizing which well known T-Shirt sizes, S,M,L and a very small Demo size.
 
 Behind the sizes, are useful combinations to provide certain SAP performance scenarios. 
 Below is a simple reference of the possible performance values 
@@ -254,10 +265,12 @@ You can simply customize the used settings within the terraform.tfvars, or more 
 
 The Demo and Small size are thought for non-production scenarios and do not use SAP certified instancetypes, whereas the Medium and Large are meant for production usage and therefor use SAP certified instance types. The setups also used the right disks and I/O behavior for production.
 
+The SAPS values are meant for the landscape and not only for the database.
+
 
 ===== HANA
 
-The map below, describes how the disks for SAP HANA will be used and created during the provisioning. Given that low storage latency is critical for database systems, even for in-memory systems as SAP HANA. The critical path in storage is usually around the transaction log writes of the DB systems, but other operations like savepoints or loading data in-memory after crash recovery can be critical. 
+The maps below, describes how the disks for SAP HANA will be used and created during the provisioning. Given that low storage latency is critical for database systems, even for in-memory systems as SAP HANA. The critical path in storage is usually around the transaction log writes of the DB systems, but other operations like savepoints or loading data in-memory after crash recovery can be critical. 
 
 Therefore, it is mandatory to leverage Azure premium storage or Ultra disk for /hana/data and /hana/log volumes. Depending on the performance requirements, we may need to build a RAID-0 stripe-set to aggregate IOPS and throughput to meet the application scenario need.
 
@@ -302,6 +315,12 @@ _sizes_:: The size dedicated for each logical volume and folder. Example 70,100#
     
 _paths_:: Folder where each volume group will be mounted. Example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/
 
+The values could be set with the variables "hana_vm_size", "hana_enable_accelerated_networking" and "hana_data_disks_configuration" in the _variables.tf_ file if you want to change the default (demo) or better in the _terraform.tfvars_ to set actual values.
+
+===== Netweaver
+
+
+
 ====== Demo 
 Here the detail for the demo size
 
@@ -319,7 +338,17 @@ Accelerated networking:: false
   lv_sizes         = "100#100#100#100#100"
   paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
 ----
-
+.Netweaver configuration variables
+|==========================
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_D2s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = ""ReadWrite""
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = false
+netweaver_app_server_count = 2
+|==========================
 ====== Small
 
 HANA instance size:: Standard_E64s_v3 with xx vCPU and yy GB memory
@@ -336,6 +365,17 @@ Accelerated networking:: true
   lv_sizes         = "70,100#100#100#100"
   paths            = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
 ----
+.Netweaver configuration details
+|==========================
+|netweaver_xscs_vm_size = "Standard_D2s_v3"
+|netweaver_app_vm_size = "Standard_D2s_v3"
+|netweaver_data_disk_type = "Premium_LRS"
+|netweaver_data_disk_size = 128
+|netweaver_data_disk_caching = ""ReadWrite""
+|netweaver_xscs_accelerated_networking = false
+|netweaver_app_accelerated_networking = false
+|netweaver_app_server_count = 2
+|==========================
 
 ====== Medium
 
@@ -353,6 +393,17 @@ Accelerated networking:: true
   lv_sizes         = "100#100#100#100#100"
   paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
 ----
+.Netweaver configuration details
+|==========================
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_E64s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = "ReadWrite"
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = true
+netweaver_app_server_count = 5
+|==========================
 
 ====== Large
 
@@ -370,6 +421,17 @@ Accelerated networking:: true
   lv_sizes         = "100#100#100#100#100"
   paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
 ----
+.Netweaver configuration details
+|==========================
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_E64s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = "ReadWrite"
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = true
+netweaver_app_server_count = 10
+|==========================
 
 endif::[]
 

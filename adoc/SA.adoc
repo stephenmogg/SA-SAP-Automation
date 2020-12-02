@@ -10,11 +10,10 @@ include::./SA_vars.adoc[]
 
 == preface
 
-This Document will contain best practices and planning considerations when using SUSE's Automation templates for the SAP Landscape. 
-The Document is targeted at Consultants and End-customers who are deploying SAP Landscapes in the public cloud.  
-Guidance will be provided on how the Terraforms, SALT, and other components work together to provide consistent and validated architecture. 
+This reference document contains best practices and planning considerations when using SUSE's Automation templates for SAP Landscapes. 
+It is targeted at consultants and end-customers deploying SAP Landscapes in the public cloud and provides guidance on how the Terraforms, SALT, and other components work together to provide a consistent and validated architecture. 
 
-The document can be used as a guide for a workshop to enable partners regarding the proper use of these tools.
+The document can also be used as a guide for a partner enablement workshop covering the proper use of these tools.
 
 The following, layered footnote:Archimate[link: https://pubs.opengroup.org/architecture/archimate3-doc[Archimate Enterprise Architecture]] aspects will be covered:
 

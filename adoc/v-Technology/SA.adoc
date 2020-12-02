@@ -22,6 +22,22 @@ With help of terraform and the modules for the cloudprovider we create the infra
 
 The Terraform templates provide everything needed to create the right infrastructure components and provide in addition a lot of predefined possible choices to make it more simple to create the right virtual machines, disks, networks etc.
 
+=== Salt
+
+What is Salt?
+
+Salt is a different approach to infrastructure management, founded on the idea that high-speed communication with large numbers of systems can open up new capabilities. This approach makes Salt a powerful multitasking system that can solve many specific problems in an infrastructure.
+
+The backbone of Salt is the remote execution engine, which creates a high-speed, secure and bi-directional communication net for groups of systems. On top of this communication system, Salt provides an extremely fast, flexible, and easy-to-use configuration management system called Salt States.
+
+Our SAP landscape is made up of groups of machines, each machine in the group performing a role. Those groups of machines work in concert with each other to create an application stack.
+
+To effectively manage those groups of machines, an administrator needs to be able to create roles for those groups. As example, a group of machines that serve front-end web traffic might have roles which indicate that those machines should all have the webserver package installed and that the web service should always be running.
+
+In Salt, the file which contains a mapping between groups of machines on a network and the configuration roles that should be applied to them is called a _top file_.
+
+Top files are named _top.sls_ by default and they are so-named because they always exist in the "top" of a directory hierarchy that contains state files. That directory hierarchy is called a state tree and this is what we use to reference the building blocks for the SAP Landscape.
+
 ==== SAP Sizing
 
 To make the SAP sizing more simple we have introduced pre-defined sizes with well known abbreviation from T-Shirt sizes Small (S), Medium (M), Large (L).
@@ -34,7 +50,7 @@ As sizing is important, you need to choose the right instance sizes from the clo
 
 ==== Building Blocks
 
-The main building blocks for an SAP Landscape are the Application Layer based on Netweaver with SAP Central Services (xSCS), an Primary Application Server (PAS), and Additional application server (AAS) and the Database Layer, which is in our case SAP HANA.
+Our main building blocks for an SAP Landscape are the _Application Layer_, based on Netweaver with SAP Central Services (xSCS) with an Primary Application Server (PAS) and Additional application server (AAS) and the _Database Layer_, which is in our case SAP HANA.
 
 There are two possible models how you can deploy SAP Business Suite, a centralized deployment where all runs on one server or distributed deployment where every service has its own node.
 
@@ -46,6 +62,8 @@ The distributed deployment, is the recommend way for production environments whe
 Which is the scenario we have choosen for the automation.
 
 //todo - picture
+
+We use the needed building blocks to build this landscape within the top.sls file and depending on the role of the node, the needed actions are triggered.
 
 ==== High Availability
 
@@ -59,8 +77,6 @@ ifeval::[ "{cloud}" == "Azure" ]
 
 To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic
 to only the active node.
-
-//todo - picture
 
 image::azure_loadbalancer.png[]
 
@@ -81,7 +97,7 @@ endif::[]
 
 ==== Additional Services
 
-Depending on offered services from the cloud provider, we may need to build some services by our own if they are not there or use whats available.
+Depending on offered services from the cloud provider, we may need to build some services by our own if they are not there or use whats available, and similar to the above steps its reflected within the top.sls file.
 
 ===== NFS service
 

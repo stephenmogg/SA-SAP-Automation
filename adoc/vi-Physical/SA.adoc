@@ -463,20 +463,21 @@ endif::[]
 
 === Salt Building Blocks
 
-We have seen that resources are the most important elements in terraform, and there is an other resource type used as last step here, the _Provisioner_ resource.
-They can be used to model specific actions on a remote machine in order to prepare them for other services.
+We have seen that resources are the most important elements in terraform, and there is an other resource type used as last step from the terraform process, the _Provisioner_ resource.
 
-The file provisioner is used to copy files or directories from the machine executing Terraform to the newly created resource and the remote-exec provisioner is usesd to a script on a remote resource after it is created run run the salt configuration management.
+It can be used to model specific actions on a remote machine in order to prepare them for other services.
+
+The terraform _file provisioner_ is used to copy directories _MAIN_/salt and _MAIN_/pillar from the machine executing Terraform to the newly created nodes. As last step the terraform _remote-exec provisioner_ is used, to call the script _provision.sh_ on the remote node to run the salt provisioning steps. It comes from the terraform module _MAIN/generic_modules/salt_provisioner/main.tf_ .
 
 The provisioning workflow of the SAP building blocks consist of different steps:
 
 1. Bootstrap salt installation and configuration
-2. Execute OS setup operations. Register to SCC if needed, updated the packages, etc
-3. Execute predeployment operations (update hosts and hostnames, install support packages, etc)
-4. Execute deployment operations depending on the overall configuration settings (install sap, ha, drbd, etc)
+2. Execute OS setup operations. Register to SCC if needed, updated the packages etc, with help of executing the states within _/srv/salt/os_setup_
+3. Execute predeployment operations with help of execution of the _/srv/salt/top.sls_ states. It update hosts and hostnames, install the formular packages, etc
+4. Execute deployment operations depending on the overall configuration settings like install SAP applications and configure and setup HA with the salt formulas.
 
 //fixme
-which are triggered by the terraform module _MAIN/generic_modules/salt_provisioner/main.tf_ .
+
 
 ==== Salt Overview
 The SAP building block are created with help of SALT formulars after provisioning the virtual machines with terraform. The formulars are shipped as RPM packages with {sles4sap}

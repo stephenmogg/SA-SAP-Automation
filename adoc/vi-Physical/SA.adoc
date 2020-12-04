@@ -126,8 +126,8 @@ A _module_:: is a container for multiple resources that are used together. Modul
 We use the modules as our technical building blocks e.g. a HANA node and the module directory consist again  _main.tf_, _variables.tf_, _outputs.tf_.
 +
 These are the recommended filenames for a minimal module, even if they're empty. _main.tf_ is the primary entrypoint how to build the infrastructure building block.
-There is one additional file, which take care of handing over the needed values to the salt building blocks, with help of a special terraform resource called _null_provider_, and  remote execute the salt run to configure the instances and execute the application installation for the building block.
 
+There is one additional file (salt_provisioner.tf), which take care of handing over the needed values to the salt building blocks, with help of a special terraform resource called _null_provider_, and remote execute the salt run to configure the instances and execute the application installation for the building block.
 
 ==== Terraform file details
 
@@ -240,6 +240,48 @@ The _output.tf_ file is a way to expose some of the internal attributes, and act
 The values defined in the _variables.tf_ file are used to avoid hard-coding parameters and provides all needed terraform input variables and there default values within the solution instead of having them in the main.tf file.
 
 As we have many variable values to input, so we define them in a variable definition file named _terraform.tfvars_ and terraform will automatically load the variable values from the variable definition file if it is named terraform.tfvars
+
+
+The _modules_ directory provide all the needed resources to create the respective building block
+
+----
+modules/
+├── bastion
+│   ├── main.tf
+│   ├── outputs.tf
+│   ├── salt_provisioner.tf
+│   └── variables.tf
+├── drbd_node
+│   ├── main.tf
+│   ├── outputs.tf
+│   ├── salt_provisioner.tf
+│   └── variables.tf
+├── hana_node
+│   ├── main.tf
+│   ├── outputs.tf
+│   ├── salt_provisioner.tf
+│   └── variables.tf
+├── iscsi_server
+│   ├── main.tf
+│   ├── outputs.tf
+│   ├── salt_provisioner.tf
+│   └── variables.tf
+├── monitoring
+│   ├── main.tf
+│   ├── outputs.tf
+│   ├── salt_provisioner.tf
+│   └── variables.tf
+├── netweaver_node
+│   ├── main.tf
+│   ├── outputs.tf
+│   ├── salt_provisioner.tf
+│   └── variables.tf
+└── os_image_reference
+    ├── outputs.tf
+    └── variables.tf
+----
+
+The respective file _salt_provisioner.tf_ set the *_role_* of the *node* and handover the needed variables which where set in terraform, *as custom Salt _grains_ for the node* with help of a terraform file provisioner and starts the salt provisioning process via  .
 
 
 ==== SAP Sizing
@@ -476,8 +518,6 @@ The provisioning workflow of the SAP building blocks consist of different steps:
 3. Execute predeployment operations with help of execution of the _/srv/salt/top.sls_ states. It update hosts and hostnames, install the formular packages, etc
 4. Execute deployment operations depending on the overall configuration settings like install SAP applications and configure and setup HA with the salt formulas.
 
-//fixme
-
 
 ==== Salt Overview
 The SAP building block are created with help of SALT formulars after provisioning the virtual machines with terraform. The formulars are shipped as RPM packages with {sles4sap}
@@ -486,21 +526,14 @@ The salt formulas can be used with 2 different approaches: salt master/minion or
 
 With the automation solution we use the salt minion option, the steps must be executed in all of the minions where the formulas are going to executed, which is done through a ssh connection.
 
-The provisioning workflow of the SAP building blocks consist of different steps:
-
-1. Bootstrap salt installation and configuration
-2. Execute OS setup operations. Register to SCC if needed, updated the packages, etc
-3. Execute predeployment operations (update hosts and hostnames, install support packages, etc)
-4. Execute deployment operations depending on the overall configuration settings (install sap, ha, drbd, etc)
-//fixme
-which is triggered by the terraform module _MAIN/generic_modules/salt_provisioner/main.tf_  with runs at the end the small script MAIN/salt/provision.sh
-
 The core of the Salt State system is the SLS, or **S**a**L**t **S**tate file. The SLS is a representation of the state in which a system should be in, and is set up to contain this data in a simple format.
 
-The file _top.sls_ contains the overall mapping between groups of machines and the roles which get applied to them.
+_Salt pillar_ system uses a *top* file to match pillar data to Salt minions
+The pillar files, have a .sls extension too and define custom variables and data for a system.
 
+When Salt pillar data is refreshed, each Salt minion is matched against the targets listed in the top.sls file. When a Salt minion matches a target, it receives all of the Salt pillar SLS files defined in the list underneath that target.
 
-.Directory structure
+.Directory structure for pillars
 [subs="attributes,quotes"]
 ----
 /srv
@@ -516,9 +549,11 @@ The file _top.sls_ contains the overall mapping between groups of machines and t
 │   └── netweaver
 │       ├── cluster.sls
 │       └── netweaver.sls
+├── salt
+...
 ----
 
-The top file describes two environments for the nodes, _pre-deployment_ and _base_ which reflect the steps 3 and 4 of the workflow above. For each role of the nodes there more detailed files responsible.
+The top pillar file describes two environments for the nodes, _pre-deployment_ and _base_ which reflect the steps 3 and 4 of the workflow above. For each role of the nodes there more detailed files responsible.
 
 .top.sls file
 ----
@@ -573,8 +608,27 @@ base:
     - cluster
 ----
 
-Salt comes with an interface to derive information about the underlying system. This is called the _grains_ interface, because it presents salt with grains of information.
-This is used to match the roles and the further states.
+SaltStack comes with an interface to derive information about the underlying system. This is called the _grains_ interface, because it presents salt with grains of information.
+It collects informations about the underlying managed system, like the operating system, domain name, IP address, kernel, OS type, memory, and many other system properties.
+It is used to match the roles and the further states.
+
+//fixme
+the _role_ is a custom grains define at yyyy
+
+
+
+_Salt state_ files are organized into a directory tree, called the Salt state tree, in the /srv/salt/ directory.
+
+
+
+Salt includes the Jinja2 templating engine which can be used in Salt state files, Salt pillar files, and other files managed by Salt.
+
+Salt lets you use Jinja to access minion configuration values, grains and Salt pillar data, and call Salt execution modules. One of the most common uses of Jinja is to insert conditional statements into Salt pillar files.
+
+
+
+
+If you target a directory during a state.apply or in the state Top file, salt looks for an init.sls file in that directory and applies it.
 
 ===== HANA formula
 

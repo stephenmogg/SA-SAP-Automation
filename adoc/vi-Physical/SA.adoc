@@ -38,7 +38,7 @@ Libvirt - NFS share
 endif::[]
 
 As suggestion, we recommend the following directory structure:
-//fixme directory structure
+//fixme check directory structure
 ----
 share
   ├─ HANA
@@ -81,7 +81,6 @@ The _doc_ directory has some short but important documents for certain parts of 
 The directory _generic_modules_ provides modules which get used by all cloud vendor templates, like common variables, local executed functions within the building block, dependent actions on destroy and the functions to start the SALT execution on the module building blocks.
 
 The other directories _pillar_, _pillar_examples_ and _salt_ contain the part of the salt configuration management.
-
 
 === Terraform Building Blocks
 
@@ -128,6 +127,132 @@ We use the modules as our technical building blocks e.g. a HANA node and the mod
 These are the recommended filenames for a minimal module, even if they're empty. _main.tf_ is the primary entrypoint how to build the infrastructure building block.
 
 There is one additional file (salt_provisioner.tf), which take care of handing over the needed values to the salt building blocks, with help of a special terraform resource called _null_provider_, and remote execute the salt run to configure the instances and execute the application installation for the building block.
+
+=== Simple Install
+
+We provide a example terraform and example pillar files to provide a very easy start.
+
+. Open a browser and goto https://github.com/SUSE/ha-sap-terraform-deployments
+. Click on _tags_
+. Click on _6.0.0_
++
+You see what's new and what has changed - so if you use older versions make sure you read it carefully.
++
+The _Usage_ section provides you with a link to a OpenBuildServer (OBS) repository where the RPM packages of the above discussed building blocks are stored which fit to the project version.
++
+You need to use this value within the terraform variables file. So copy the line as described
+
+. Now go to _Assets_ and download the _Source code_ as .zip or .tar.gz
+. Extract it into a folder on your computer
+. Goto this folder and into the sub folder _azure_
+. Copy the file _terraform.tfvars.example_ to _terraform.tfvars.example_
+    You will see many key-value variable pairs, some enabled some disabled with a _=_ in front.
+    To have a simple start, only touch what we describe below
+. So you need to change the region where you want to deploy the solution, so change _az_region = "westeurope"_ to the azure region you want to use
+
+. To make it more easy to start, please change all 4 images types to pay-as-you-go (PAYG) to do so replace all _offer_ settings with  "sles-sap-15-sp2" and _sku_ with 15
++
+Do this for hana, iscsi, monitoring, drbd e.g.
+
+    hana_public_offer     = "SLES-SAP-BYOS"
+    hana_public_sku       = "12-sp4"
++
+with
+
+    hana_public_offer = "sles-sap-15-sp2"
+    hana_public_sku   = "gen2"
++
+This will make use of the on-demand images which have automatically all needed SUSE repositories attached.
+
+. Next is to set the name of the _admin_user_ to a name which you want to use
+
+. The next step is to provide ssh keys to access the machines which will be deployed.
++
+We recommend to create new keys for this as you need to provide both keys as they need to get copied to the machines.
+So change the two locations variables and point them to your files.
+
+. As we need SAP Install Media for the automatic deployment of HANA, you need to create a azure storage account where you need to copy the HANA media. Best would be if you already have extracted the SAP media to save time during the deployment.
++
+Then we need to provide the name,key and the path to this storage account to the system.
+So change
+
+    storage_account_name
+    storage_account_key
+    hana_inst_master
++
+The inst_master variable should point to the directory where you have the extracted hana install files.
+There are more possibilities, but for the simples usage have everything already extracted on you share
++
+So disable the other hana variables with adding a '#' in front of them
+
+   #hana_archive_file = "IMDB_SERVER.SAR"
+   #hana_sapcar_exe = "SAPCAR"
+   #hana_extract_dir = "/sapmedia/HDBSERVER"
+
+. We need additional ssh keys for the cluster communications, so please save your changes and run the following commands from the azure directory
++
+[subs="attributes,quotes"]
+----
+   mkdir -p ../salt/hana_node/files/sshkeys
+   ssh-keygen -t rsa -N '' -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+----
+
+. Please open the tfvars file again as we need a few final changes.
++
+To create a HANA Systemreplication HA automation uncomment
+
+    #hana_ha_enabled = true
++
+by removing the _#_
++
+As now the system creates a cluster, we need to enable a few other services. Uncomment
+
+    #hana_cluster_sbd_enabled = true
++
+by removing the _#_
+
+. Now we need to point the place where the right packages for the v6 could be found. Copy the variable from step 1 e.g.
++
+[subs="attributes,quotes"]
+----
+    ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v6"
+----
+
+. If you want the additional monitoring be deployed, simply uncomment
+
+    #monitoring_enabled = true
+
+. As last step we enable a simplification parameter which try to find out a few settings automatically. So scroll down to the end and uncomment
+
+    #pre_deployment = true
+
+Now we have all settings for terraform done and are nearly at the step to run the deployment, so save your changes.
+
+. go one directory up and change into the _pillar_example_ directory and here into the _automatic_ directory where you can see 3 further directories. They will provide the configuration variable for the relevant services.
+
+. As we use only HANA, please switch to the _hana_ directory and open the file _hana_sls_.
++
+The file looks quite complex - but we only need to change a few settings. Normally you would do provide a more simple file with your dedicated settings, but as we want to do it automatic, we use this file.
+
+. We need to change the PRIMARY_SITE_NAME with some name you want to set and also the name for the SECONDARY_SITE_NAME.
+You can change other settings like the passwords, but for a simple test you can leave it.
+So save you changes and go back to the main directory.
+
+. now we are ready to run terraform
+[subs="attributes,quotes"]
+----
+    az login
+    terraform init
+    terraform workspace new yourprojectname
+    terraform plan
+    terraform apply
+----
+
+If all goes well you will have after ~40 Minutes a installed and running HANA Systemreplication Cluster in Azure
+
+As there is a jumphost with a public ip adress is created you simply can login to all machines from your machine with
+
+    ssh -J <adminuser>@jumphost <adminuser@targethost>
 
 ==== Terraform file details
 
@@ -339,9 +464,9 @@ characteristics for SAP HANA
 
 writeaccelerator:: Azure Write Accelerator is a functionality that is available for Azure M-Series VMs exclusively. As the name states, the purpose of the functionality is to improve I/O latency of writes against the Azure premium storage. For SAP HANA, Write Accelerator is supposed to be used against the /hana/log volume only. Therefore, the /hana/data and /hana/log are separate volumes with Azure Write Accelerator supporting the /hana/log volume only.
 
-Number of Disks::
+Number of Disks:: The number of disks which get used, depend on the performance requirements. We join disks to a stripe set to provide more performance. Minimal we need 4 to 5 disks.
 
-LogicalVolumes::  We are using LVM to build stripe sets across several Azure premium disks.These stripe sizes differ between /hana/data and /hana/log and the recommendations is
+LogicalVolumes::  We are using LVM to build stripe sets across several Azure premium disks. These stripe sizes differ between /hana/data and /hana/log and the recommendations is
 256 KB for /hana/data
 64 KB for /hana/log
 
@@ -368,7 +493,7 @@ The values could be set with the variables "hana_vm_size", "hana_enable_accelera
 
 ===== Netweaver
 
-NetWeaver is SAP's integrated technology platform and is not a product in itself, but it provides the needed services for the SAP business functions and always need a database to talk to.
+NetWeaver is SAP's integrated technology platform and is not a product in itself, but it provides the needed services for the SAP business applications and always need a database to talk to.
 
 So it's the overall task of sizing need to take care of Netweaver plus the Database and this is what we combined with the T-Shirt sizes of the solution.
 
@@ -509,7 +634,11 @@ We have seen that resources are the most important elements in terraform, and th
 
 It can be used to model specific actions on a remote machine in order to prepare them for other services.
 
-The terraform _file provisioner_ is used to copy directories _MAIN_/salt and _MAIN_/pillar from the machine executing Terraform to the newly created nodes. As last step the terraform _remote-exec provisioner_ is used, to call the script _provision.sh_ on the remote node to run the salt provisioning steps. It comes from the terraform module _MAIN/generic_modules/salt_provisioner/main.tf_ .
+The terraform _file provisioner_ is used to copy directories _MAIN_/salt and _MAIN_/pillar from the machine executing Terraform to the newly created nodes.
+
+As last step the terraform _remote-exec provisioner_ is used, to call the script _provision.sh_ on the remote node to run the salt provisioning steps. It comes from the terraform module _MAIN/generic_modules/salt_provisioner/main.tf_.
+
+So from this point on all work is done on the respective node itself.
 
 The provisioning workflow of the SAP building blocks consist of different steps:
 
@@ -610,15 +739,18 @@ base:
 
 SaltStack comes with an interface to derive information about the underlying system. This is called the _grains_ interface, because it presents salt with grains of information.
 It collects informations about the underlying managed system, like the operating system, domain name, IP address, kernel, OS type, memory, and many other system properties.
+
 It is used to match the roles and the further states.
 
+The _role_ is a _custom grains_ define with help of the terraform file _salt_provisioner.tf_ for the respective building block.
+
+ATTENTION
+----
+If you use the salt formulars independent from the terrafrom templates, you need to take care of providing all needed variables by yourself which normally get set by the _salt_provisioner.tf_.
+----
+
 //fixme
-the _role_ is a custom grains define at yyyy
-
-
-
 _Salt state_ files are organized into a directory tree, called the Salt state tree, in the /srv/salt/ directory.
-
 
 
 Salt includes the Jinja2 templating engine which can be used in Salt state files, Salt pillar files, and other files managed by Salt.
@@ -626,9 +758,7 @@ Salt includes the Jinja2 templating engine which can be used in Salt state files
 Salt lets you use Jinja to access minion configuration values, grains and Salt pillar data, and call Salt execution modules. One of the most common uses of Jinja is to insert conditional statements into Salt pillar files.
 
 
-
-
-If you target a directory during a state.apply or in the state Top file, salt looks for an init.sls file in that directory and applies it.
+If you target a directory during a _state.apply_ or in the state Top file, salt looks for an init.sls file in that directory and applies it.
 
 ===== HANA formula
 

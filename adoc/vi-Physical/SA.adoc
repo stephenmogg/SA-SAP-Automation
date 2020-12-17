@@ -675,15 +675,21 @@ With the automation solution we use the salt minion option, the steps must be ex
 The core of the Salt State system is the SLS, or **S**a**L**t **S**tate file. The SLS is a representation of the state in which a system should be in, and is set up to contain this data in a simple format.
 
 There are 3 types of salt files used
-state files:: the _execution_ definition in /srv/salt
 pillar files:: the _configuration_ parameters where the data gets imported with help of jinja (map.jinja) and salt['pillar.get']
+state files:: the _execution_ definition in /srv/salt
 grains files:: _environment_ parameters from the node itself and for handing over variables from terraform e.g. /etc/salt/grains
 
+In Salt, the file which contains a mapping between groups of machines on a network and the configuration roles that should be applied to them is called a top file.
 
-_Salt pillar_ system uses a *top* file to match pillar data to Salt minions
-The pillar files, have a .sls extension too and define custom variables and data for a system.
+Top files are named _top.sls_ by default and they are so-named because they always exist in the "top" of a directory hierarchy that contains state files and this directory hierarchy is called a state tree.
 
-When Salt pillar data is refreshed, each Salt minion is matched against the targets listed in the top.sls file. When a Salt minion matches a target, it receives all of the Salt pillar SLS files defined in the list underneath that target.
+===== Salt pillar
+
+Similar to the state tree, the pillar is comprised of .sls files and has a top file too. The default location /srv/pillar.
+
+The pillar files define custom variables and data for a system.
+
+When Salt pillar data is refreshed, each Salt minion is matched against the targets listed in the _top.sls_ file. When a Salt minion matches a target, it receives all of the Salt pillar SLS files defined in the list underneath that target.
 
 .Directory structure for pillars
 [subs="attributes,quotes"]
@@ -705,9 +711,110 @@ When Salt pillar data is refreshed, each Salt minion is matched against the targ
 ...
 ----
 
-The top pillar file describes two environments for the nodes, _pre-deployment_ and _base_ which reflect the steps 3 and 4 of the workflow above. For each role of the nodes there more detailed files responsible.
+The _top.sls_ pillar file describes the needed pillar data for the respective role of the node.
 
-.top.sls file
+.State top.sls file
+[subs="attributes,quotes"]
+----
+base:
+  'role:iscsi_srv':
+    - match: grain
+    - iscsi_srv
+
+  'role:hana_node':
+    - match: grain
+    - hana.hana
+
+  'G@role:hana_node and G@ha_enabled:true':
+    - match: compound
+    - hana.cluster
+
+  'role:drbd_node':
+    - match: grain
+    - drbd.drbd
+    - drbd.cluster
+
+  'role:netweaver_node':
+    - match: grain
+    - netweaver.netweaver
+
+  'G@role:netweaver_node and G@ha_enabled:true and P@hostname:.*(01|02)':
+    - match: compound
+    - netweaver.cluster
+----
+
+To run an initial deployment without specific customization, you can use pillar files stored in the _MAIN/pillar_example/automatic` folder, as these files are customized with parameters coming from terraform execution. The pillar files stored there are able to deploy a basic functional set of clusters in all of the available cloud providers.
+
+To adapt the deployment to your scenario, you should provide your own pillar data files
+and there are some basic examples within the directory _MAIN/pillar_example_.
+As the pillar files provide data for the salt-formulas, you can find all of the pillar possible options in each formula project.
+// fixme
+//- this need to be in a document instead of the all the different github projects
+//- https://github.com/SUSE/saphanabootstrap-formula (HANA configuration)
+//- https://github.com/SUSE/habootstrap-formula (HA cluster configuration)
+//- https://github.com/SUSE/drbd-formula (DRBD configuration)
+//- https://github.com/SUSE/sapnwbootstrap-formula (NETWEAVER or S4/HANA configuration)
+
+[IMPORTANT]
+====
+Pillar files are expected to contain private data such as passwords required for the automated installation or other operations. Therefore, such pillar data need to be stored in an encrypted state, which can be decrypted during pillar compilation.
+
+SaltStack GPG renderer provides a secure encryption/decryption of pillar data. The configuration of GPG keys and procedure for pillar encryption are described in the Saltstack documentation guide:
+
+. https://docs.saltstack.com/en/latest/topics/pillar/#pillar-encryption[SaltStack pillar encryption]
+
+. https://docs.saltstack.com/en/latest/ref/renderers/all/salt.renderers.gpg.html[SaltStack GPG RENDERERS]
+
+*This is not done by the project and you need take care of this by yourself*
+====
+
+
+===== Salt States
+_Salt state_ files are organized into a directory tree, called the Salt state tree, in the /srv/salt/ directory.
+
+.Directory structure for Salt state files
+[subs="attributes,quotes"]
+----
+/srv
+├── pillar
+....
+├── salt
+│   ├── cluster_node
+│   │   ├──
+│   ├── default
+│   │   ├──
+│   ├── drbd_node
+│   │   ├──
+│   ├── hana_node
+│   │   ├──
+│   ├── iscsi_srv
+│   │   ├──
+│   ├── _modules
+│   │   ├──
+│   ├── monitoring_srv
+│   │   ├──
+│   ├── netweaver_node
+│   │   ├──
+│   ├── os_setup
+│   │   ├──
+│   ├── provision.sh
+│   ├── qa_mode
+│   │   ├──
+│   ├── sshkeys
+│   │   ├──
+│   ├── _states
+│   │   ├──
+│   └── **top.sls**
+----
+
+You will see withing this directory structure all needed steps depending on the _role_ of the node.
+
+The _top.sls_ file describes two environments for the nodes, _pre-deployment_ and _base_ which reflect the steps 3 and 4 of the workflow above. For each role of the nodes there more detailed files responsible.
+
+The pre-deployment is needed, as we can not install formulas and use them directly in the same execution.
+
+.State top.sls file
+[subs="attributes,quotes"]
 ----
 predeployment:
   'role:hana_node':
@@ -760,12 +867,12 @@ base:
     - cluster
 ----
 
-The pre-deployment is needed, as we can not install formulas and use them directly in the same execution.
+===== Salt grains
 
 SaltStack comes with an interface to derive information about the underlying system. This is called the _grains_ interface, because it presents salt with grains of information.
-It collects informations about the underlying managed system, like the operating system, domain name, IP address, kernel, OS type, memory, and many other system properties.
+It collects static informations about the underlying managed system, like the operating system, domain name, IP address, kernel, OS type, memory, and many other system properties.
 
-It is used to match the roles and the further states.
+We use custom grains to match the roles and the further states.
 
 The _role_ is a _custom grains_ define with help of the terraform file _salt_provisioner.tf_ for the respective building block.
 
@@ -774,48 +881,31 @@ CAUTION:
 If you use the salt formulars independent from the terraform templates, you need to take care of providing all needed variables by yourself which normally get set by the _salt_provisioner.tf_.
 ----
 
-_Salt state_ files are organized into a directory tree, called the Salt state tree, in the /srv/salt/ directory.
+===== State details
 
-.Salt state files
+If you target a directory during a _state.apply_ or in the state Top file, salt looks for an init.sls file in that directory and applies it.
+
+Within the _os_setup_ there is e.g. the minion configuration file
+
+[subs="attributes,quotes"]
 ----
-/srv
-├── pillar
-...
-├── salt
-│   ├── cluster_node
-│   │   ├──
-│   ├── default
-│   │   ├──
-│   ├── drbd_node
-│   │   ├──
-│   ├── hana_node
-│   │   ├──
-│   ├── iscsi_srv
-│   │   ├──
-│   ├── _modules
-│   │   ├──
-│   ├── monitoring_srv
-│   │   ├──
-│   ├── netweaver_node
-│   │   ├──
 │   ├── os_setup
-│   │   ├──
-│   ├── provision.sh
-│   ├── qa_mode
-│   │   ├──
-│   ├── sshkeys
-│   │   ├──
-│   ├── _states
-│   │   ├──
-│   └── top.sls
-....
-
-You will see withing this directory structure all needed steps depending on the _role_ of the node.
-
-If we look deeper into one of the directories, e.g. _hana-node_ we will find more files
-
+│   │   ├── init.sls
+│   │   ├── ip_workaround.sls
+│   │   ├── *minion_configuration.sls*
+│   │   ├── packages.sls
+│   │   ├── registration.sls
+│   │   └── repos.sls
 ----
-│   ├── hana_node
+
+One interesting file is the _minion_configuration.sls_ as it provides the configuration how and where salt / the minion looks for salt states and salt formulas.
+
+If we look deeper into one of the directories, e.g. _hana-node_ we will find more files in these directories.
+
+.HANA Node state files
+[subs="attributes,quotes"]
+----
+│   ├── *hana_node*
 │   │   ├── download_hana_inst.sls
 │   │   ├── files
 │   │   │   └── sshkeys
@@ -823,54 +913,81 @@ If we look deeper into one of the directories, e.g. _hana-node_ we will find mor
 │   │   │       └── cluster.id_rsa.pub
 │   │   ├── hana_inst_media.sls
 │   │   ├── hana_packages.sls
-│   │   ├── init.sls
+│   │   ├── *init.sls*
 │   │   └── mount
 │   │       ├── azure.sls
 │   │       ├── gcp.sls
-│   │       ├── init.sls
+│   │       ├── *init.sls*
 │   │       ├── mount.sls
 │   │       ├── mount_uuid.sls
 │   │       └── packages.sls
 ----
 
-Salt includes the Jinja2 templating engine which can be used in Salt state files, Salt pillar files, and other files managed by Salt.
+Salt executes what is in _init.sls_ in the order listed in the file. When an salt file is named init.sls it inherits the name of the directory path that contains it. This formula/state can then be referenced with the name of the directory.
 
-Salt lets you use Jinja to access minion configuration values, grains and Salt pillar data, and call Salt execution modules. One of the most common uses of Jinja is to insert conditional statements into Salt pillar files.
+In our case here, it first it gets the SAP HANA Media with help of _hana_ins_media_, create the mountpoints and partition disks for SAP HANA and enter them into the fstab with help of the states in the _mount_ directory. Similar as before, the starting point is again the _init.sls_ file.
 
-Within the os setup there is e.g. the minion configuration file
-how and where the minion looks for salt states.
+After all is processed within _mount_, it gets back to the file _hana_packages_, which then install the RPM packages _shaptools_ and _saphanabootstrap-formula_ which get shipped with {sles4sap}.
 
+All other states files get processed in the same way as the example above.
+
+==== Salt formula packages
+
+Formulas are pre-written Salt States. They are as open-ended as Salt States themselves and can be used for tasks such as installing a package, configuring, and starting a service, setting up users or permissions, and many other common tasks. Each Formula is intended to be immediately usable with sane defaults without any additional configuration.
+
+Our formulas are configurable by including data in Pillar, what we discussed above.
+During RPM install, the the files of the packages end up in the directory _/usr/share/salt-formulas/states_, which we had defined as directory where salt searches for file in addition to /srv/salt (see os_setup state above).
+
+.shaptools package
+If you have wondered above about the directories __modules_ and __states_, they come from the install of the package shaptools and provide a python wrapper for sap command line tools as API, in order to make it simple to be used from salt. This package is a base dependency for most of our formula packages as it provides the SAP commands.
+
+[subs="attributes,quotes"]
 ----
-│   ├── os_setup
-│   │   ├── init.sls
-│   │   ├── ip_workaround.sls
-│   │   ├── minion_configuration.sls
-│   │   ├── packages.sls
-│   │   ├── registration.sls
-│   │   └── repos.sls
+│   ├── _modules
+│   │   ├── ...
+│   ├── _states
+│   │   ├── ...
 ----
-
-One interesting file is the _minion_configuration.sls_ as it provides the information how and where salt search for the sls files.
-
-
-If you target a directory during a _state.apply_ or in the state Top file, salt looks for an init.sls file in that directory and applies it.
 
 ===== HANA formula
 
-The deployment is performed using the saphanabootstrap-formula and depends on the package salt-shaptools. The shaptools package expose an API for the major commandline functionalities of the OS
+The main work of preparing the node for HANA and installing HANA is done by the _saphanabootstrap-formula_.
 
-// fixme
-1. It is installed through the salt step xxx
+The structure is similar what you have seen above for pillars and states
 
-2. If you want to install it manual please use zypper, as it will include the other dependent packages like salt-shaptools and habootstrap-formula
+[subs="attributes,quotes"]
+----
+states/
+└── hana
+    ├── defaults.yaml
+    ├── enable_cost_optimized.sls
+    ├── enable_primary.sls
+    ├── enable_secondary.sls
+    ├── exporter.sls
+    ├── *init.sls*
+    ├── install.sls
+    ├── map.jinja
+    ├── packages.sls
+    ├── pre_validation.sls
+    └── templates
+        ├── hanadb_exporter.j2
+        ├── scale_up_resources.j2
+        └── srTakeover_hook.j2
+----
+
+Salt includes the Jinja2 template engine which can be used in Salt state files, Salt pillar files, and other files managed by Salt.
+
+Salt lets you use Jinja to access minion configuration values, grains and Salt pillar data, and call Salt execution modules. One of the most common uses of Jinja is to insert conditional statements into Salt pillar files.
+
+1. The formula package is installed through the HANA Node state files
+2. If you want to install it manual, please use zypper, as it will include the other dependent packages like salt-shaptools and habootstrap-formula
 ----
  zypper install saphanabootstrap-formula
 ----
 
-The salt formula need some input data through a pillar file which is coming from the main project file, or if you use it standalone provided by you.
+The salt formula need some input data through a pillar file, which is coming from the main project file (MAIN/pillar/... or on the node /srv/pillar ), or if you use it standalone it need to be provided by you.
 
-
-.Example pillar
+.Example HANA pillar
 [subs="attributes,quotes"]
 ----
 hana:
@@ -918,14 +1035,15 @@ hana:
         primary_timeout: 3000
 ----
 
-1. The formular is executed within the salt step yyy
-
+1. The formular is executed within the salt of _hana_node_ state files
 2. If you want to execute the formular manually, salt
 ----
-salt '*' state.apply zzz.sls
+salt '*' state.apply hana_node.sls
 ----
+//fixme - check if this is ok.
 
-
+So with help of the pillar data and the state file and the formular salt will create
+all needed configuration on the node, installs HANA and if enabled install hana systemreplication and set up the pacemaker cluster, right for {cloud}.
 
 ===== Netweaver formula
 

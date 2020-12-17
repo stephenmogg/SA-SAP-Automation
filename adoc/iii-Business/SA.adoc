@@ -17,37 +17,36 @@ Determine landscape impact, Factors Flavors, Deployment types.
  
 ////
 
-The Document is targeted at Consultants and End-customers who are deploying SAP Landscapes in the public cloud. Within Cloud environments there is no strict separation of responsible teams (like Network,DB,OS,Application) anymore as all can be done from a central place. But this should not make special knowledge not needed anymore. Such Teams still exist and still need to work together - best in a DevOps approach with Infrastructure-as-Code.
+This document is targeted at consultants and end-customers who are deploying SAP Landscapes in the public cloud. Within cloud environments there is no strict separation of responsibility (e.g. Networking, DB, OS, Application), as most operations can be performed from a central control plane. However, this should not mean that this specialised knowledge is no longer needed. Functional teams still exist and will need to work together, this is often best acheived with a DevOps approach utilising Infrastructure-as-Code.
 
-This mean you still need knowledge of the cloud infrastructure and there possibilities, as also details of the operating system and the tooling around like for HighAvailability. You also need to plan for the application usage and sizing.
+This means that when implementing SAP in the cloud, knowledge will be required of the cloud infrastructure and the various possibilities that affords along with a good understanding of the operating system and the tooling surrounding it, e.g. High Availability.  Finally an understanding around planning for the application usage and sizing is needed.
 
-SAP architectures needs to be fine-tuned based on the customer’s requirement on system availability i.e 99.99% or 99.95% or 99.9%. So you need to identify the Single Point of Failures (SPOF) in the components and services. Such SPOF's then need to be in a HA cluster
-and all other infrastructure SPOF's need to have some degree of redundancy.
+SAP architectures needs to be fine-tuned based on customer requirements around system availability i.e 99.99%, 99.95% or 99.9%.  Single Point of Failures (SPOF) in the components and services will need to be idenified and protected against, this is normally achieved with an HA (High Availability) Cluster.  Other Single points of failure within the infrastructure will need to be protected using some form of redundancy.
 
-If you look at a typical SAP implementation you will find
+If you look at a typical SAP implementation you will find:
 
-1. SAP Central Services
-2. a Database (e.g. HANA)
+1. SAP Central Services (ASCS/ERS)
+2. a Database (e.g. SAP HANA)
 3. a Primary Application Server (PAS)
-4. and some shared storage (NFS)
+4. shared storage (NFS)
 
-where the points 1,2 and 4 are potential SPOF's.
+In the above list, points 1,2 and 4 are potential single points of failure.
 
-With our automation we try to eliminate all of these single-point-of-failures by providing HA cluster implementations to ensure automated failover, data protection and higher system availability.
+SUSE's SAP Automation will try to eliminate all of these single-point-of-failures by providing HA cluster implementations to ensure automated failover, data protection and higher system availability.
 
-SAP Central Services:: You need at least 2 VMs (Virtual Machines) to configure an ASCS/ERS high availability cluster. Depending on the SAP versions, you can configure the ASCS/ERS cluster in either ENSA 1 or ENSA 2 architecture which could be automated with the SUSE HA Extension (HAE).
+SAP Central Services (ASCS/ERS):: You need at least 2 nodes to configure an ASCS/ERS high availability cluster. Depending on the SAP versions, you can configure the ASCS/ERS cluster in either ENSA 1 or ENSA 2 architecture which could be automated with the SUSE HA Extension (HAE).
 
-Database layer:: You need at least 2 VMs (Virtual Machines) to configure SAP HANA HA/DR cluster in a scale-up deployment. The SUSE High Availability Extension is used to detect system failures and facilitate automatic failover.
+Database layer:: You need at least 2 nodes to configure SAP HANA HA/DR cluster in a scale-up deployment. The SUSE High Availability Extension is used to detect system failures and facilitate automatic failover.
 
-Depending on the services used or available from the cloud provider it could be that you need a third cluster providing a High Available NFS service.
+Depending on the services used or what services are available from the cloud provider it could be that you need a third cluster providing a Highly Available NFS service.
 
-This is one of the main topics of the solution, that we are able to create all needed infrastructure and configurations to maximize the SAP System availablity.
+This is one of the main benefits of the SUSE SAP Automation project, all the required infrastructure and configuration can be created in order to maximize the SAP System availablity.
 
-=== What we cover with the automation
+=== SUSE SAP Automation Coverage
 
-SAP HANA and Netweaver applications can be deployed in many different scenarios and combinations between them. So we have created building blocks which are modular and reusable to attend from single install to full cluster deployment.
+SAP HANA and Netweaver applications can be deployed in many different scenarios and combinations between them. The Automation is constructed from 'building blocks' which are modular and reusable and can be used to deploy a single install through to full cluster deployment.
 
-As of today we take care of 
+The following scenarios are supported:
 
 * HANA single node
 * HANA HA Scale-up Systemreplication 
@@ -60,9 +59,9 @@ As of today we take care of
 * Netweaver HA with Enqueue Replication Version (ENSA1)
 * S/4 HANA
 
-The solutions will get extended continuously depending on demands of customers and partners. 
+SUSE Engineering continue to develop new scenarios based on the demands of customers and partners. 
 
-The overall landscape which get deployed look like this
+The overall deployment using SUSE SAP Automation looks as follows:
 
 image::SAP_Overview.png[Instance overview,scaledwidth="80%"]
 
@@ -70,21 +69,21 @@ image::SAP_Overview.png[Instance overview,scaledwidth="80%"]
 
 === Prerequisites for SAP workloads in public clouds
 
-There are a few general prerequisites to get a supported SAP Landscape in public cloud environments:
+There are a few general prerequisites to ensure a supported SAP Landscape in public cloud environments:
 
-. You need to have a SAP license for the SAP software to be deployed.
+. An SAP license for the SAP software to be deployed is required.
 
-. You need to know the resource requirements of your SAP workloads and have done a SAP system sizing
+. A understanding of the resource requirements of the SAP workloads (via an SAP System Sizing exercise).
 
-. You need to use certified VM instance types and know the capacity required by SAP software
+. Certified instance types must be used based on the capacity required by SAP software.
 
-. You need to provide the right network connectivity (bandwidth, latency, and package loss) within the cloud environment for your SAP workloads.
+. Ensure suitable network connectivity is provided (bandwidth, latency, and package loss) within the cloud environment for your SAP workloads.
 
-. You need certified operating systems on which the SAP workloads will be deployed.
+. Only deploy certified operating systems on which the SAP workloads will run.
 
-. You should have knowledge of Linux and a of operation of SAP systems and the cloud infrastructure.
+. A good operational knowledge of the Linux OS, SAP systems operations and the cloud infrastructure is needed.
 
-. If there should be build high available systems, there need to be deep knowledge of the HA concepts and tooling and a good knowledge what is possible in the cloud infrastructure.
+. Where highly available solutions are deployed, a deep understanding of the HA concepts and tooling along with how this functions within along side the resiliency capability of the cloud infrastructure is required.  
 
 
 

@@ -106,7 +106,7 @@ When creating Terraform configurations, it's best practice to separate out parts
 
 The _infrastructure.tf_ file:: provides the cloud specific setup with the cloud relevant provider module of terraform and defines all the needed cloud specific entities.
 
-The _main.tf_ file:: provides all the values for the various variables needed for the modules.
+The _main.tf_ file:: provides all the values for the various variables needed for the modules. It is the main entry point for terraform.
 
 The _modules_ directory:: provides more subdirectories which are the nested child modules which represent our technical building blocks
 
@@ -118,6 +118,10 @@ _terraform.tfvars.example_:: is a example file with many pre-filled key-value pa
 the solution. *You can use this as starting point for your own file.*
 
 _variables.tf_:: provides all used input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
+Please have a deep look at all variable and the comments for it,
+to get aware whats is possible.
+
+e.g. the variable provisioner is like a switch if the salt part should run or only the terraform part.
 
 
 A _module_:: is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects.
@@ -126,7 +130,9 @@ We use the modules as our technical building blocks e.g. a HANA node and the mod
 +
 These are the recommended filenames for a minimal module, even if they're empty. _main.tf_ is the primary entrypoint how to build the infrastructure building block.
 
-There is one additional file (salt_provisioner.tf), which take care of handing over the needed values to the salt building blocks, with help of a special terraform resource called _null_provider_, and remote execute the salt run to configure the instances and execute the application installation for the building block.
+There is one additional file (salt_provisioner.tf), which take care of handing over the needed values to the salt building blocks, with help of a special terraform resource called _null_provider_, and _triggers_ the remote execution of salt after terraform has created the node with _connections_ to the new created machines.
+It now starts the _provision_ of the salt part.
+It also create user-defined variables for salt as grains file (/tmp/grains) for the respective module building block
 
 === Simple Install
 
@@ -228,7 +234,7 @@ by removing the _#_
 
 Now we have all settings for terraform done and are nearly at the step to run the deployment, so save your changes.
 
-. go one directory up and change into the _pillar_example_ directory and here into the _automatic_ directory where you can see 3 further directories. They will provide the configuration variable for the relevant services.
+. go one directory up and change into the _pillar_example_ directory and here into the _automatic_ directory where you can see 3 further directories. They will provide the configuration variable for the relevant services. This automatic folder will work for all cloud providers we support today, but is more complex as it normally need to be.
 
 . As we use only HANA, please switch to the _hana_ directory and open the file _hana_sls_.
 +
@@ -638,7 +644,18 @@ The terraform _file provisioner_ is used to copy directories _MAIN_/salt and _MA
 
 As last step the terraform _remote-exec provisioner_ is used, to call the script _provision.sh_ on the remote node to run the salt provisioning steps. It comes from the terraform module _MAIN/generic_modules/salt_provisioner/main.tf_.
 
-So from this point on all work is done on the respective node itself.
+*So from this point on all work is done on the respective node itself.*
+
+==== Our Architecture for the salt building blocks
+
+//fixme - image our salt module arch.
+//image::
+
+Formulars: group of states give a context for building blocks e.g HANA
+States: combination of execution modules and other parts, have logic in and execute to a desired state
+Execution modules: basic execution modules, to provide the methods in the lower layer (shaptools) to salt
+shaptools: low level python wrapper (api) around sap utilities and commands
+
 
 The provisioning workflow of the SAP building blocks consist of different steps:
 
@@ -656,6 +673,12 @@ The salt formulas can be used with 2 different approaches: salt master/minion or
 With the automation solution we use the salt minion option, the steps must be executed in all of the minions where the formulas are going to executed, which is done through a ssh connection.
 
 The core of the Salt State system is the SLS, or **S**a**L**t **S**tate file. The SLS is a representation of the state in which a system should be in, and is set up to contain this data in a simple format.
+
+There are 3 types of salt files used
+state files:: the _execution_ definition in /srv/salt
+pillar files:: the _configuration_ parameters where the data gets imported with help of jinja (map.jinja) and salt['pillar.get']
+grains files:: _environment_ parameters from the node itself and for handing over variables from terraform e.g. /etc/salt/grains
+
 
 _Salt pillar_ system uses a *top* file to match pillar data to Salt minions
 The pillar files, have a .sls extension too and define custom variables and data for a system.
@@ -737,6 +760,8 @@ base:
     - cluster
 ----
 
+The pre-deployment is needed, as we can not install formulas and use them directly in the same execution.
+
 SaltStack comes with an interface to derive information about the underlying system. This is called the _grains_ interface, because it presents salt with grains of information.
 It collects informations about the underlying managed system, like the operating system, domain name, IP address, kernel, OS type, memory, and many other system properties.
 
@@ -744,18 +769,88 @@ It is used to match the roles and the further states.
 
 The _role_ is a _custom grains_ define with help of the terraform file _salt_provisioner.tf_ for the respective building block.
 
-ATTENTION
+CAUTION:
 ----
-If you use the salt formulars independent from the terrafrom templates, you need to take care of providing all needed variables by yourself which normally get set by the _salt_provisioner.tf_.
+If you use the salt formulars independent from the terraform templates, you need to take care of providing all needed variables by yourself which normally get set by the _salt_provisioner.tf_.
 ----
 
-//fixme
 _Salt state_ files are organized into a directory tree, called the Salt state tree, in the /srv/salt/ directory.
 
+.Salt state files
+----
+/srv
+├── pillar
+...
+├── salt
+│   ├── cluster_node
+│   │   ├──
+│   ├── default
+│   │   ├──
+│   ├── drbd_node
+│   │   ├──
+│   ├── hana_node
+│   │   ├──
+│   ├── iscsi_srv
+│   │   ├──
+│   ├── _modules
+│   │   ├──
+│   ├── monitoring_srv
+│   │   ├──
+│   ├── netweaver_node
+│   │   ├──
+│   ├── os_setup
+│   │   ├──
+│   ├── provision.sh
+│   ├── qa_mode
+│   │   ├──
+│   ├── sshkeys
+│   │   ├──
+│   ├── _states
+│   │   ├──
+│   └── top.sls
+....
+
+You will see withing this directory structure all needed steps depending on the _role_ of the node.
+
+If we look deeper into one of the directories, e.g. _hana-node_ we will find more files
+
+----
+│   ├── hana_node
+│   │   ├── download_hana_inst.sls
+│   │   ├── files
+│   │   │   └── sshkeys
+│   │   │       ├── cluster.id_rsa
+│   │   │       └── cluster.id_rsa.pub
+│   │   ├── hana_inst_media.sls
+│   │   ├── hana_packages.sls
+│   │   ├── init.sls
+│   │   └── mount
+│   │       ├── azure.sls
+│   │       ├── gcp.sls
+│   │       ├── init.sls
+│   │       ├── mount.sls
+│   │       ├── mount_uuid.sls
+│   │       └── packages.sls
+----
 
 Salt includes the Jinja2 templating engine which can be used in Salt state files, Salt pillar files, and other files managed by Salt.
 
 Salt lets you use Jinja to access minion configuration values, grains and Salt pillar data, and call Salt execution modules. One of the most common uses of Jinja is to insert conditional statements into Salt pillar files.
+
+Within the os setup there is e.g. the minion configuration file
+how and where the minion looks for salt states.
+
+----
+│   ├── os_setup
+│   │   ├── init.sls
+│   │   ├── ip_workaround.sls
+│   │   ├── minion_configuration.sls
+│   │   ├── packages.sls
+│   │   ├── registration.sls
+│   │   └── repos.sls
+----
+
+One interesting file is the _minion_configuration.sls_ as it provides the information how and where salt search for the sls files.
 
 
 If you target a directory during a _state.apply_ or in the state Top file, salt looks for an init.sls file in that directory and applies it.

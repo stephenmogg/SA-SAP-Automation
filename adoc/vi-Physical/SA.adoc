@@ -8,7 +8,13 @@ The physical elements are included as an extension to the Technology Layer for m
 ////
 
 The SAP automation consist, as we have see before, out of several building blocks.
-First we want to look at the infrastructure deployment with terraform
+First we want to look at the infrastructure deployment with terraform and then to the salt part.
+
+[NOTE]
+---
+As the project is under activ development to make it better and simpler to use, this document focus on the project version 6.0.0 of the terraform part and v6 of the rpm packages for salt formulars.
+New version could have more features or slightly changed files as show here, but the general guidelines provided here are still valid.
+---
 
 === First make sure that all *pre-requirements* are done:
 
@@ -953,7 +959,7 @@ If you have wondered above about the directories __modules_ and __states_, they 
 
 The main work of preparing the node for HANA and installing HANA is done by the _saphanabootstrap-formula_.
 
-The structure is similar what you have seen above for pillars and states
+The structure is similar what you have seen above for pillars and states but lives in the directory _/usr/share/salt-formulas/states/..._
 
 [subs="attributes,quotes"]
 ----
@@ -1042,31 +1048,141 @@ salt '*' state.apply hana_node.sls
 ----
 //fixme - check if this is ok.
 
-So with help of the pillar data and the state file and the formular salt will create
-all needed configuration on the node, installs HANA and if enabled install hana systemreplication and set up the pacemaker cluster, right for {cloud}.
+So with help of the pillar data and the state file and the formular, salt will create all needed configuration on the node, installs HANA and if enabled install hana systemreplication and set up the pacemaker cluster, right for {cloud}.
+
+The _templates_ directory provides the needed files for cluster rules, the needed hook for HANA and the monitoring exporter.  All the values come from the best practice guides SUSE created with the Cloudprovider {cloud} for the HA scenario.
 
 ===== Netweaver formula
 
-The deployment is performed using the sapnwbootstrap-formula.
+The SAP Netweaver deployment is performed using the _sapnwbootstrap-formula_ and uses as of today only SAP HANA as a database.
+
+The formula takes care of the ASCS, the Application Servers and if HA is selected of a Enqueue Replication server.
+
+The formula has some hard dependencies and all of them must be in place for a successful netweaver deployment. In order to deploy a correct Netweaver environment a NFS share is needed (SAP stores some shared files there). The NFS share must have the folders _sapmnt_ and _usrsapsys_ in the exposed folder.
+The folders are created with the Netweaver SID name (for example /sapdata/HA1/sapmnt and /sapdata/HA1/usrsapsys). This subfolders content is removed by default during the deployment.
+
+Second, the SAP installation software (swpm) must be available in the system. To install the whole Netweaver environment with all the 4 components, the swpm folder, sapexe folder, Netweaver Export folder and HANA HDB Client folders must already exist, or be previously mounted when provided by external service, like NFS share. The netweaver.sls pillar file must be updated with all this information. Netweaver Export and HANA HDB Client folders must go in additional_dvds list.
+
+The structure is similar what you have seen above for the HANA formula.
+
+[subs="attributes,quotes"]
+----
+states/
+└── ...
+└── netweaver
+    ├── defaults.yaml
+    ├── ensa_version_detection.sls
+    ├── extract_nw_archives.sls
+    ├── ha_cluster.sls
+    ├── *init.sls*
+    ├── install_aas.sls
+    ├── install_ascs.sls
+    ├── install_db.sls
+    ├── install_ers.sls
+    ├── install_pas.sls
+    ├── install_pydbapi.sls
+    ├── map.jinja
+    ├── monitoring.sls
+    ├── pillar.example
+    ├── pre_validation.sls
+    ├── saptune.sls
+    ├── setup
+    │   ├── init.sls
+    │   ├── keepalive.sls
+    │   ├── mount.sls
+    │   ├── packages.sls
+    │   ├── sap_nfs.sls
+    │   ├── shared_disk.sls
+    │   ├── swap_space.sls
+    │   ├── users.sls
+    │   └── virtual_addresses.sls
+    └── templates
+        ├── aas.inifile.params.j2
+        ├── ascs.inifile.params.j2
+        ├── cluster_resources.j2
+        ├── db.inifile.params.j2
+        ├── ers.inifile.params.j2
+        └── pas.inifile.params.j2
+----
+
+As you know from earlier descriptions, we need a pillar file with the configuration. There is one example in the path which could be used as base for a standalone salt usage. In general the pillar data get handed over from the terraform main project.
+
+As SAP Netweaver has in an HA environment more nodes, therefore the pillar file is much bigger as eg. the one for HANA. So please have a look by yourself of the example file.
+
+Similar as before, the starting point is the _init.sls_ file where the workflow is defined.
+
+The _templates_ directory provides the needed files for NW cluster rules and the values come from the best practice guides SUSE created with the Cloudprovider {cloud} for the ERS scenario.
+
+In addition here are the templates which are used by SWPM for a automated handfree installation of the SAP Netweaver services.
 
 ==== High Availability formula
-ha-cluster-bootstrap
-habootstrap-formula
+
+The _habootstrap-formula_ provide the needed cluster setups for SAP HANA, SAP Netweaver, or if needed for the HA NFS service build with drbd.
+It will take care of
+
+The formula will be, similar to all the other formulas used, installed in /usr/share/salt-formulas/states/cluster.
+
+[subs="attributes,quotes"]
+----
+states
+├── cluster
+│   ├── create.sls
+│   ├── defaults.yaml
+│   ├── *init.sls*
+│   ├── join.sls
+│   ├── map.jinja
+│   ├── monitoring.sls
+│   ├── ntp.sls
+│   ├── packages.sls
+│   ├── pre_validation.sls
+│   ├── remove.sls
+│   ├── resource_agents.sls
+│   ├── sshkeys.sls
+│   ├── support
+│   │   └── ssh_askpass
+│   └── watchdog.sl
+----
+
+The main difference to the HANA and Netweaver formula is that the _init.sls_ make already use of _jinja_.
+Jinja is the default templating language in SLS files and get evaluated before YAML, which means it is evaluated before the States are run.
+
+The most basic usage of Jinja in state files is using control structures to wrap conditional or redundant state elements
+
 
 ==== Additional Services
+
+The additinal services depend on what is used or available of the cloudprovider, but needed by SAP HANA or SAP Netweaver or the HA services.
+
 ===== NFS service
-ha-cluster-bootstrap
-habootstrap-formula
-drbd-formula
+
+To build an HA-NFS service, we use the above describe _habootstrap-formula_ together with _drbd-formula_ to mirror the data between two nodes and the _linux nfs-server: packages been setup with the saltstack _nfs_formula ( see https://github.com/saltstack-formulas/nfs-formula )
+
+DRBD®– software is a distributed replicated storage system for the Linux platform. It is implemented as a kernel driver, several userspace management applications, and some shell scripts. So simplified, think about it as an raid-1 over network.
+
+Details are available at the SUSE documentation page for the SLE HA Extension
+https://documentation.suse.com/sle-ha/15-SP2/single-html/SLE-HA-nfs-quick/#art-sleha-nfs-quick
+
 
 ===== Fencing service
-iscsi-formula
 
-===== Monitoring service
-golang-github-prometheus-node_exporter
-prometheus-ha_cluster_exporter
-prometheus-hanadb_exporter
-prometheus-sap_host_exporter
+If the setup is using HA for SAP Netweaver or SAP HANA or with the NFS service, and there is mechanism for fencing of the virtual machines over an API we use the SUSE method of using a SBD-device. Such a SBD-Device is normally a raw shared disk beween two nodes.
+
+Unfortunately not all clouds are able to provide a raw shared disk, but with the help of linux native services (iSCSI) we can build this by our own.
+
+We use here the _iscsi-formula_ provided by saltstack itself, see https://github.com/saltstack-formulas/iscsi-formula to provide the nodes of the cluster a raw-shared-disk with help of a _iscsi target_ for the SBD fencing mechanism.
+
+It gets configured through the pillar files we provided through the role _iscsi_srv_
+
+The use of possible fenching method depends on the cloud providers possibilities. As of today SBD is needed only for Azure, but it is a general method which could be used nearly independent of the base infrastructure.
+
+// fixme - add monitoring
+//===== Monitoring service
+//golang-github-prometheus-node_exporter
+//prometheus-ha_cluster_exporter
+//prometheus-hanadb_exporter
+//prometheus-sap_host_exporter
+
+////
 
 ifeval::[ "{cloud}" == "Azure" ]
 Azure
@@ -1084,8 +1200,9 @@ ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt
 endif::[]
 
+////
 
-
+////
 image::SA-Physical.png[title="Solution Architecture - {useCase} Physical", scaledwidth=80%]
 
 ifdef::Availability[]
@@ -1104,3 +1221,4 @@ ifdef::Integrity[]
 include::./Integrity/SA.adoc[]
 endif::Integrity[]
 
+ ////

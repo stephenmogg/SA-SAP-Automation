@@ -1182,43 +1182,39 @@ The use of possible fenching method depends on the cloud providers possibilities
 //prometheus-hanadb_exporter
 //prometheus-sap_host_exporter
 
-////
 
-ifeval::[ "{cloud}" == "Azure" ]
-Azure
-endif::[]
+//ifeval::[ "{cloud}" == "Azure" ]
+//Azure
+//endif::[]
+//
+//ifeval::[ "{cloud}" == "AWS" ]
+//AWS
+//endif::[]
+//
+//ifeval::[ "{cloud}" == "GCP" ]
+//GCP
+//endif::[]
+//
+//ifeval::[ "{cloud}" == "Libvirt" ]
+//Libvirt
+//endif::[]
+//
+//
+//image::SA-Physical.png[title="Solution Architecture - {useCase} Physical", scaledwidth=80%]
+//
+//ifdef::Availability[]
+//include::./Availability/SA.adoc[]
+//endif::Availability[]
+//
+//ifdef::Performance[]
+//include::./Performance/SA.adoc[]
+//endif::Performance[]
+//
+//ifdef::Security[]
+//include::./Security/SA.adoc[]
+//endif::Security[]
+//
+//ifdef::Integrity[]
+//include::./Integrity/SA.adoc[]
+//endif::Integrity[]
 
-ifeval::[ "{cloud}" == "AWS" ]
-AWS
-endif::[]
-
-ifeval::[ "{cloud}" == "GCP" ]
-GCP
-endif::[]
-
-ifeval::[ "{cloud}" == "Libvirt" ]
-Libvirt
-endif::[]
-
-////
-
-////
-image::SA-Physical.png[title="Solution Architecture - {useCase} Physical", scaledwidth=80%]
-
-ifdef::Availability[]
-include::./Availability/SA.adoc[]
-endif::Availability[]
-
-ifdef::Performance[]
-include::./Performance/SA.adoc[]
-endif::Performance[]
-
-ifdef::Security[]
-include::./Security/SA.adoc[]
-endif::Security[]
-
-ifdef::Integrity[]
-include::./Integrity/SA.adoc[]
-endif::Integrity[]
-
- ////

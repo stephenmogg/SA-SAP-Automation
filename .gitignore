@@ -1,1 +1,6 @@
-build/
+build/.images
+build/.profiled
+build/.tmp
+build/.adoc
+build/SA/*
+!*.pdf

@@ -113,7 +113,8 @@ Over the time, Azure provide more and more services. So as of time of writing, t
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS
+On AWS, Shared SAP resources are managed in AWS Elastic File Systems (EFS). This provides the NFS services required to support the SAP deployment.
+ 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -157,7 +158,14 @@ So you can choose between two ways
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS
+AWS Supports the use of the AWS EC2 STONITH mechanism.  This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff/reboot etc) EC2 instances as part of cluster operations.
+
+Behind the scenes, it uses the AWS CLI, EC2 Tags and IAM as a method to securely identify a node and then fence it. 
+
+// Fixme - fact check. It requires internet connectivity to ensure the EC2 endpoint can be reached.
+
+A working STONITH method is mandatory to run a supported SUSE cluster on AWS.
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]

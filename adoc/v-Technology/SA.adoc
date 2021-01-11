@@ -83,7 +83,13 @@ image::azure_loadbalancer.png[]
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS
+
+Within an AWS SAP HA Cluster, the HANA Primary and Seconday nodes each reside in 2 different Availability Zones (AZs), therefore to provide an IP address which is portable between the 2 AZs, an AWS Overlay IP address is required. This uses a specific routing entry which can send network traffic to an instance, no matter which Availability Zones (and subnet) the instance is located in.
+
+Overlay IP addresses have one requirement, they need to have a CIDR range outside of the VPC. 
+
+It is important to note that this IP address is not externally available, for this the Route53 service should be used. (this is currently not supported by the SUSE SAP Automation framework).
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]

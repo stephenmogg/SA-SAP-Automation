@@ -41,7 +41,15 @@ https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS - S3 bucket
+
+When deploying on AWS, an S3 Bucket is required to store the SAP Media. Using the AWS Console:
+
+* Create an S3 bucket.  (The example shows a bucket called mysapmedia, but a unique name should be used.)
+* Create a folder within the bucket.
+* Upload the SAP media to the folder within the S3 bucket.
+
+image::images/s3_bucket.png[width=800] 
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -75,6 +83,14 @@ ifeval::[ "{cloud}" == "Azure" ]
 In addition Azure provide an easy to access web based commandline (cloudshell) where Terraform is already pre-installed.
 
 // FixMe provide link
+
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+
+In Addition, AWS provides an easy to access web based commandline shell where Terraform can be downloaded and installed.
+
+https://console.aws.amazon.com/cloudshell/
 
 endif::[]
 

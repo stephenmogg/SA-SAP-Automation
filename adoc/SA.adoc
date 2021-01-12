@@ -8,10 +8,10 @@ include::./SA_vars.adoc[]
 {author}, {companyName} < {authorEMail} >
 ////
 
-== preface
+== Preface
 
 This reference document contains best practices and planning considerations when using SUSE's Automation templates for SAP Landscapes. 
-It is targeted at consultants and end-customers deploying SAP Landscapes in the public cloud and provides guidance on how the Terraforms, SALT, and other components work together to provide a consistent and validated architecture. 
+It is targeted at consultants and end-customers deploying SAP Landscapes in the public cloud and provides guidance on how Terraform, SALT, and other components work together to provide a consistent and validated architecture. 
 
 The document can also be used as a guide for a partner enablement workshop covering the proper use of these tools.
 

@@ -7,13 +7,14 @@ The physical elements are included as an extension to the Technology Layer for m
 * *_Where_* the resulting solution may physically or virtually reside
 ////
 
-The SAP automation consist, as we have see before, out of several building blocks.
+The SAP automation consists of several building blocks.
 First we want to look at the infrastructure deployment with terraform and then to the salt part.
 
 [NOTE]
 ---
-As the project is under activ development to make it better and simpler to use, this document focus on the project version 6.0.0 of the terraform part and v6 of the rpm packages for salt formulars.
-New version could have more features or slightly changed files as show here, but the general guidelines provided here are still valid.
+As the project is under active development to make it better and simpler to use, this document focuses on the project version 6.0.0 of the terraform part and v6 of the rpm packages for salt formulas.
+New version could have more features or slightly changed files as shown here, but the general guidelines should
+still be applicable.
 ---
 
 === First make sure that all *pre-requirements* are done:
@@ -21,7 +22,7 @@ New version could have more features or slightly changed files as show here, but
 ifeval::[ "{cloud}" == "Azure" ]
 
 . Have an Azure account
-. Have installed the Azure commandline tool _az_
+. Have installed the Azure command line tool _az_
 . Have installed _terraform_ (v12) (it comes with SLES within the public cloud module)
 . Have the SAP HANA install media downloaded from SAP
 . Have created an Azure File Share
@@ -110,7 +111,7 @@ When creating Terraform configurations, it's best practice to separate out parts
 └── variables.tf
 ----
 
-The _infrastructure.tf_ file:: provides the cloud specific setup with the cloud relevant provider module of terraform and defines all the needed cloud specific entities.
+The _infrastructure.tf_ file:: provides the cloud specific setup with the relevant provider module of terraform and defines all the needed cloud specific entities.
 
 The _main.tf_ file:: provides all the values for the various variables needed for the modules. It is the main entry point for terraform.
 
@@ -123,11 +124,10 @@ _terraform.tfvars__:: is a variable definitions file which get automatically loa
 _terraform.tfvars.example_:: is a example file with many pre-filled key-value pairs to set up
 the solution. *You can use this as starting point for your own file.*
 
-_variables.tf_:: provides all used input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
-Please have a deep look at all variable and the comments for it,
-to get aware whats is possible.
+_variables.tf_:: provides all input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
+Please have a deep look at all variable and the comments for it, to get aware whats is possible.
 
-e.g. the variable provisioner is like a switch if the salt part should run or only the terraform part.
+e.g. the variable provisioner is like a switch to run either the salt or terraform portion only
 
 
 A _module_:: is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects.
@@ -193,7 +193,7 @@ So change
     hana_inst_master
 +
 The inst_master variable should point to the directory where you have the extracted hana install files.
-There are more possibilities, but for the simples usage have everything already extracted on you share
+There are more possibilities, but for the simples usage have everything already extracted on your share
 +
 So disable the other hana variables with adding a '#' in front of them
 
@@ -250,7 +250,7 @@ The file looks quite complex - but we only need to change a few settings. Normal
 You can change other settings like the passwords, but for a simple test you can leave it.
 So save you changes and go back to the main directory.
 
-. now we are ready to run terraform
+. Now we are ready to run terraform
 [subs="attributes,quotes"]
 ----
     az login
@@ -260,7 +260,7 @@ So save you changes and go back to the main directory.
     terraform apply
 ----
 
-If all goes well you will have after ~40 Minutes a installed and running HANA Systemreplication Cluster in Azure
+If all goes well after ~40 Minutes you will have a installed and running HANA System Replication Cluster in Azure
 
 As there is a jumphost with a public ip adress is created you simply can login to all machines from your machine with
 
@@ -270,7 +270,7 @@ As there is a jumphost with a public ip adress is created you simply can login t
 
 All files in the Terraform directory using the .tf file format will be automatically loaded during operations.
 
-The _infrastructure.tf_ provides the _data sources_ for the network setup, which are computed in other terraform parts and some _locals_ variables used for mainly for the autogeneration of the network. In addition it provides the _resources_ for the network setup with virtual network, the needed subnet and routing, the needed resourcegroup to be used, a storage account, the all the network security groups (nsg) being used and defines the jumphost.
+The _infrastructure.tf_ provides the _data sources_ for the network setup, which are computed in other terraform parts and some _locals_ variables used for mainly for the autogeneration of the network. In addition it provides the _resources_ for the network setup with virtual network, subnets and routing, resourcegroup to be used, a storage account, the all the network security groups (nsg) being used and defines the jumphost.
 
 The _main.tf_ file is our main file and calls the child modules which consist of our building blocks and the required input and output variables defined by the child module.
 It in addition provides the calculation for the autogenerated ip addresses.
@@ -369,7 +369,7 @@ The example of how to use them is available at _terraform.tfvars.example_.
 
 [IMPORTANT]
 ====
-If you are specifying the IP addresses manually, make sure these are valid IP addresses. They should not be currently in use by existing instances. In case of shared account usage in cloud providers, it is recommended to set unique addresses with each deployment to avoid using same addresses.
+If you are specifying the IP addresses manually, make sure these are valid IP addresses. They should not be currently in use by existing instances. In the case of shared account usage in cloud providers, it is recommended to set unique addresses with each deployment to avoid using same addresses.
 ====
 
 The _output.tf_ file is a way to expose some of the internal attributes, and act like the return values of a terraform module to the user. It will return the IP address and node names created from the automation.
@@ -418,18 +418,19 @@ modules/
     └── variables.tf
 ----
 
-The respective file _salt_provisioner.tf_ set the *_role_* of the *node* and handover the needed variables which where set in terraform, *as custom Salt _grains_ for the node* with help of a terraform file provisioner and starts the salt provisioning process via  .
+The respective file _salt_provisioner.tf_ set the *_role_* of the *node* and handover the needed variables which where set in terraform, *as custom Salt _grains_ for the node* with help of a terraform file provisioner and starts the salt provisioning process via  
+// #TODO via ?
 
 
 ==== SAP Sizing
 
-One of the very important points to consider of a SAP deployment is Sizing and applies across three key areas: compute power, storage space and i/o capacity and network bandwith.
+One of the very important points to consider of a SAP deployment is sizing and applies across three key areas: compute power, storage space and i/o capacity and network bandwith.
 
 If this is a greenfield deployment, please use the SAP Quick Sizer tool to calculate the SAP Application Performance Standard (SAPS) compute requirement and choose the right instance types which have the closest match to the performance needed.
 
 If you have an SAP system running that you want to extend with new functionality and/or add new users or migrate to SAP HANA perform brownfield sizing.
 
-Overall it is an iterative and constant process to translate your business requirements to  the right (virtual) hardware resources.
+Overall it is an iterative and constant process to translate your business requirements to the right (virtual) hardware resources.
 
 This is a mandatory step and should not be underestimated.
 
@@ -476,7 +477,7 @@ characteristics for SAP HANA
 
 writeaccelerator:: Azure Write Accelerator is a functionality that is available for Azure M-Series VMs exclusively. As the name states, the purpose of the functionality is to improve I/O latency of writes against the Azure premium storage. For SAP HANA, Write Accelerator is supposed to be used against the /hana/log volume only. Therefore, the /hana/data and /hana/log are separate volumes with Azure Write Accelerator supporting the /hana/log volume only.
 
-Number of Disks:: The number of disks which get used, depend on the performance requirements. We join disks to a stripe set to provide more performance. Minimal we need 4 to 5 disks.
+Number of Disks:: The number of disks which get used, depend on the performance requirements. We join disks to a stripe set to provide more performance. At a minimum we need 4 to 5 disks.
 
 LogicalVolumes::  We are using LVM to build stripe sets across several Azure premium disks. These stripe sizes differ between /hana/data and /hana/log and the recommendations is
 256 KB for /hana/data
@@ -657,10 +658,10 @@ As last step the terraform _remote-exec provisioner_ is used, to call the script
 //fixme - image our salt module arch.
 //image::
 
-Formulars: group of states give a context for building blocks e.g HANA
+Formulas: group of states give a context for building blocks e.g HANA
 States: combination of execution modules and other parts, have logic in and execute to a desired state
 Execution modules: basic execution modules, to provide the methods in the lower layer (shaptools) to salt
-shaptools: low level python wrapper (api) around sap utilities and commands
+shaptools: low level python wrapper (api) around SAP utilities and commands
 
 
 The provisioning workflow of the SAP building blocks consist of different steps:
@@ -813,7 +814,7 @@ _Salt state_ files are organized into a directory tree, called the Salt state tr
 │   └── **top.sls**
 ----
 
-You will see withing this directory structure all needed steps depending on the _role_ of the node.
+You will see within this directory structure all needed steps depending on the _role_ of the node.
 
 The _top.sls_ file describes two environments for the nodes, _pre-deployment_ and _base_ which reflect the steps 3 and 4 of the workflow above. For each role of the nodes there more detailed files responsible.
 
@@ -884,7 +885,7 @@ The _role_ is a _custom grains_ define with help of the terraform file _salt_pro
 
 CAUTION:
 ----
-If you use the salt formulars independent from the terraform templates, you need to take care of providing all needed variables by yourself which normally get set by the _salt_provisioner.tf_.
+If you use the salt formulas independent from the terraform templates, you need to take care of providing all needed variables by yourself which normally get set by the _salt_provisioner.tf_.
 ----
 
 ===== State details
@@ -942,7 +943,7 @@ All other states files get processed in the same way as the example above.
 Formulas are pre-written Salt States. They are as open-ended as Salt States themselves and can be used for tasks such as installing a package, configuring, and starting a service, setting up users or permissions, and many other common tasks. Each Formula is intended to be immediately usable with sane defaults without any additional configuration.
 
 Our formulas are configurable by including data in Pillar, what we discussed above.
-During RPM install, the the files of the packages end up in the directory _/usr/share/salt-formulas/states_, which we had defined as directory where salt searches for file in addition to /srv/salt (see os_setup state above).
+During RPM install, the files of the packages end up in the directory _/usr/share/salt-formulas/states_, which we had defined as directory where salt searches for file in addition to /srv/salt (see os_setup state above).
 
 .shaptools package
 If you have wondered above about the directories __modules_ and __states_, they come from the install of the package shaptools and provide a python wrapper for sap command line tools as API, in order to make it simple to be used from salt. This package is a base dependency for most of our formula packages as it provides the SAP commands.

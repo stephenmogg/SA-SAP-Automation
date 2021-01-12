@@ -40,9 +40,9 @@ Top files are named _top.sls_ by default and they are so-named because they alwa
 
 ==== SAP Sizing
 
-To make the SAP sizing more simple we have introduced pre-defined sizes with well known abbreviation from T-Shirt sizes Small (S), Medium (M), Large (L).
+To make the SAP sizing more simple we have introduced pre-defined sizes with well known abbreviations from T-Shirt sizes Small (S), Medium (M), Large (L).
 
-The Small (S) size is thought for non productive scenarios, where as the Medium (M) and Large (L) sizes for production setups, where certified instance types being used.
+The Small (S) size is suitable for non productive scenarios, whereas the Medium (M) and Large (L) sizes for production setups, where certified instance types being used.
 
 But you can also tweak such size or do complete your own settings.
 

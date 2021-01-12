@@ -8,7 +8,7 @@ When SUSE first released SUSE Linux Enterprise Server for SAP Applications, it a
 
 image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,scaledwidth="80%"]
 
-*Simplify*::      the deployment of an SAP Landscape in The Public Cloud for dev, test, and production.
+*Simplify*::      the deployment of an SAP Landscape in the public cloud for dev, test, and production.
 
 *Modernize*::     customer environments by taking advantage of the benefits of the public cloud
 
@@ -34,6 +34,6 @@ Salt can be used for data-driven orchestration, remote execution for any infrast
 
 Combining this configuration management system with an infrastructure deployment solution such as Terraform from Hashicorp makes it possible to do a hands free, error free setup of an SAP Landscape.  Once the deployment is complete, administrators can login to start customizing the SAP System.
 
-#As part of the deployment, SUSE added the ability provide insights into your SAP Landscape with comprehensive dashboards, realtime and historic views and active alerts and reporting based on flexible and powerful open-source projects Prometheus and Grafana.
+As part of the deployment, SUSE added the ability provide insights into your SAP Landscape with comprehensive dashboards, realtime and historic views and active alerts and reporting based on flexible and powerful open-source projects Prometheus and Grafana.
 
 The deployment automation can also be configured to setup a monitoring environment for the SAP HANA and SAP NetWeaver clusters.

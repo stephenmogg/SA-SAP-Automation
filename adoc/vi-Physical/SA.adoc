@@ -1108,13 +1108,13 @@ states/
 
 As you know from earlier descriptions, we need a pillar file with the configuration. There is one example in the path which could be used as base for a standalone Salt usage. In general the pillar data get handed over from the Terraform main project.
 
-As SAP Netweaver has in an HA environment more nodes, therefore the pillar file is much bigger as eg. the one for HANA. So please have a look by yourself of the example file.
+As SAP Netweaver has in an HA environment more nodes, therefore the pillar file is much bigger than the one for HANA. Please have a look by yourself of the example file.
 
 Similar as before, the starting point is the _init.sls_ file where the workflow is defined.
 
-The _templates_ directory provides the needed files for NW cluster rules and the values come from the best practice guides SUSE created with the Cloudprovider {cloud} for the ERS scenario.
+The _templates_ directory provides the needed files for NW cluster rules and the values come from the best practice guides SUSE created with {cloud} for the ERS scenario.
 
-In addition here are the templates which are used by SWPM for a automated handfree installation of the SAP Netweaver services.
+In addition here are the templates which are used by SWPM for an automated hands-free installation of the SAP Netweaver services.
 
 ==== High Availability formula
 
@@ -1145,14 +1145,14 @@ states
 ----
 
 The main difference to the HANA and Netweaver formula is that the _init.sls_ make already use of _jinja_.
-Jinja is the default templating language in SLS files and get evaluated before YAML, which means it is evaluated before the States are run.
+Jinja is the default templating language in SLS files and get evaluated before YAML, which means it is evaluated before the states are run.
 
-The most basic usage of Jinja in state files is using control structures to wrap conditional or redundant state elements
+The most basic usage of Jinja in state files is using control structures to wrap conditional or redundant state elements.
 
 
 ==== Additional Services
 
-The additinal services depend on what is used or available of the cloudprovider, but needed by SAP HANA or SAP Netweaver or the HA services.
+The additinal services depend on what is used or available from the cloud provider, but needed by SAP HANA or SAP Netweaver or the HA services.
 
 ===== NFS service
 

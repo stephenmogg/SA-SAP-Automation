@@ -25,7 +25,7 @@ To help with this, SUSE has added the ability to gain insight into your SAP Land
 
 The major motivation was to improve, simplify and unify the installation of SAP Landscape on SUSE Linux Enterprise Server for SAP Applications and clearly standardize deployments and allow customers to use one level of tooling in various ways – from a Command Line interface, through some GUI driven process and SUSE Manager or other automation frameworks.
 
-To achieve this, SUSE have adopted a more modern approach, infrastructure-as-code which helps customers reduce the effort and errors during deployments.
+To achieve this, SUSE has adopted a more modern approach, infrastructure-as-code which helps customers reduce the effort and errors during deployments.
 
 In recent years, SUSE Linux Enterprise Server and many other SUSE products shipped with a universal configuration management solution, this is used as the foundation for the new automation capability. 
 

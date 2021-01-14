@@ -18,7 +18,7 @@ Technology components utilized as a part of this solution: CSP Specific, Network
 
 === Terraform
 
-With help of terraform and the modules for the cloudprovider we create the infrastructure for the SAP application and some supporting services.
+With help of Terraform and the modules for the cloudprovider we create the infrastructure for the SAP application and some supporting services.
 
 The Terraform templates provide everything needed to create the right infrastructure components and provide in addition a lot of predefined possible choices to make it more simple to create the right virtual machines, disks, networks etc.
 

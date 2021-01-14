@@ -15,11 +15,11 @@ image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,scaledwidth="8
 *Accelerate*::    customer migrations to the public cloud.
 
 
-Building the infrastructure to run SAP Applications can be complex and demands significant effort, especially if a manual deployment method is used. When delivering muliple envionments, for mulitple engagements, reproducing the deployment can be tedious and error-prone. 
+Building the infrastructure to run SAP Applications can be complex and demands significant effort, especially if a manual deployment method is used. When delivering multiple environments, for multiple engagements, reproducing the deployment can be tedious and error-prone. 
 
 One additional challenge is ensuring the infrastructure is highly available, as this will add more complexity and steps to the deployment.
 
-When deploying and managing a large number of systems in an SAP Landscape, there is often a secondary need, getting an overview of what is happening in he environemt after the install is complete.
+When deploying and managing a large number of systems in an SAP Landscape, there is often a secondary need, getting an overview of what is happening in the environment after the install is complete.
 
 To help with this, SUSE has added the ability gain insight into your SAP Landscape with a comprehensive monitoring solution, providing dashboards, realtime and historic views and active alerts and reporting.
 

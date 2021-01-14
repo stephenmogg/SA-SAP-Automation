@@ -35,7 +35,7 @@ This is the area where SUSE's automation solution for SAP can help.
 Reduce Costs:: Many businesses spent a lot of their capital on maintaining their IT Infrastructure. With help of the cloud, they can transform their CapEx (Capital Expenditure) to stable OpEx (Operating Expenditure).
 Costs can be controlled as the cloud model is a ‘pay as you use’ scenario and many cloud vendors provide several consumption options to provide more choice to their customers. 
 +    
-This is an area where SUSE can help together with the cloud provider to offer the right options, but this also means you need to adapt how you use the resources and the SAP software.
+This is an area where SUSE can help together with the cloud providers to offer the right options, but this also means you need to adapt to how you use the resources and the SAP software.
  
 Scalability & Flexibility:: With the cloud, you can scale up your system as and when required, add or remove resources when the business demands it and as mentioned above, "rightsizing" and instance optimization to provide an efficient solution.
 +    

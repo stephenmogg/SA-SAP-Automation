@@ -7,7 +7,7 @@ The strategy elements are typically used to model the strategic direction and ch
 *Why* one should consider this strategy
 ////
 
-Most SAP services are deployed on premises with well established procedures, but it is important to plan and size the required hardware several years ahead and estimate the maximum workload e.g. for the next 5 years. 
+Most SAP services are deployed on-premises with well-established procedures, but it is important to plan and size the required hardware several years ahead and estimate the maximum workload e.g. for the next 5 years. 
 
 It is dificult to predict the future, so when considering requirments such as capacity, as there are many factors which may affect this over the system lifespan, the values selected for this often ends up being a 'best guess'.
 

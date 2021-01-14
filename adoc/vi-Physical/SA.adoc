@@ -668,12 +668,12 @@ The provisioning workflow of the SAP building blocks consist of different steps:
 
 1. Bootstrap Salt installation and configuration
 2. Execute OS setup operations. Register to SCC if needed, updated the packages etc, with help of executing the states within _/srv/salt/os_setup_
-3. Execute predeployment operations with help of execution of the _/srv/salt/top.sls_ states. It update hosts and hostnames, install the formular packages, etc
+3. Execute predeployment operations with help of execution of the _/srv/salt/top.sls_ states. It update hosts and hostnames, install the formula packages, etc
 4. Execute deployment operations depending on the overall configuration settings like install SAP applications and configure and setup HA with the Salt formulas.
 
 
 ==== Salt Overview
-The SAP building block are created with help of SALT formulars after provisioning the virtual machines with terraform. The formulars are shipped as RPM packages with {sles4sap}
+The SAP building block are created with help of SALT formulas after provisioning the virtual machines with terraform. The formulas are shipped as RPM packages with {sles4sap}
 
 The Salt formulas can be used with 2 different approaches: Salt master/minion or only Salt minion execution.
 
@@ -1042,14 +1042,14 @@ hana:
         primary_timeout: 3000
 ----
 
-1. The formular is executed within the salt of _hana_node_ state files
-2. If you want to execute the formular manually, salt
+1. The formula is executed within the salt of _hana_node_ state files
+2. If you want to execute the formula manually, salt
 ----
 Salt '*' state.apply hana_node.sls
 ----
 //fixme - check if this is ok.
 
-So with help of the pillar data and the state file and the formular, Salt will create all needed configuration on the node, installs HANA and if enabled install hana systemreplication and set up the pacemaker cluster, right for {cloud}.
+So with help of the pillar data and the state file and the formula, Salt will create all needed configuration on the node, installs HANA and if enabled install hana systemreplication and set up the pacemaker cluster, right for {cloud}.
 
 The _templates_ directory provides the needed files for cluster rules, the needed hook for HANA and the monitoring exporter.  All the values come from the best practice guides SUSE created with the Cloudprovider {cloud} for the HA scenario.
 

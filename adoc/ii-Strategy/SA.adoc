@@ -11,7 +11,7 @@ Most SAP services are deployed on-premises with well-established procedures, but
 
 It is difficult to predict the future, so when considering requirements such as capacity, as there are many factors which may affect this over the system lifespan, the values selected for this often ends up being a 'best guess'.
 
-Today, with quickly changing environments, many businesses need to accelerate innovation and increase agility across their business.  This allows them to acheive a faster time-to-market in addition to lowering costs.
+Today, with quickly changing environments, many businesses need to accelerate innovation and increase agility across their business. This allows them to acheive a faster time-to-market in addition to lowering costs.
 
 ////
 With moving products and services into the cloud, a modern trend in organizations, businesses meet changing demands and become flexible and agile in making business decisions.

@@ -28,7 +28,7 @@ One key example here is that you no longer need to plan the hardware sizing for 
 
 There are many benefits gained when moving your SAP workloads to the cloud:
 
-Quick deployment:: If you need fast application implementation and deployment, cloud is the best choice. You can set up a cloud environment within a few hours, whereas, in-house IT infrastructure set-up takes days and sometimes months to order it and set up. With the cloud, IT teams can easily configure and manage the setup remotely.
+Quick deployment:: If you need fast application implementation and deployment, the cloud is the best choice. You can set up a cloud environment within a few hours, whereas, in-house IT infrastructure set-up takes days and sometimes months to order it and set up. With the cloud, IT teams can easily configure and manage the setup remotely.
 +    
 This is the area where SUSE's automation solution for SAP can help.
 

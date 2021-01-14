@@ -21,7 +21,7 @@ One additional challenge is ensuring the infrastructure is highly available, as 
 
 When deploying and managing a large number of systems in an SAP Landscape, there is often a secondary need, getting an overview of what is happening in the environment after the install is complete.
 
-To help with this, SUSE has added the ability gain insight into your SAP Landscape with a comprehensive monitoring solution, providing dashboards, realtime and historic views and active alerts and reporting.
+To help with this, SUSE has added the ability to gain insight into your SAP Landscape with a comprehensive monitoring solution, providing dashboards, realtime and historic views and active alerts and reporting.
 
 The major motivation was to improve, simplify and unify the installation of SAP Landscape on SUSE Linux Enterprise Server for SAP Applications and clearly standardize deployments and allow customers to use one level of tooling in various ways – from a Command Line interface, through some GUI driven process and SUSE Manager or other automation frameworks.
 

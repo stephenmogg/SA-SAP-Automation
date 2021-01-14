@@ -12,7 +12,7 @@ image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,scaledwidth="8
 
 *Modernize*::     customer environments by taking advantage of the benefits of the public cloud
 
-*Accelerate*::    customer migrations to the cloud.
+*Accelerate*::    customer migrations to the public cloud.
 
 
 Building the infrastructure to run SAP Applications can be complex and demands significant effort, especially if a manual deployment method is used. When delivering muliple envionments, for mulitple engagements, reproducing the deployment can be tedious and error-prone. 

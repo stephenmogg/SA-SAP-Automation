@@ -44,9 +44,9 @@ With SUSE ready to run images available in the cloud providers marketplace it is
 ////
 
 
-Maintenance:: With the public cloud, IT departments no longer have to worry about managing and maintaining the hardware and underlying infrastructure, the cloud service provider handles this for your organization and frees up company resources to focus on other business acivities.
+Maintenance:: With the public cloud, IT departments no longer have to worry about managing and maintaining the hardware and underlying infrastructure, the cloud service provider handles this for your organization and frees up company resources to focus on other business activities.
       
-Resiliency:: For businesses these days, uptime is of prime importance to ensure day-to-day business operatinos run smoothly. Moving to the cloud maximizes uptime and reduces downtime.
+Resiliency:: For businesses these days, uptime is of prime importance to ensure day-to-day business operations run smoothly. Moving to the cloud maximizes uptime and reduces downtime.
 The cloud improves disaster recovery and business continuity without the need to spend a huge amount of capital on robust disaster recovery tools.  Cloud providers offer a variety of services to help protect businesses from any security threat or outage.
 
 +
@@ -54,9 +54,9 @@ SUSE's SAP HA Automation can add to these services to provide less downtime of y
     
 Remote access:: With the cloud, your employees can access data from anywhere, and at any time via the internet making business more flexible and increase the productivity of the employees.
 +    
-SUSE products natively provides many options for remote access and control.
+SUSE products natively provide many options for remote access and control.
     
-So overall, public clouds offer significant benefits for all customers regardless of size. The use of public cloud resources can lowerb infrastructure costs and improve the scalability, agility, flexibility and availablity of applications. 
+So overall, public clouds offer significant benefits for all customers regardless of size. The use of public cloud resources can lower infrastructure costs and improve the scalability, agility, flexibility and availability of applications. 
 
 ////
 === Categories and Variants

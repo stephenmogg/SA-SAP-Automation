@@ -1045,7 +1045,7 @@ hana:
 1. The formula is executed within the salt of _hana_node_ state files
 2. If you want to execute the formula manually, salt
 ----
-Salt '*' state.apply hana_node.sls
+salt '*' state.apply hana_node.sls
 ----
 //fixme - check if this is ok.
 
@@ -1145,7 +1145,7 @@ states
 ----
 
 The main difference to the HANA and Netweaver formula is that the _init.sls_ make already use of _jinja_.
-Jinja is the default templating language in SLS files and get evaluated before YAML, which means it is evaluated before the states are run.
+Jinja is the default templating language in SLS files and get evaluated before YAML, which means it is evaluated before the States are run.
 
 The most basic usage of Jinja in state files is using control structures to wrap conditional or redundant state elements.
 

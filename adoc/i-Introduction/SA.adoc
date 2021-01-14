@@ -10,7 +10,7 @@ image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,scaledwidth="8
 
 *Simplify*::      the deployment of an SAP Landscape in The Public Cloud for dev, test, and production.
 
-*Modernize*::     customer environments by taking advantage of the benefits of the public cloud
+*Modernize*::     customer environments by taking advantage of the benefits of the public cloud.
 
 *Accelerate*::    customer migrations to the public cloud.
 

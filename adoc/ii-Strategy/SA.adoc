@@ -17,7 +17,7 @@ Today, with quickly changing environments, many businesses need to accelerate in
 With moving products and services into the cloud, a modern trend in organizations, businesses meet changing demands and become flexible and agile in making business decisions.
 ////
 
-One key example here is that you no longer need to plan the hardware sizing for the next 5 years, as a larger, faster or even smaller infrastructure is only one reboot away. 
+One key example here is that you no longer need to plan the hardware sizing for the next 5 years, as a larger, faster, or even smaller infrastructure is only one reboot away. 
 
 "Rightsizing" or infrastructure optimization remains an important task and should be front of mind when managing an SAP Landscape in the cloud. Not takeing care of this cloud benefit could have large cost implications, companies that “rightsize” their workloads are often able to cut costs by of 30-60%.
 

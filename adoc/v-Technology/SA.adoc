@@ -18,7 +18,7 @@ Technology components utilized as a part of this solution: CSP Specific, Network
 
 === Terraform
 
-With help of terraform and the modules for the cloudprovider we create the infrastructure for the SAP application and some supporting services.
+With help of Terraform and the modules for the cloudprovider we create the infrastructure for the SAP application and some supporting services.
 
 The Terraform templates provide everything needed to create the right infrastructure components and provide in addition a lot of predefined possible choices to make it more simple to create the right virtual machines, disks, networks etc.
 
@@ -75,8 +75,7 @@ This mean we need to create one additional machine for the building blocks to bu
 
 ifeval::[ "{cloud}" == "Azure" ]
 
-To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic
-to only the active node.
+To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic to only the active node.
 
 image::azure_loadbalancer.png[scaledwidth="80%"]
 
@@ -154,7 +153,7 @@ image::Azure_fence_iscsi.png[scaledwidth="80%"]
 
 // fixme - this is not implemented from the automation as of today
 In the meantime there is a way in the Azure API to "kill" a virtual machine, so that the fencing agent can make use of it and no additional machine is needed if the fence agent is used.
-The drawback here is, in order to talk to the Azure API, there is a need for public network connection.
+The drawback here is requiring a public network connection to talk to the Azure API.
 
 image::Azure_fence_arm.png[scaledwidth="80%"]
 

@@ -73,9 +73,9 @@ But it's not a tool to simple create a landscape with a press of a button in ano
 Terraform’s approach is that you write code which is specific to a cloud provider and take advantage of the provider’s unique functionality, but to use the same language and toolset for all providers.
 Therefore the natural name for such modules is "provider". So for example the _Azure Provider_ can be used to configure infrastructure in Microsoft Azure using the Azure Resource Manager API's.
 
-Configuration files describe to Terraform which components need to run for your application. Then you run the main terraform command to generate an execution plan which describes what Terraform will do to get to the planned desired state and then you execute this plan to create the described infrastructure.
+Configuration files describe to Terraform which components need to run for your application. Then you run the main Terraform command to generate an execution plan which describes what Terraform will do to get to the planned desired state and then you execute this plan to create the described infrastructure.
 
-We provide terraform configuration files for AWS, Azure, GCP and libvirt.
+We provide Terraform configuration files for AWS, Azure, GCP and libvirt.
 
 The open source version of the needed Terraform is shipped within the Public Cloud Module of {sles4sap}
 
@@ -113,7 +113,7 @@ Salt formulas can be applied in two ways:
 
 Salt Master with Salt Client. All steps must be executed on the Salt Master machine.
 
-Salt Client (Minion) only. All steps in must be executed in all of the Salt clients where the formulas are going to be executed, wh is the approach we use here within the framework as we do not need a central master system.
+Salt Client (Minion) only. All steps must be executed in all of the Salt clients where the formulas are going to be executed. This is the approach utilized in this framework as we do not need a central master system.
 
 
 ==== Netweaver
@@ -158,7 +158,7 @@ The HA bootstrap formula takes care of creating and managing a high availability
  * Adjustments for the Azure Infrastructure
  * Handle Netweaver, HANA and DRBD
 
-Depending on the cloud requirements it may need an iSCSI server to be able to provide a shared disk for fencing where we use the iscsi-formula from SaltStack
+Depending on the cloud requirements it may need an iSCSI server to be able to provide a shared disk for fencing where we use the iscsi-formula from SaltStack.
 
 The formula provides the capability to create and configure a multi node HA cluster. Here are some of the features:
 
@@ -180,7 +180,7 @@ To build a HA NFS Service if there is none available, we can create one with hel
 
  * DRBD formula
  * HA formula
- * NFS formula from  SaltStack
+ * NFS formula from SaltStack
 
 ====== iSCSI Service
 The iSCSI-formula from SaltStack is able to deploy iSNS, iSCSI initiator, and iSCSI target packages, manage configuration files and then starts the associated iSCSI services.

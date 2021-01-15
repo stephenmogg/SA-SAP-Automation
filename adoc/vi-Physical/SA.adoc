@@ -8,11 +8,11 @@ The physical elements are included as an extension to the Technology Layer for m
 ////
 
 The SAP automation consists of several building blocks.
-First we want to look at the infrastructure deployment with terraform and then to the salt part.
+First we want to look at the infrastructure deployment with Terraform and then to the Salt part.
 
 [NOTE]
 ---
-As the project is under active development to make it better and simpler to use, this document focuses on the project version 6.0.0 of the terraform part and v6 of the rpm packages for salt formulas.
+As the project is under active development to make it better and simpler to use, this document focuses on the project version 6.0.0 of the Terraform part and v6 of the rpm packages for Salt formulas.
 New version could have more features or slightly changed files as shown here, but the general guidelines should
 still be applicable.
 ---
@@ -81,13 +81,13 @@ After moving into this directory you will see the following directory structure:
 └── salt
 ----
 
-The directories with the names of the _cloud provider_ (aws,azure,gcp,libvirt) are the terraform templates for the relevant provider.
+The directories with the names of the _cloud provider_ (aws,azure,gcp,libvirt) are the Terraform templates for the relevant provider.
 
 The _doc_ directory has some short but important documents for certain parts of the solution
 
 The directory _generic_modules_ provides modules which get used by all cloud vendor templates, like common variables, local executed functions within the building block, dependent actions on destroy and the functions to start the SALT execution on the module building blocks.
 
-The other directories _pillar_, _pillar_examples_ and _salt_ contain the part of the salt configuration management.
+The other directories _pillar_, _pillar_examples_ and _salt_ contain the part of the Salt configuration management.
 
 === Terraform Building Blocks
 
@@ -97,7 +97,7 @@ Providers are plugins and released independent from Terraform itself, this mean 
 
 Each Terraform module must declare which providers it requires, so that Terraform can install and use them.
 
-If we switch to into a _cloud provider_ directory, we see one directory _modules_ and several _.tf_ files which all together build the terraform template.
+If we switch to into a _cloud provider_ directory, we see one directory _modules_ and several _.tf_ files which all together build the Terraform template.
 
 When creating Terraform configurations, it's best practice to separate out parts of the configuration into individual .tf files. This provides better organization and readability.
 ----
@@ -111,7 +111,7 @@ When creating Terraform configurations, it's best practice to separate out parts
 └── variables.tf
 ----
 
-The _infrastructure.tf_ file:: provides the cloud specific setup with the relevant provider module of terraform and defines all the needed cloud specific entities.
+The _infrastructure.tf_ file:: provides the cloud specific setup with the relevant provider module of Terraform and defines all the needed cloud specific entities.
 
 The _main.tf_ file:: provides all the values for the various variables needed for the modules. It is the main entry point for terraform.
 
@@ -127,7 +127,7 @@ the solution. *You can use this as starting point for your own file.*
 _variables.tf_:: provides all input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
 Please have a deep look at all variable and the comments for it, to get aware whats is possible.
 
-e.g. the variable provisioner is like a switch to run either the salt or terraform portion only
+e.g. the variable provisioner is like a switch to run either the Salt or Terraform portion only
 
 
 A _module_:: is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects.
@@ -136,13 +136,13 @@ We use the modules as our technical building blocks e.g. a HANA node and the mod
 +
 These are the recommended filenames for a minimal module, even if they're empty. _main.tf_ is the primary entrypoint how to build the infrastructure building block.
 
-There is one additional file (salt_provisioner.tf), which take care of handing over the needed values to the salt building blocks, with help of a special terraform resource called _null_provider_, and _triggers_ the remote execution of salt after terraform has created the node with _connections_ to the new created machines.
-It now starts the _provision_ of the salt part.
-It also create user-defined variables for salt as grains file (/tmp/grains) for the respective module building block
+There is one additional file (salt_provisioner.tf), which take care of handing over the needed values to the Salt building blocks, with help of a special Terraform resource called _null_provider_, and _triggers_ the remote execution of Salt after Terraform has created the node with _connections_ to the new created machines.
+It now starts the _provision_ of the Salt part.
+It also create user-defined variables for Salt as grains file (/tmp/grains) for the respective module building block
 
 === Simple Install
 
-We provide a example terraform and example pillar files to provide a very easy start.
+We provide a example Terraform and example pillar files to provide a very easy start.
 
 . Open a browser and goto https://github.com/SUSE/ha-sap-terraform-deployments
 . Click on _tags_
@@ -152,7 +152,7 @@ You see what's new and what has changed - so if you use older versions make sure
 +
 The _Usage_ section provides you with a link to a OpenBuildServer (OBS) repository where the RPM packages of the above discussed building blocks are stored which fit to the project version.
 +
-You need to use this value within the terraform variables file. So copy the line as described
+You need to use this value within the Terraform variables file. So copy the line as described
 
 . Now go to _Assets_ and download the _Source code_ as .zip or .tar.gz
 . Extract it into a folder on your computer
@@ -238,7 +238,7 @@ by removing the _#_
 
     #pre_deployment = true
 
-Now we have all settings for terraform done and are nearly at the step to run the deployment, so save your changes.
+Now we have all settings for Terraform done and are nearly at the step to run the deployment, so save your changes.
 
 . go one directory up and change into the _pillar_example_ directory and here into the _automatic_ directory where you can see 3 further directories. They will provide the configuration variable for the relevant services. This automatic folder will work for all cloud providers we support today, but is more complex as it normally need to be.
 
@@ -270,7 +270,7 @@ As there is a jumphost with a public ip adress is created you simply can login t
 
 All files in the Terraform directory using the .tf file format will be automatically loaded during operations.
 
-The _infrastructure.tf_ provides the _data sources_ for the network setup, which are computed in other terraform parts and some _locals_ variables used for mainly for the autogeneration of the network. In addition it provides the _resources_ for the network setup with virtual network, subnets and routing, resourcegroup to be used, a storage account, the all the network security groups (nsg) being used and defines the jumphost.
+The _infrastructure.tf_ provides the _data sources_ for the network setup, which are computed in other Terraform parts and some _locals_ variables used for mainly for the autogeneration of the network. In addition it provides the _resources_ for the network setup with virtual network, subnets and routing, resourcegroup to be used, a storage account, the all the network security groups (nsg) being used and defines the jumphost.
 
 The _main.tf_ file is our main file and calls the child modules which consist of our building blocks and the required input and output variables defined by the child module.
 It in addition provides the calculation for the autogenerated ip addresses.
@@ -372,11 +372,11 @@ The example of how to use them is available at _terraform.tfvars.example_.
 If you are specifying the IP addresses manually, make sure these are valid IP addresses. They should not be currently in use by existing instances. In the case of shared account usage in cloud providers, it is recommended to set unique addresses with each deployment to avoid using same addresses.
 ====
 
-The _output.tf_ file is a way to expose some of the internal attributes, and act like the return values of a terraform module to the user. It will return the IP address and node names created from the automation.
+The _output.tf_ file is a way to expose some of the internal attributes, and act like the return values of a Terraform module to the user. It will return the IP address and node names created from the automation.
 
-The values defined in the _variables.tf_ file are used to avoid hard-coding parameters and provides all needed terraform input variables and there default values within the solution instead of having them in the main.tf file.
+The values defined in the _variables.tf_ file are used to avoid hard-coding parameters and provides all needed Terraform input variables and there default values within the solution instead of having them in the main.tf file.
 
-As we have many variable values to input, so we define them in a variable definition file named _terraform.tfvars_ and terraform will automatically load the variable values from the variable definition file if it is named terraform.tfvars
+As we have many variable values to input, so we define them in a variable definition file named _terraform.tfvars_ and Terraform will automatically load the variable values from the variable definition file if it is named terraform.tfvars
 
 
 The _modules_ directory provide all the needed resources to create the respective building block
@@ -418,7 +418,7 @@ modules/
     └── variables.tf
 ----
 
-The respective file _salt_provisioner.tf_ set the *_role_* of the *node* and handover the needed variables which where set in terraform, *as custom Salt _grains_ for the node* with help of a terraform file provisioner and starts the salt provisioning process via  
+The respective file _salt_provisioner.tf_ set the *_role_* of the *node* and handover the needed variables which where set in terraform, *as custom Salt _grains_ for the node* with help of a Terraform file provisioner and starts the Salt provisioning process via  
 // #TODO via ?
 
 
@@ -643,48 +643,48 @@ endif::[]
 
 === Salt Building Blocks
 
-We have seen that resources are the most important elements in terraform, and there is an other resource type used as last step from the terraform process, the _Provisioner_ resource.
+We have seen that resources are the most important elements in terraform, and there is an other resource type used as last step from the Terraform process, the _Provisioner_ resource.
 
 It can be used to model specific actions on a remote machine in order to prepare them for other services.
 
-The terraform _file provisioner_ is used to copy directories _MAIN_/salt and _MAIN_/pillar from the machine executing Terraform to the newly created nodes.
+The Terraform _file provisioner_ is used to copy directories _MAIN_/salt and _MAIN_/pillar from the machine executing Terraform to the newly created nodes.
 
-As last step the terraform _remote-exec provisioner_ is used, to call the script _provision.sh_ on the remote node to run the salt provisioning steps. It comes from the terraform module _MAIN/generic_modules/salt_provisioner/main.tf_.
+As last step the Terraform _remote-exec provisioner_ is used, to call the script _provision.sh_ on the remote node to run the Salt provisioning steps. It comes from the Terraform module _MAIN/generic_modules/salt_provisioner/main.tf_.
 
 *So from this point on all work is done on the respective node itself.*
 
-==== Our Architecture for the salt building blocks
+==== Our Architecture for the Salt building blocks
 
 //fixme - image our salt module arch.
 //image::
 
 Formulas: group of states give a context for building blocks e.g HANA
 States: combination of execution modules and other parts, have logic in and execute to a desired state
-Execution modules: basic execution modules, to provide the methods in the lower layer (shaptools) to salt
+Execution modules: basic execution modules, to provide the methods in the lower layer (shaptools) to Salt
 shaptools: low level python wrapper (api) around SAP utilities and commands
 
 
 The provisioning workflow of the SAP building blocks consist of different steps:
 
-1. Bootstrap salt installation and configuration
+1. Bootstrap Salt installation and configuration
 2. Execute OS setup operations. Register to SCC if needed, updated the packages etc, with help of executing the states within _/srv/salt/os_setup_
-3. Execute predeployment operations with help of execution of the _/srv/salt/top.sls_ states. It update hosts and hostnames, install the formular packages, etc
-4. Execute deployment operations depending on the overall configuration settings like install SAP applications and configure and setup HA with the salt formulas.
+3. Execute predeployment operations with help of execution of the _/srv/salt/top.sls_ states. It update hosts and hostnames, install the formula packages, etc
+4. Execute deployment operations depending on the overall configuration settings like install SAP applications and configure and setup HA with the Salt formulas.
 
 
 ==== Salt Overview
-The SAP building block are created with help of SALT formulars after provisioning the virtual machines with terraform. The formulars are shipped as RPM packages with {sles4sap}
+The SAP building block are created with help of SALT formulas after provisioning the virtual machines with terraform. The formulas are shipped as RPM packages with {sles4sap}
 
-The salt formulas can be used with 2 different approaches: salt master/minion or only salt minion execution.
+The Salt formulas can be used with 2 different approaches: Salt master/minion or only Salt minion execution.
 
-With the automation solution we use the salt minion option, the steps must be executed in all of the minions where the formulas are going to executed, which is done through a ssh connection.
+With the automation solution we use the Salt minion option, the steps must be executed in all of the minions where the formulas are going to executed, which is done through a ssh connection.
 
 The core of the Salt State system is the SLS, or **S**a**L**t **S**tate file. The SLS is a representation of the state in which a system should be in, and is set up to contain this data in a simple format.
 
-There are 3 types of salt files used
-pillar files:: the _configuration_ parameters where the data gets imported with help of jinja (map.jinja) and salt['pillar.get']
+There are 3 types of Salt files used
+pillar files:: the _configuration_ parameters where the data gets imported with help of jinja (map.jinja) and Salt['pillar.get']
 state files:: the _execution_ definition in /srv/salt
-grains files:: _environment_ parameters from the node itself and for handing over variables from terraform e.g. /etc/salt/grains
+grains files:: _environment_ parameters from the node itself and for handing over variables from Terraform e.g. /etc/salt/grains
 
 In Salt, the file which contains a mapping between groups of machines on a network and the configuration roles that should be applied to them is called a top file.
 
@@ -750,7 +750,7 @@ base:
     - netweaver.cluster
 ----
 
-To run an initial deployment without specific customization, you can use pillar files stored in the _MAIN/pillar_example/automatic` folder, as these files are customized with parameters coming from terraform execution. The pillar files stored there are able to deploy a basic functional set of clusters in all of the available cloud providers.
+To run an initial deployment without specific customization, you can use pillar files stored in the _MAIN/pillar_example/automatic` folder, as these files are customized with parameters coming from Terraform execution. The pillar files stored there are able to deploy a basic functional set of clusters in all of the available cloud providers.
 
 To adapt the deployment to your scenario, you should provide your own pillar data files
 and there are some basic examples within the directory _MAIN/pillar_example_.
@@ -876,21 +876,21 @@ base:
 
 ===== Salt grains
 
-SaltStack comes with an interface to derive information about the underlying system. This is called the _grains_ interface, because it presents salt with grains of information.
+SaltStack comes with an interface to derive information about the underlying system. This is called the _grains_ interface, because it presents Salt with grains of information.
 It collects static informations about the underlying managed system, like the operating system, domain name, IP address, kernel, OS type, memory, and many other system properties.
 
 We use custom grains to match the roles and the further states.
 
-The _role_ is a _custom grains_ define with help of the terraform file _salt_provisioner.tf_ for the respective building block.
+The _role_ is a _custom grains_ define with help of the Terraform file _salt_provisioner.tf_ for the respective building block.
 
 CAUTION:
 ----
-If you use the salt formulas independent from the terraform templates, you need to take care of providing all needed variables by yourself which normally get set by the _salt_provisioner.tf_.
+If you use the Salt formulas independent from the Terraform templates, you need to take care of providing all needed variables by yourself which normally get set by the _salt_provisioner.tf_.
 ----
 
 ===== State details
 
-If you target a directory during a _state.apply_ or in the state Top file, salt looks for an init.sls file in that directory and applies it.
+If you target a directory during a _state.apply_ or in the state Top file, Salt looks for an init.sls file in that directory and applies it.
 
 Within the _os_setup_ there is e.g. the minion configuration file
 
@@ -905,7 +905,7 @@ Within the _os_setup_ there is e.g. the minion configuration file
 │   │   └── repos.sls
 ----
 
-One interesting file is the _minion_configuration.sls_ as it provides the configuration how and where salt / the minion looks for salt states and salt formulas.
+One interesting file is the _minion_configuration.sls_ as it provides the configuration how and where Salt / the Minion looks for Salt states and Salt formulas.
 
 If we look deeper into one of the directories, e.g. _hana-node_ we will find more files in these directories.
 
@@ -930,7 +930,7 @@ If we look deeper into one of the directories, e.g. _hana-node_ we will find mor
 │   │       └── packages.sls
 ----
 
-Salt executes what is in _init.sls_ in the order listed in the file. When an salt file is named init.sls it inherits the name of the directory path that contains it. This formula/state can then be referenced with the name of the directory.
+Salt executes what is in _init.sls_ in the order listed in the file. When an Salt file is named init.sls it inherits the name of the directory path that contains it. This formula/state can then be referenced with the name of the directory.
 
 In our case here, it first it gets the SAP HANA Media with help of _hana_ins_media_, create the mountpoints and partition disks for SAP HANA and enter them into the fstab with help of the states in the _mount_ directory. Similar as before, the starting point is again the _init.sls_ file.
 
@@ -943,10 +943,10 @@ All other states files get processed in the same way as the example above.
 Formulas are pre-written Salt States. They are as open-ended as Salt States themselves and can be used for tasks such as installing a package, configuring, and starting a service, setting up users or permissions, and many other common tasks. Each Formula is intended to be immediately usable with sane defaults without any additional configuration.
 
 Our formulas are configurable by including data in Pillar, what we discussed above.
-During RPM install, the files of the packages end up in the directory _/usr/share/salt-formulas/states_, which we had defined as directory where salt searches for file in addition to /srv/salt (see os_setup state above).
+During RPM install, the files of the packages end up in the directory _/usr/share/salt-formulas/states_, which we had defined as directory where Salt searches for file in addition to /srv/salt (see os_setup state above).
 
 .shaptools package
-If you have wondered above about the directories __modules_ and __states_, they come from the install of the package shaptools and provide a python wrapper for sap command line tools as API, in order to make it simple to be used from salt. This package is a base dependency for most of our formula packages as it provides the SAP commands.
+If you have wondered above about the directories __modules_ and __states_, they come from the install of the package shaptools and provide a python wrapper for sap command line tools as API, in order to make it simple to be used from Salt. This package is a base dependency for most of our formula packages as it provides the SAP commands.
 
 [subs="attributes,quotes"]
 ----
@@ -992,7 +992,7 @@ Salt lets you use Jinja to access minion configuration values, grains and Salt p
  zypper install saphanabootstrap-formula
 ----
 
-The salt formula need some input data through a pillar file, which is coming from the main project file (MAIN/pillar/... or on the node /srv/pillar ), or if you use it standalone it need to be provided by you.
+The Salt formula need some input data through a pillar file, which is coming from the main project file (MAIN/pillar/... or on the node /srv/pillar ), or if you use it standalone it need to be provided by you.
 
 .Example HANA pillar
 [subs="attributes,quotes"]
@@ -1042,14 +1042,14 @@ hana:
         primary_timeout: 3000
 ----
 
-1. The formular is executed within the salt of _hana_node_ state files
-2. If you want to execute the formular manually, salt
+1. The formula is executed within the salt of _hana_node_ state files
+2. If you want to execute the formula manually, salt
 ----
 salt '*' state.apply hana_node.sls
 ----
 //fixme - check if this is ok.
 
-So with help of the pillar data and the state file and the formular, salt will create all needed configuration on the node, installs HANA and if enabled install hana systemreplication and set up the pacemaker cluster, right for {cloud}.
+So with help of the pillar data and the state file and the formula, Salt will create all needed configuration on the node, installs HANA and if enabled install hana systemreplication and set up the pacemaker cluster, right for {cloud}.
 
 The _templates_ directory provides the needed files for cluster rules, the needed hook for HANA and the monitoring exporter.  All the values come from the best practice guides SUSE created with the Cloudprovider {cloud} for the HA scenario.
 
@@ -1106,15 +1106,15 @@ states/
         └── pas.inifile.params.j2
 ----
 
-As you know from earlier descriptions, we need a pillar file with the configuration. There is one example in the path which could be used as base for a standalone salt usage. In general the pillar data get handed over from the terraform main project.
+As you know from earlier descriptions, we need a pillar file with the configuration. There is one example in the path which could be used as base for a standalone Salt usage. In general the pillar data get handed over from the Terraform main project.
 
-As SAP Netweaver has in an HA environment more nodes, therefore the pillar file is much bigger as eg. the one for HANA. So please have a look by yourself of the example file.
+As SAP Netweaver has in an HA environment more nodes, therefore the pillar file is much bigger than the one for HANA. Please have a look by yourself of the example file.
 
 Similar as before, the starting point is the _init.sls_ file where the workflow is defined.
 
-The _templates_ directory provides the needed files for NW cluster rules and the values come from the best practice guides SUSE created with the Cloudprovider {cloud} for the ERS scenario.
+The _templates_ directory provides the needed files for NW cluster rules and the values come from the best practice guides SUSE created with {cloud} for the ERS scenario.
 
-In addition here are the templates which are used by SWPM for a automated handfree installation of the SAP Netweaver services.
+In addition here are the templates which are used by SWPM for an automated hands-free installation of the SAP Netweaver services.
 
 ==== High Availability formula
 
@@ -1147,12 +1147,12 @@ states
 The main difference to the HANA and Netweaver formula is that the _init.sls_ make already use of _jinja_.
 Jinja is the default templating language in SLS files and get evaluated before YAML, which means it is evaluated before the States are run.
 
-The most basic usage of Jinja in state files is using control structures to wrap conditional or redundant state elements
+The most basic usage of Jinja in state files is using control structures to wrap conditional or redundant state elements.
 
 
 ==== Additional Services
 
-The additinal services depend on what is used or available of the cloudprovider, but needed by SAP HANA or SAP Netweaver or the HA services.
+The additinal services depend on what is used or available from the cloud provider, but needed by SAP HANA or SAP Netweaver or the HA services.
 
 ===== NFS service
 

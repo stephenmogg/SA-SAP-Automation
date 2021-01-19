@@ -18,7 +18,7 @@ Technology components utilized as a part of this solution: CSP Specific, Network
 
 === Terraform
 
-With help of terraform and the modules for the cloudprovider we create the infrastructure for the SAP application and some supporting services.
+With help of Terraform and the modules for the cloudprovider we create the infrastructure for the SAP application and some supporting services.
 
 The Terraform templates provide everything needed to create the right infrastructure components and provide in addition a lot of predefined possible choices to make it more simple to create the right virtual machines, disks, networks etc.
 
@@ -40,9 +40,9 @@ Top files are named _top.sls_ by default and they are so-named because they alwa
 
 ==== SAP Sizing
 
-To make the SAP sizing more simple we have introduced pre-defined sizes with well known abbreviation from T-Shirt sizes Small (S), Medium (M), Large (L).
+To make the SAP sizing more simple we have introduced pre-defined sizes with well known abbreviations from T-Shirt sizes Small (S), Medium (M), Large (L).
 
-The Small (S) size is thought for non productive scenarios, where as the Medium (M) and Large (L) sizes for production setups, where certified instance types being used.
+The Small (S) size is suitable for non productive scenarios, whereas the Medium (M) and Large (L) sizes for production setups, where certified instance types being used.
 
 But you can also tweak such size or do complete your own settings.
 
@@ -75,15 +75,20 @@ This mean we need to create one additional machine for the building blocks to bu
 
 ifeval::[ "{cloud}" == "Azure" ]
 
-To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic
-to only the active node.
+To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic to only the active node.
 
 image::azure_loadbalancer.png[scaledwidth="80%"]
 
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS
+
+Within an AWS SAP HA Cluster, the HANA Primary and Seconday nodes each reside in 2 different Availability Zones (AZs), therefore to provide an IP address which is portable between the 2 AZs, an AWS Overlay IP address is required. This uses a specific routing entry which can send network traffic to an instance, no matter which Availability Zones (and subnet) the instance is located in.
+
+Overlay IP addresses have one requirement, they need to have a CIDR range outside of the VPC. 
+
+It is important to note that this IP address is not externally available, for this the Route53 service should be used. (this is currently not supported by the SUSE SAP Automation framework).
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -148,7 +153,7 @@ image::Azure_fence_iscsi.png[scaledwidth="80%"]
 
 // fixme - this is not implemented from the automation as of today
 In the meantime there is a way in the Azure API to "kill" a virtual machine, so that the fencing agent can make use of it and no additional machine is needed if the fence agent is used.
-The drawback here is, in order to talk to the Azure API, there is a need for public network connection.
+The drawback here is requiring a public network connection to talk to the Azure API.
 
 image::Azure_fence_arm.png[scaledwidth="80%"]
 

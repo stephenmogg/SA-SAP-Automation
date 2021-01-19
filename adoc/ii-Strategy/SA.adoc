@@ -9,7 +9,7 @@ The strategy elements are typically used to model the strategic direction and ch
 
 Most SAP services are deployed on premises with well established procedures, but it is important to plan and size the required hardware several years ahead and estimate the maximum workload e.g. for the next 5 years. 
 
-It is dificult to predict the future, so when considering requirments such as capacity, as there are many factors which may affect this over the system lifespan, the values selected for this often ends up being a 'best guess'.
+It is often dificult to predict the future as there are many factors which may affect the system over its lifespan, the values selected for something like capacity often end up being a 'best guess'.
 
 Today, with quickly changing environments, many businesses need to accelerate innovation and increase agility across their business.  This allows them to acheive a faster time-to-market in addition to lowering costs.
 
@@ -19,7 +19,7 @@ With moving products and services into the cloud, a modern trend in organization
 
 One key example here is that you no longer need to plan the hardware sizing for the next 5 years, as a larger, faster or even smaller infrastructure is only one reboot away. 
 
-"Rightsizing" or infrastructure optimization remains an important task and should be front of mind when managing an SAP Landscape in the cloud. Not takeing care of this cloud benefit could have large cost implications, companies that “rightsize” their workloads are often able to cut costs by of 30-60%.
+"Rightsizing" or infrastructure optimization remains an important task and should be front of mind when managing an SAP Landscape in the cloud. Not taking care of this cloud benefit could have large cost implications, companies that “rightsize” their workloads are often able to cut costs by of 30-60%.
 
 //image::SA-Strategy.png[title="Solution Architecture - {useCase} Strategy", scaledwidth=80%]
 
@@ -46,7 +46,7 @@ With SUSE ready to run images available in the cloud providers marketplace it is
 
 Maintenance:: With the public cloud, IT departments no longer have to worry about managing and maintaining the hardware and underlying infrastructure, the cloud service provider handles this for your organization and frees up company resources to focus on other business acivities.
       
-Resiliency:: For businesses these days, uptime is of prime importance to ensure day-to-day business operatinos run smoothly. Moving to the cloud maximizes uptime and reduces downtime.
+Resiliency:: For businesses these days, uptime is of prime importance to ensure day-to-day business operations run smoothly. Moving to the cloud maximizes uptime and reduces downtime.
 The cloud improves disaster recovery and business continuity without the need to spend a huge amount of capital on robust disaster recovery tools.  Cloud providers offer a variety of services to help protect businesses from any security threat or outage.
 
 +
@@ -56,7 +56,7 @@ Remote access:: With the cloud, your employees can access data from anywhere, an
 +    
 SUSE products natively provides many options for remote access and control.
     
-So overall, public clouds offer significant benefits for all customers regardless of size. The use of public cloud resources can lowerb infrastructure costs and improve the scalability, agility, flexibility and availablity of applications. 
+So overall, public clouds offer significant benefits for all customers regardless of size. The use of public cloud resources can lower infrastructure costs and improve the scalability, agility, flexibility and availablity of applications. 
 
 ////
 === Categories and Variants

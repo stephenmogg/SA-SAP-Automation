@@ -21,7 +21,6 @@ Application workloads will consider the components, these will include, but not 
 
 SUSE Linux Enterprise Server for SAP Applicatinos is a product formed from a bundle of software and services.  It is targeted specifically at customers running SAP workloads.  At it's foundation is SUSE Linux Enterprise Server and the High Availablity Extension with many additional components and benefits for running SAP Applications.
 
-
 === SAP Application
 
 In order to use the automation project, there are preliminary steps which need to be taken. One of these is to prepare the SAP installation software. The SAP software can be downloaded from https://launchpad.support.sap.com/#/softwarecenter, this will need to be performed manually before you start the automated deployment.
@@ -48,7 +47,8 @@ When deploying on AWS, an S3 Bucket is required to store the SAP Media. Using th
 * Create a folder within the bucket.
 * Upload the SAP media to the folder within the S3 bucket.
 
-image::images/s3_bucket.png[width=800] 
+image::s3_bucket.png[scalewidth=80%] 
+
 
 endif::[]
 
@@ -70,8 +70,6 @@ Terraform is seen as cloud-agnostic and allows a single configuration to be used
 
 It is imporant to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and Google Cloud.
 
-// - @PS - What are we trying to say here? ----> , this can be seen when looking at the configuration details of infrastructure components, features and management or security or scalability, etc.
-
 Terraform’s approach is that code is written specific to a (cloud)provider and will take advantage of the provider’s unique functionality, whilst the code will need to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
 
 The name Terraform uses for these cloud specific modules is "provider". So for example the _Azure Provider_ can be used to configure infrastructure in Microsoft Azure using the Azure Resource Manager API's.
@@ -91,7 +89,7 @@ endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 
-In Addition, AWS provides an easy to access web based commandline shell where Terraform can be downloaded and installed.
+In addition, AWS provides an easy to access web based command line shell where Terraform can be downloaded and installed.
 
 https://console.aws.amazon.com/cloudshell/
 
@@ -101,9 +99,7 @@ endif::[]
 
 The storage configuration included in the Terraform files are provided as an initial suggestion, based on best practices. It is still important to continue analyzing the storage utilization patterns during runtime of the application, it may be that the SAP workload is not utilizing all the storage bandwidth or IOPS provided. Therefore, downsizing storage may be an option.
 
-Analysis may also show that more storage throughput than initially suggested is required, in which case increasing the capacity, IOPS or throughput of the storage may be needed. 
-
-// Independent what you needs between storage capacity required, storage latency needed, storage throughput and IOPS required and least expensive configuration, {cloud} offers enough different storage types with different capabilities and different price points to find and adjust to the right compromise for you and your SAP workload.
+The suggestions from the Terraform files for the storage configurations are meant as good directions to start with. But you still should analyze the storage utilization patterns during runtime of the application. It could be the case that you realize that you are not utilizing all the storage bandwidth or IOPS provided. Therefore you might consider downsizing on storage or you will see the opposite way and your workload might need more storage throughput than suggested with these configurations. As a result, you might need to change the capacity, IOPS or throughput. Independent what you needs between storage capacity required, storage latency needed, storage throughput and IOPS required and least expensive configuration, {cloud} offers enough different storage types with different capabilities and different price points to find and adjust to the right compromise for you and your SAP workload.
 
 === SALT
 
@@ -115,13 +111,11 @@ SaltStack’s configuration management system lets you define the applications, 
 
 SLES-for-SAP Applications ships with all the Salt tools as part of the distribution and are available to use as needed.
 
-
 Salt formulas can be applied in two ways:
 
 Salt Master with Salt Client. All steps are executed on the Salt Master machine which sends instructions to the client to perform the required configuration actions.
 
 Salt Client (Minion) only. All steps in must be executed on each individual Salt client where the formulas need to be executed.  This is the approach used by the SUSE Automation framework as it removes the need for a central master system.
-
 
 ==== Netweaver
 
@@ -135,7 +129,7 @@ The Netweaver formula for bootstrapping and managing the SAP Netweaver platform 
  ** AAS instance
  ** Database instance (currently only HANA)
 
-In addition, the formula sets up all of the pre-requirements as:
+Besides that, the formula sets up all of the prerequisites as:
 
  * Hostnames
  * Virtual addresses
@@ -179,9 +173,6 @@ ifeval::[ "{cloud}" == "GCP" ]
  * GCP Stuff
 endif::[]
 
-// this should be cloud specific
-Depending on the cloud requirements it may need an iSCSI server to be able to provide a shared disk for fencing where we use the iscsi-formula from SaltStack
-
 The formula provides the capability to create and configure a multi node HA cluster. Here are some of the features:
 
 * Initialize a cluster
@@ -194,18 +185,28 @@ The formula provides the capability to create and configure a multi node HA clus
 * Configure the resource agents
 * Install and configure the monitoring ha_cluster_exporter
 
+// SM: Q: this should be cloud specific; 
+// PS: A: we are here describe the formulas
+//        and no as this concept can be used at any cloud for sbd fencing. e.g. in azure we have more than one option
+// FIXME - provide more information on the case and better explanation
+Depending on the cloud requirements it may need an iSCSI server to be able to provide a shared disk for fencing where we use the iscsi-formula from SaltStack
+
 ===== Other dependent services 
 
-//Azure specific?
+// SM: Azure specific?
+// PS: No, as this could be used on any cloud. Azure provides 2 additional ways
+//     and we describe the formulas here
+// FIXME - provide more information on the case
 ====== HA NFS Service 
 
 To build a HA NFS Service if there is none available, we can create one with help of 3 Linux services and the following
 
  * DRBD formula
  * HA formula
- * NFS formula from  SaltStack
+ * NFS formula from SaltStack
 
 ====== iSCSI Service
+
 The iSCSI-formula from SaltStack is able to deploy iSNS, iSCSI initiator, and iSCSI target packages, manage configuration files and then starts the associated iSCSI services.
 
 ====== NFS formula

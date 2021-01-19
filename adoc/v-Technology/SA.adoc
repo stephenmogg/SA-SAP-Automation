@@ -6,21 +6,19 @@ The Technology Layer elements are typically used to model the Technology Archite
 
 * *_How_* various technology components can facilitate this
 
-Technology components utilized as a part of this solution: CSP Specific, Networking, Instance Types, etc. 
+Technology components utilized as a part of this solution: CSP Specific, Networking, Instance Types, etc.
 
 ## Technology (attributes)
 
 #ADOC_ATTRIBUTES+=" --attribute Azure=1"
 #ADOC_ATTRIBUTES+=" --attribute instances-Azure=1"
 #ADOC_ATTRIBUTES+=" --attribute SBD-Storage-Azure=1"
- 
+
 ////
 
 === Terraform
 
 Terraform along with the specific cloud provider modules is used to create the infrastructure to support the SAP application and supporting services.
-
-//With help of terraform and the modules for the cloudprovider we create the infrastructure for the SAP application and some supporting services.
 
 The Terraform templates describe everything needed to create the desired infrastructure components.  They also provide a range of predefined settings to make creating the correct virtual machines, disks, networks etc. simpler.
 
@@ -66,7 +64,7 @@ The distributed deployment, is the recommend way for production environments whe
 
 //@PS - what does the below mean?
 
-The project uses the needed building blocks to create this landscape within the top.sls file, depending on the role of the node, the needed actions are triggered.
+The automation project uses the building blocks described before, to create the distributed landscape. It is described within the top.sls file, depending on the role of the node.
 
 ==== High Availability
 
@@ -78,10 +76,9 @@ Therefore, for each of these building blocks, one additional machine is required
 
 ifeval::[ "{cloud}" == "Azure" ]
 
-To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic
-to only the active node.
+To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic to only the active node.
 
-image::azure_loadbalancer.png[]
+image::azure_loadbalancer.png[scaledwidth="80%"]
 
 endif::[]
 
@@ -115,7 +112,7 @@ ifeval::[ "{cloud}" == "Azure" ]
 
 As we started with Azure, there was no NFS service available, so we need to build some with the tools we ship in {sles4sap}. As the NFS service should be high available, we need a second virtual machine to build a two node cluster.
 
-image::Azure_HA_NFS_Service.png[]
+image::Azure_HA_NFS_Service.png[scaledwidth="80%"]
 
 Over the time, Azure provide more and more services. So as of time of writing, there is a native NFS service with help of Netapp available (Azure Netapp files - ANF) and the Azure file service is extending in this direction too.
 //todo - link
@@ -137,7 +134,7 @@ endif::[]
 
 If the cloud native NFS service is used, no additional virtual machines will be created and the native service need to be set up in advance.
 
-===== Fencing service 
+===== Fencing service
 
 For high availability clusters, a mechanism to switch off one machine in the case of a so called "split-brain" is needed. This is used  when the 2 nodes can no longer communicate with each other. This action is called 'fencing'.
 
@@ -154,16 +151,16 @@ When originally desinging this solution, the Azure infrastructure did not provid
 
 This requires one additional server to provide a iSCSI service.
 
-image::Azure_fence_iscsi.png[]
+image::Azure_fence_iscsi.png[scaledwidth="80%"]
 
 // fixme - this is not implemented from the automation as of today
 Following recent improvements, there is now a method in the Azure API to "kill" a virtual machine, so that the fencing agent can make use of it and no additional iSCSI machine is needed if the fence agent is used.
 The drawback here is, in order to talk to the Azure API, there is a need for public network connection.
 
-image::Azure_fence_arm.png[]
+image::Azure_fence_arm.png[scaledwidth="80%"]
 
-So you can choose between two ways 
-. SDB fencing with help of an iSCSI service 
+So you can choose between two ways
+. SDB fencing with help of an iSCSI service
 . agent based fencing through API access
 endif::[]
 

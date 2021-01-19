@@ -48,7 +48,8 @@ When deploying on AWS, an S3 Bucket is required to store the SAP Media. Using th
 * Create a folder within the bucket.
 * Upload the SAP media to the folder within the S3 bucket.
 
-image::images/s3_bucket.png[width=800] 
+image::s3_bucket.png[scalewidth=80%] 
+
 
 endif::[]
 

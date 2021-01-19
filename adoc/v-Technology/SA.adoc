@@ -18,9 +18,9 @@ Technology components utilized as a part of this solution: CSP Specific, Network
 
 === Terraform
 
-With help of terraform and the modules for the cloudprovider we create the infrastructure for the SAP application and some supporting services.
+Terraform along with the specific cloud provider modules is used to create the infrastructure to support the SAP application and supporting services.
 
-The Terraform templates provide everything needed to create the right infrastructure components and provide in addition a lot of predefined possible choices to make it more simple to create the right virtual machines, disks, networks etc.
+The Terraform templates describe everything needed to create the desired infrastructure components.  They also provide a range of predefined settings to make creating the correct virtual machines, disks, networks etc. simpler.
 
 === Salt
 
@@ -30,53 +30,53 @@ Salt is a different approach to infrastructure management, founded on the idea t
 
 The backbone of Salt is the remote execution engine, which creates a high-speed, secure and bi-directional communication net for groups of systems. On top of this communication system, Salt provides an extremely fast, flexible, and easy-to-use configuration management system called Salt States.
 
-Our SAP landscape is made up of groups of machines, each machine in the group performing a role. Those groups of machines work in concert with each other to create an application stack.
+An SAP landscape is made up of groups of machines, each machine in the group performing a role. Those groups of machines work in concert with each other to create an application stack.
 
-To effectively manage those groups of machines, an administrator needs to be able to create roles for those groups. As example, a group of machines that serve front-end web traffic might have roles which indicate that those machines should all have the webserver package installed and that the web service should always be running.
+To effectively manage these groups of machines, an administrator needs to be able to create roles for those groups. As example, a group of machines that serve front-end web traffic might have roles which indicate that those machines should all have the webserver package installed and that the web service should always be running.
 
 In Salt, the file which contains a mapping between groups of machines on a network and the configuration roles that should be applied to them is called a _top file_.
 
-Top files are named _top.sls_ by default and they are so-named because they always exist in the "top" of a directory hierarchy that contains state files. That directory hierarchy is called a state tree and this is what we use to reference the building blocks for the SAP Landscape.
+Top files are named _top.sls_ by default and they are so-named because they always exist in the "top" of a directory hierarchy that contains state files. That directory hierarchy is called a state tree and this is what is used to reference the building blocks for the SAP Landscape.
 
 ==== SAP Sizing
 
-To make the SAP sizing more simple we have introduced pre-defined sizes with well known abbreviation from T-Shirt sizes Small (S), Medium (M), Large (L).
+To make the SAP sizing more simple SUSE have introduced pre-defined sizes with well known abbreviation from T-Shirt sizes Small (S), Medium (M), Large (L).
 
-The Small (S) size is thought for non productive scenarios, where as the Medium (M) and Large (L) sizes for production setups, where certified instance types being used.
+The Small (S) size is targeted at non productive scenarios, where as the Medium (M) and Large (L) sizes are recommended for production setups, where certified instance types should be used.
 
-But you can also tweak such size or do complete your own settings.
+It is possible to tweak these pre-defined sizes or create a set of custom settings.
 
-As sizing is important, you need to choose the right instance sizes from the cloud provider which are certified by SAP and choose the right number of disks to provide the right I/O, as similar the network throughput for the solution.
+As sizing is critical, it is important to choose the right instance sizes from the cloud provider which are certified by SAP and choose the right number of disks to provide the right I/O, as similar the network throughput for the solution.
 
 ==== Building Blocks
 
-Our main building blocks for an SAP Landscape are the _Application Layer_, based on Netweaver with SAP Central Services (xSCS) with an Primary Application Server (PAS) and Additional application server (AAS) and the _Database Layer_, which is in our case SAP HANA.
+The main building blocks for an SAP Landscape are the _Application Layer_, based on Netweaver with SAP Central Services (xSCS) with an Primary Application Server (PAS) and Additional application server (AAS) and the _Database Layer_, which within the Automation project is SAP HANA.
 
-There are two possible models how you can deploy SAP Business Suite, a centralized deployment where all runs on one server or distributed deployment where every service has its own node.
+There are two possible models how SAP Business Suite can be deployed, a centralized deployment where all runs on one server or distributed deployment where every service has its own node.
 
 The centralized deployment is mostly used for non-production environments such as sandbox and development environments.
 
 //todo - picture
 
-The distributed deployment, is the recommend way for production environments where each of the SAP application layer components is independently installed on different instances.
-Which is the scenario we have choosen for the automation.
+The distributed deployment, is the recommend way for production environments where each of the SAP application layer components is independently installed on different instances. This is the scenario used within the automation project.
 
 //todo - picture
 
-We use the needed building blocks to build this landscape within the top.sls file and depending on the role of the node, the needed actions are triggered.
+//@PS - what does the below mean?
+
+The automation project uses the building blocks described before, to create the distributed landscape. It is described within the top.sls file, depending on the role of the node.
 
 ==== High Availability
 
-The two main building blocks could be made high available in order to have less downtime and eliminate single point of failures. As there are many scenarios available from SAP, we support the most used scenarios, with the solution.
+There are two main building blocks which should be made highly available in order to acheive less downtime and eliminate single point of failures within the SAP Landscape. As there are many scenarios available from SAP, the Automation project supports the most popular scenarios.
 
-For the Central Services this is Enqueue Replication and for the database its the HANA Systemreplication.
+For the Central Services this is Enqueue Replication and for the database its the HANA System Replication.
 
-This mean we need to create one additional machine for the building blocks to build a two-node cluster within the HA Scenarios.
+Therefore, for each of these building blocks, one additional machine is required to build a two-node cluster within the HA Scenarios.
 
 ifeval::[ "{cloud}" == "Azure" ]
 
-To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic
-to only the active node.
+To provide something like a "virtual IP address" which is able to move between the two cluster nodes, we use the _Standard Load Balancer_ service from Azure to provide traffic to only the active node.
 
 image::azure_loadbalancer.png[scaledwidth="80%"]
 
@@ -103,7 +103,8 @@ endif::[]
 
 ==== Additional Services
 
-Depending on offered services from the cloud provider, we may need to build some services by our own if they are not there or use whats available, and similar to the above steps its reflected within the top.sls file.
+Depending on the available services from the cloud provider, additional funcationality may need to be created as part of the deployment.  i.e. NFS.  This is reflected within the top.sls file.
+
 
 ===== NFS service
 
@@ -131,29 +132,29 @@ ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt
 endif::[]
 
-If the cloud native NFS service is used, not additional virtual machines will be created and the native service need to be set up in forehand.
+If the cloud native NFS service is used, no additional virtual machines will be created and the native service need to be set up in advance.
 
 ===== Fencing service
 
-For high available clusters, we need a mechanism to switch off one machine in the case of a so called "split-brain", mean when they can not communicate with each other anymore.
+For high availability clusters, a mechanism to switch off one machine in the case of a so called "split-brain" is needed. This is used  when the 2 nodes can no longer communicate with each other. This action is called 'fencing'.
 
-There are several methods which can be used and it depends again of the possibilities of the infrastructure.
+There are several methods which can be used depending on the capability of the cloud provider.
 
 ifeval::[ "{cloud}" == "Azure" ]
-As we started with Azure, Microsoft and SUSE created a fencing agent for the cluster. Such a fencing agent should be remove a machine as fast as possible (immediate) from the cluster, to make sure that there is only one active node, in order to avoid data corruption.
+As Azure was the first Hyperscaler to support SUSE clustering, Microsoft and SUSE created a fencing agent for the cluster. This fencing agent should remove a machine as quickly as possible (immediately) from the cluster, to ensure that there is only one active node.  This avoids data corruption.
 
-At this point of time, the Azure infrastructure provided only a way to graceful shutdown a machine, which took 10-15 minutes - which is by far too long for the split-brain case.
+Initially, the Azure infrastructure only provided a way to gracefully shutdown a machine, which took 10-15 minutes.  This is too long for the split-brain fencing requirement.
 
-We need to create our own mechanism to fence machines. One technology we provide within our HA Extension is, using storage as additional communication between the nodes for such a split-brain case. This needs a raw shared disk, in order that both nodes can write messages to a central place. It is called SBD - Stonith Block Device or Split Brain Detector.
+To improve on the time taken to fence nodes in Azure, SUSE implemented an OS native mechanism to fence virtual machines. This technology is provided within the SUSE HA Extension and uses storage as additional communication layer between the nodes. This requires a raw shared disk, this provides a mechanism so that both nodes can write messages to a central place. It is called SBD - Stonith Block Device or Split Brain Detector.
 
-Unfortunately the Azure infrastructure did, at this point, not provide such a raw disk service, so we need to build it with the Linux tools we have in the distribution. With help of a iSCSI server, we can provide a raw shared disk within the cloud and therefore we are able to use the SBD fencing method which with help of the linux watchdog mechanism provides a fast and reliable fencing tooling.
+When originally desinging this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes. Therefore it needed to be built with the Linux tools available in the SUSE Linux distribution. With help of a iSCSI server,  a raw shared disk within the cloud can be provided and therefore, the SBD fencing method which with help of the linux watchdog mechanism provides a fast and reliable fencing tooling.
 
-This mean one additional server to provide a iSCSI service.
+This requires one additional server to provide a iSCSI service.
 
 image::Azure_fence_iscsi.png[scaledwidth="80%"]
 
 // fixme - this is not implemented from the automation as of today
-In the meantime there is a way in the Azure API to "kill" a virtual machine, so that the fencing agent can make use of it and no additional machine is needed if the fence agent is used.
+Following recent improvements, there is now a method in the Azure API to "kill" a virtual machine, so that the fencing agent can make use of it and no additional iSCSI machine is needed if the fence agent is used.
 The drawback here is, in order to talk to the Azure API, there is a need for public network connection.
 
 image::Azure_fence_arm.png[scaledwidth="80%"]
@@ -168,7 +169,7 @@ AWS Supports the use of the AWS EC2 STONITH mechanism.  This is shipped and supp
 
 Behind the scenes, it uses the AWS CLI, EC2 Tags and IAM as a method to securely identify a node and then fence it. 
 
-// Fixme - fact check. It requires internet connectivity to ensure the EC2 endpoint can be reached.
+It requires internet connectivity to ensure the EC2 endpoint can be reached.
 
 A working STONITH method is mandatory to run a supported SUSE cluster on AWS.
 
@@ -184,4 +185,4 @@ endif::[]
 
 ===== Monitoring service
 
-If you decide to use also the monitoring we provide with help of Prometheus and Grafana, we need a additional virtual machine for this service.
+If the Monitoring Service is to be deployed as part of the Automation, an additional virtual machine for this service to support the he Prometheus and Grafana services used to provide this capability.

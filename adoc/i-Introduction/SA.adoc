@@ -8,7 +8,7 @@ When SUSE first released SUSE Linux Enterprise Server for SAP Applications, it a
 
 image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,scaledwidth="80%"]
 
-*Simplify*::      the deployment of an SAP Landscape in The Public Cloud for dev, test, and production.
+*Simplify*::      the deployment of an SAP Landscape in the public cloud for dev, test, and production.
 
 *Modernize*::     customer environments by taking advantage of the benefits of the public cloud.
 

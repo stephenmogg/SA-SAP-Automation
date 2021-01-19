@@ -1,4 +1,3 @@
-
 == Physical
 
 ////
@@ -17,7 +16,7 @@ New version could have more features or slightly changed files as shown here, bu
 still be applicable.
 ---
 
-=== First make sure that all *pre-requirements* are done:
+=== First make sure that all *pre-requirements* are met:
 
 ifeval::[ "{cloud}" == "Azure" ]
 
@@ -28,7 +27,7 @@ ifeval::[ "{cloud}" == "Azure" ]
 . Have created an Azure File Share
 . Copy or write down the the name of the storage account and the storage key, which is similar to a password.
 . Copy the SAP HANA install media to the Azure fileshare
-. extract the install media
+. Extract the HANA install media (if required)
 
 endif::[]
 
@@ -44,7 +43,7 @@ ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt - NFS share
 endif::[]
 
-As suggestion, we recommend the following directory structure:
+SUSE recommend to use the following directory structure:
 //fixme check directory structure
 ----
 share
@@ -83,23 +82,23 @@ After moving into this directory you will see the following directory structure:
 
 The directories with the names of the _cloud provider_ (aws,azure,gcp,libvirt) are the Terraform templates for the relevant provider.
 
-The _doc_ directory has some short but important documents for certain parts of the solution
+The _doc_ directory has some brief but important documents for certain parts of the solution
 
-The directory _generic_modules_ provides modules which get used by all cloud vendor templates, like common variables, local executed functions within the building block, dependent actions on destroy and the functions to start the SALT execution on the module building blocks.
+The directory _generic_modules_ provides modules which are used by all cloud vendor templates, e.g. common variables, local executed functions within the building block, dependent actions on destroy and the functions to start the SALT execution on the module building blocks.
 
 The other directories _pillar_, _pillar_examples_ and _salt_ contain the part of the Salt configuration management.
 
 === Terraform Building Blocks
 
-Terraform relies on so called "providers" to interact with remote systems.
+Terraform relies on 'providers' to interact with remote cloud frameworks.
 
-Providers are plugins and released independent from Terraform itself, this mean that each provider has its own series of version numbers.
+Providers are plugins and released independently from Terraform itself, this mean that each provider has its own series of version numbers.
 
 Each Terraform module must declare which providers it requires, so that Terraform can install and use them.
 
 If we switch to into a _cloud provider_ directory, we see one directory _modules_ and several _.tf_ files which all together build the Terraform template.
 
-When creating Terraform configurations, it's best practice to separate out parts of the configuration into individual .tf files. This provides better organization and readability.
+When creating Terraform configurations, best practice is to separate out parts of the configuration into individual .tf files. This provides better organization and readability.
 ----
 ├── infrastructure.tf
 ├── main.tf
@@ -115,14 +114,13 @@ The _infrastructure.tf_ file:: provides the cloud specific setup with the releva
 
 The _main.tf_ file:: provides all the values for the various variables needed for the modules. It is the main entry point for terraform.
 
-The _modules_ directory:: provides more subdirectories which are the nested child modules which represent our technical building blocks
+The _modules_ directory:: provides more subdirectories which are the nested child modules which represent the technical building blocks in the project.
 
-The _output.tf_ file:: provides the values handed out from the modules, e.g to be used or displayed.
+The _output.tf_ file:: provides the values returned from the modules, i.e to be used or displayed.
 
-_terraform.tfvars__:: is a variable definitions file which get automatically loaded instead of providing values manually and is the main file and maybe the only terrafrom file which should get changed.
+_terraform.tfvars__:: is a variable definitions file which gets automatically consumed.  This is used instead of providing values manually, it is the main configuration file and should be the only Terraform file which requires modification.
 
-_terraform.tfvars.example_:: is a example file with many pre-filled key-value pairs to set up
-the solution. *You can use this as starting point for your own file.*
+_terraform.tfvars.example_:: is an example configuration file with many pre-filled values to set up the solution. *You can use this as starting point for your own file.*
 
 _variables.tf_:: provides all input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
 Please have a deep look at all variable and the comments for it, to get aware whats is possible.
@@ -130,39 +128,40 @@ Please have a deep look at all variable and the comments for it, to get aware wh
 e.g. the variable provisioner is like a switch to run either the Salt or Terraform portion only
 
 
-A _module_:: is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects.
+A _module_:: is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that infrastructure can be described in terms of it's architecture, rather than directly in terms of physical objects.
 +
-We use the modules as our technical building blocks e.g. a HANA node and the module directory consist again  _main.tf_, _variables.tf_, _outputs.tf_.
+Modules are used as part of the technical building blocks e.g. a HANA node and the module directory consist again  _main.tf_, _variables.tf_, _outputs.tf_.
 +
 These are the recommended filenames for a minimal module, even if they're empty. _main.tf_ is the primary entrypoint how to build the infrastructure building block.
 
-There is one additional file (salt_provisioner.tf), which take care of handing over the needed values to the Salt building blocks, with help of a special Terraform resource called _null_provider_, and _triggers_ the remote execution of Salt after Terraform has created the node with _connections_ to the new created machines.
-It now starts the _provision_ of the Salt part.
-It also create user-defined variables for Salt as grains file (/tmp/grains) for the respective module building block
+There is one additional file (salt_provisioner.tf), which is responsible for handing over the needed values to the salt building blocks. This is acheived by using a special terraform resource called _null_provider_, it remote executes the salt run to configure the instances and execute the application installation for the building block.
 
 === Simple Install
 
-We provide a example Terraform and example pillar files to provide a very easy start.
+SUSE provide an example terraform and example pillar files to provide a very easy start.
 
 . Open a browser and goto https://github.com/SUSE/ha-sap-terraform-deployments
 . Click on _tags_
 . Click on _6.0.0_
 +
-You see what's new and what has changed - so if you use older versions make sure you read it carefully.
+What's new and what has changed can be seen from this screen, so if older versions of the project are used, ensure to carefully review and understand the differences.
 +
-The _Usage_ section provides you with a link to a OpenBuildServer (OBS) repository where the RPM packages of the above discussed building blocks are stored which fit to the project version.
+The _Usage_ section provides you with a link to an OpenBuildServer (OBS) repository where the RPM packages of the building blocks discussed above are stored, each poject version has a unqiue repository.
 +
-You need to use this value within the Terraform variables file. So copy the line as described
+The value/link to the repository will need to be included within the terraform variables (teraform.tfvars) file. So copy the line as described.
 
-. Now go to _Assets_ and download the _Source code_ as .zip or .tar.gz
+. Next go to _Assets_ and download the _Source code_ as .zip or .tar.gz
 . Extract it into a folder on your computer
 . Goto this folder and into the sub folder _azure_
 . Copy the file _terraform.tfvars.example_ to _terraform.tfvars.example_
-    You will see many key-value variable pairs, some enabled some disabled with a _=_ in front.
-    To have a simple start, only touch what we describe below
-. So you need to change the region where you want to deploy the solution, so change _az_region = "westeurope"_ to the azure region you want to use
+    There are many key-value variable pairs, some enabled some disabled with a _=_ in front.
+    To have a simple start, only modify what is described below
+    
+ifeval::[ "{cloud}" == "Azure" ]
 
-. To make it more easy to start, please change all 4 images types to pay-as-you-go (PAYG) to do so replace all _offer_ settings with  "sles-sap-15-sp2" and _sku_ with 15
+. Change the region in which to deploy the solution, change _az_region = "westeurope"_ to the azure region required.
+
+. To make it easier to start, change all 4 images types to pay-as-you-go (PAYG) to do so replace all _offer_ settings with  "sles-sap-15-sp2" and _sku_ with 15
 +
 Do this for hana, iscsi, monitoring, drbd e.g.
 
@@ -175,18 +174,35 @@ with
     hana_public_sku   = "gen2"
 +
 This will make use of the on-demand images which have automatically all needed SUSE repositories attached.
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+AWS
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+GCP
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+Libvirt
+endif::[]
+
 
 . Next is to set the name of the _admin_user_ to a name which you want to use
 
 . The next step is to provide ssh keys to access the machines which will be deployed.
 +
-We recommend to create new keys for this as you need to provide both keys as they need to get copied to the machines.
-So change the two locations variables and point them to your files.
+SUSE recommend to create new sshkeys for the deployent as both keys will need to be provided as they are copied to the cluster nodes.
+Change the two locations variables and point them to your files.
+
 
 . As we need SAP Install Media for the automatic deployment of HANA, you need to create a azure storage account where you need to copy the HANA media. Best would be if you already have extracted the SAP media to save time during the deployment.
 +
-Then we need to provide the name,key and the path to this storage account to the system.
-So change
+
+ifeval::[ "{cloud}" == "Azure" ]
+
+Next, provide the name,key and the path to this storage account to the system, change:
 
     storage_account_name
     storage_account_key
@@ -209,7 +225,7 @@ So disable the other hana variables with adding a '#' in front of them
    ssh-keygen -t rsa -N '' -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
 ----
 
-. Please open the tfvars file again as we need a few final changes.
+. Open the tfvars file again to make final changes.
 +
 To create a HANA Systemreplication HA automation uncomment
 
@@ -240,17 +256,31 @@ by removing the _#_
 
 Now we have all settings for Terraform done and are nearly at the step to run the deployment, so save your changes.
 
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+AWS
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+GCP
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+Libvirt
+endif::[]
+
 . go one directory up and change into the _pillar_example_ directory and here into the _automatic_ directory where you can see 3 further directories. They will provide the configuration variable for the relevant services. This automatic folder will work for all cloud providers we support today, but is more complex as it normally need to be.
 
-. As we use only HANA, please switch to the _hana_ directory and open the file _hana_sls_.
-+
-The file looks quite complex - but we only need to change a few settings. Normally you would do provide a more simple file with your dedicated settings, but as we want to do it automatic, we use this file.
+. For a simple deployment, which uses only HANA, please switch to the _hana_ directory and open the file _hana_sls_.
 
-. We need to change the PRIMARY_SITE_NAME with some name you want to set and also the name for the SECONDARY_SITE_NAME.
-You can change other settings like the passwords, but for a simple test you can leave it.
-So save you changes and go back to the main directory.
+. Change the PRIMARY_SITE_NAME to the desired value, along with value for the SECONDARY_SITE_NAME.
+It is possible to change other settings e.g. passwords, but for a simple test do not modify these values.
+Save any changes to the file and and go back to the main directory.
 
 . Now we are ready to run terraform
+
+
 [subs="attributes,quotes"]
 ----
     az login
@@ -260,23 +290,57 @@ So save you changes and go back to the main directory.
     terraform apply
 ----
 
-If all goes well after ~40 Minutes you will have a installed and running HANA System Replication Cluster in Azure
+If all goes well after ~40 Minutes (depends on the speed of the instances) you will have a installed and running HANA System Replication Cluster
 
-As there is a jumphost with a public ip adress is created you simply can login to all machines from your machine with
+ifeval::[ "{cloud}" == "Azure" ]
+As a jumphost with a public ip address is created as part of the deployment, it is possible to login to any virtual machine as part of the deployment from your machine with
+[subs="attributes,quotes"]
+----
 
     ssh -J <adminuser>@jumphost <adminuser@targethost>
+----
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+AWS
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+GCP
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+Libvirt
+endif::[]
+
 
 ==== Terraform file details
 
 All files in the Terraform directory using the .tf file format will be automatically loaded during operations.
 
-The _infrastructure.tf_ provides the _data sources_ for the network setup, which are computed in other Terraform parts and some _locals_ variables used for mainly for the autogeneration of the network. In addition it provides the _resources_ for the network setup with virtual network, subnets and routing, resourcegroup to be used, a storage account, the all the network security groups (nsg) being used and defines the jumphost.
+The _infrastructure.tf_ provides the _data sources_ for the network setup, which are computed in other terraform parts and some _locals_ variables used for mainly for the autogeneration of the network. 
 
-The _main.tf_ file is our main file and calls the child modules which consist of our building blocks and the required input and output variables defined by the child module.
+ifeval::[ "{cloud}" == "Azure" ]
+In addition it provides the _resources_ for the network setup with virtual network, the needed subnet and routing, the needed resourcegroup to be used, a storage account, the all the network security groups (nsg) being used and defines the jumphost.
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+AWS
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+GCP
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+Libvirt
+endif::[]
+
+The _main.tf_ file is the main file and calls the child modules which consist of the various building blocks and the required input and output variables defined by the child module.
 It in addition provides the calculation for the autogenerated ip addresses.
 
 There is the (default) possibility to autogenerate network addresses for all nodes.
-For that you need to remove or comment all the variables related to the ip addresses (more information in variables.tf). With this approach all the addresses will be retrieved based in the provided virtual network addresses range (vnet_address_range).
+For that i is important to remove or comment all the variables related to the ip addresses (more information in variables.tf). With this approach all the addresses will be retrieved based in the provided virtual network addresses range (vnet_address_range).
 
 ifeval::[ "{cloud}" == "Azure" ]
 
@@ -363,7 +427,7 @@ Example based on `192.168.135.0/24` address range:
 |==========================
 endif::[]
 
-If you want to use already existing network resources (virtual network and subnets) it can be done by configuring the _terraform.tfvars_ file and adjusting the responsible variables.
+In order to reuse existing network resources (virtual network and subnets) configuring the _terraform.tfvars_ file and adjust the relevant variables.
 
 The example of how to use them is available at _terraform.tfvars.example_.
 
@@ -378,9 +442,7 @@ The values defined in the _variables.tf_ file are used to avoid hard-coding para
 
 As we have many variable values to input, so we define them in a variable definition file named _terraform.tfvars_ and Terraform will automatically load the variable values from the variable definition file if it is named terraform.tfvars
 
-
 The _modules_ directory provide all the needed resources to create the respective building block
-
 ----
 modules/
 ├── bastion
@@ -418,9 +480,8 @@ modules/
     └── variables.tf
 ----
 
-The respective file _salt_provisioner.tf_ set the *_role_* of the *node* and handover the needed variables which where set in terraform, *as custom Salt _grains_ for the node* with help of a Terraform file provisioner and starts the Salt provisioning process via  
-// #TODO via ?
-
+//FIXME
+The respective file _salt_provisioner.tf_ set the *_role_* of the *node* and handover the needed variables which where set in terraform, *as custom Salt _grains_ for the node* with help of a Terraform file provisioner and starts the Salt provisioning process.
 
 ==== SAP Sizing
 
@@ -437,7 +498,7 @@ This is a mandatory step and should not be underestimated.
 
 ifeval::[ "{cloud}" == "Azure" ]
 
-If you have some performance number, we want to make it easier to deploy the right instance sizes with the right disks types and performance, and the right network settings, we introduced a simplified SAP sizing which well known T-Shirt sizes, S,M,L and a very small Demo size.
+SUSE makes it easier to deploy the right instance sizes with the right disks types and performance, and the right network settings, a simplified SAP sizing has been introduced with well known T-Shirt sizes, S,M,L and a very small Demo size.
 
 Behind the sizes, are useful combinations to provide certain SAP performance scenarios.
 Below is a simple reference of the possible performance values
@@ -447,12 +508,11 @@ Below is a simple reference of the possible performance values
 * Medium <  70.000 SAPS
 * Large  < 180.000 SAPS
 
-You can simply customize the used settings within the terraform.tfvars, or more permanent in the variables file.
+It is possible to customize the settings within the terraform.tfvars, or provide a permanent solution in the variables file.
 
-The Demo and Small size are thought for non-production scenarios and do not use SAP certified instancetypes, whereas the Medium and Large are meant for production usage and therefor use SAP certified instance types. The setups also used the right disks and I/O behavior for production.
+The Demo and Small size are designed for non-production scenarios and do not use SAP certified instancetypes, whereas the Medium and Large are meant for production usage and therefore use SAP certified instance types. The setups also use the correct disks and I/O behavior for production.
 
 The SAPS values are meant for the landscape and not only for the database.
-
 
 ===== HANA
 
@@ -502,17 +562,17 @@ _sizes_:: The size dedicated for each logical volume and folder. Example 70,100#
 
 _paths_:: Folder where each volume group will be mounted. Example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/
 
-The values could be set with the variables "hana_vm_size", "hana_enable_accelerated_networking" and "hana_data_disks_configuration" in the _variables.tf_ file if you want to change the default (demo) or better in the _terraform.tfvars_ to set actual values.
+The values could be set with the variables "hana_vm_size", "hana_enable_accelerated_networking" and "hana_data_disks_configuration" in the _variables.tf_ file if a change to the default (demo) is needed, or better still, in the _terraform.tfvars_ to set actual values.
 
 ===== Netweaver
 
-NetWeaver is SAP's integrated technology platform and is not a product in itself, but it provides the needed services for the SAP business applications and always need a database to talk to.
+NetWeaver is SAP's integrated technology platform and is not a product in itself, but it provides the required services for the SAP business applications and always needs a database to talk to.
 
-So it's the overall task of sizing need to take care of Netweaver plus the Database and this is what we combined with the T-Shirt sizes of the solution.
+It is the overall task of sizing to fulfil the requirements of Netweaver plus the Database and this is what is combined within the T-Shirt sizes of the solution.
 
 
 ====== Demo
-Here the detail for the demo size
+Here is the detail for the demo size
 
 HANA instance size:: Standard_E4s_v3 with xx vCPU and yy GB memory
 Accelerated networking:: false
@@ -630,7 +690,7 @@ Accelerated networking:: true
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS
+AWS Sizing
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -663,19 +723,17 @@ States: combination of execution modules and other parts, have logic in and exec
 Execution modules: basic execution modules, to provide the methods in the lower layer (shaptools) to Salt
 shaptools: low level python wrapper (api) around SAP utilities and commands
 
-
 The provisioning workflow of the SAP building blocks consist of different steps:
 
 1. Bootstrap Salt installation and configuration
 2. Execute OS setup operations. Register to SCC if needed, updated the packages etc, with help of executing the states within _/srv/salt/os_setup_
-3. Execute predeployment operations with help of execution of the _/srv/salt/top.sls_ states. It update hosts and hostnames, install the formula packages, etc
-4. Execute deployment operations depending on the overall configuration settings like install SAP applications and configure and setup HA with the Salt formulas.
-
+3. Execute predeployment operations with help of execution of the _/srv/salt/top.sls_ states. It updates hosts and hostnames, installs the formula packages, etc
+4. Execute deployment operations depending on the overall configuration settings e.g. install SAP applications and configure and setup HA with the salt formulas.
 
 ==== Salt Overview
-The SAP building block are created with help of SALT formulas after provisioning the virtual machines with terraform. The formulas are shipped as RPM packages with {sles4sap}
+The SAP building blocks are created with help of SALT formulas after provisioning the virtual machines with terraform. The formulas are shipped as RPM packages with {sles4sap}
 
-The Salt formulas can be used with 2 different approaches: Salt master/minion or only Salt minion execution.
+The Salt formulas can be used with two different approaches: Salt master/minion or only Salt minion execution.
 
 With the automation solution we use the Salt minion option, the steps must be executed in all of the minions where the formulas are going to executed, which is done through a ssh connection.
 
@@ -878,7 +936,6 @@ base:
 
 SaltStack comes with an interface to derive information about the underlying system. This is called the _grains_ interface, because it presents Salt with grains of information.
 It collects static informations about the underlying managed system, like the operating system, domain name, IP address, kernel, OS type, memory, and many other system properties.
-
 We use custom grains to match the roles and the further states.
 
 The _role_ is a _custom grains_ define with help of the Terraform file _salt_provisioner.tf_ for the respective building block.
@@ -892,8 +949,8 @@ If you use the Salt formulas independent from the Terraform templates, you need 
 
 If you target a directory during a _state.apply_ or in the state Top file, Salt looks for an init.sls file in that directory and applies it.
 
-Within the _os_setup_ there is e.g. the minion configuration file
-
+Within the _os_setup_ directory 
+=======
 [subs="attributes,quotes"]
 ----
 │   ├── os_setup
@@ -904,8 +961,8 @@ Within the _os_setup_ there is e.g. the minion configuration file
 │   │   ├── registration.sls
 │   │   └── repos.sls
 ----
+there is one interesting file, the _minion_configuration.sls_. It provides the configuration how and where Salt / the Minion looks for Salt states and Salt formulas.
 
-One interesting file is the _minion_configuration.sls_ as it provides the configuration how and where Salt / the Minion looks for Salt states and Salt formulas.
 
 If we look deeper into one of the directories, e.g. _hana-node_ we will find more files in these directories.
 
@@ -930,7 +987,9 @@ If we look deeper into one of the directories, e.g. _hana-node_ we will find mor
 │   │       └── packages.sls
 ----
 
-Salt executes what is in _init.sls_ in the order listed in the file. When an Salt file is named init.sls it inherits the name of the directory path that contains it. This formula/state can then be referenced with the name of the directory.
+When targeting a directory during a _state.apply_ or in the state Top file, salt looks for an init.sls file in that directory and applies it.
+Salt executes what is in _init.sls_ in the order listed in the file. When an Salt file is named init.sls it inherits the name of the directory path that contains it. 
+This formula/state can then be referenced with the name of the directory.
 
 In our case here, it first it gets the SAP HANA Media with help of _hana_ins_media_, create the mountpoints and partition disks for SAP HANA and enter them into the fstab with help of the states in the _mount_ directory. Similar as before, the starting point is again the _init.sls_ file.
 
@@ -940,13 +999,15 @@ All other states files get processed in the same way as the example above.
 
 ==== Salt formula packages
 
-Formulas are pre-written Salt States. They are as open-ended as Salt States themselves and can be used for tasks such as installing a package, configuring, and starting a service, setting up users or permissions, and many other common tasks. Each Formula is intended to be immediately usable with sane defaults without any additional configuration.
+Formulas are pre-written Salt States. They are as open-ended as Salt States themselves and can be used for tasks such as installing a package, configuring, and starting a service, setting up users or permissions, and many other common tasks. 
+Each Formula is intended to be immediately usable with sane defaults without any additional configuration.
 
-Our formulas are configurable by including data in Pillar, what we discussed above.
+Our formulas are configurable by including data in _Pillar_ files, what we discussed above.
 During RPM install, the files of the packages end up in the directory _/usr/share/salt-formulas/states_, which we had defined as directory where Salt searches for file in addition to /srv/salt (see os_setup state above).
 
 .shaptools package
-If you have wondered above about the directories __modules_ and __states_, they come from the install of the package shaptools and provide a python wrapper for sap command line tools as API, in order to make it simple to be used from Salt. This package is a base dependency for most of our formula packages as it provides the SAP commands.
+If you have wondered above about the directories __modules_ and __states_, they come from the install of the package shaptools and provide a python wrapper for sap command line tools as API, in order to make it simple to be used from Salt. 
+This package is a base dependency for most of our formula packages as it provides the SAP commands.
 
 [subs="attributes,quotes"]
 ----
@@ -983,16 +1044,18 @@ states/
 ----
 
 Salt includes the Jinja2 template engine which can be used in Salt state files, Salt pillar files, and other files managed by Salt.
-
-Salt lets you use Jinja to access minion configuration values, grains and Salt pillar data, and call Salt execution modules. One of the most common uses of Jinja is to insert conditional statements into Salt pillar files.
+Salt lets you use Jinja to access minion configuration values, grains and Salt pillar data, and call Salt execution modules. 
+One of the most common uses of Jinja is to insert conditional statements into Salt pillar files.
 
 1. The formula package is installed through the HANA Node state files
-2. If you want to install it manual, please use zypper, as it will include the other dependent packages like salt-shaptools and habootstrap-formula
+2. To install it manually please use zypper, as this will include the other dependent packages such as salt-shaptools and habootstrap-formula
+
 ----
  zypper install saphanabootstrap-formula
 ----
 
-The Salt formula need some input data through a pillar file, which is coming from the main project file (MAIN/pillar/... or on the node /srv/pillar ), or if you use it standalone it need to be provided by you.
+The Salt formula will need input data through a pillar file which is part of the main project file (MAIN/pillar/... or on the node /srv/pillar )
+If you use the formula standalone the data need to be provided manually.
 
 .Example HANA pillar
 [subs="attributes,quotes"]
@@ -1043,7 +1106,7 @@ hana:
 ----
 
 1. The formula is executed within the salt of _hana_node_ state files
-2. If you want to execute the formula manually, salt
+2. If you want to execute the formula manually
 ----
 salt '*' state.apply hana_node.sls
 ----
@@ -1218,4 +1281,3 @@ The use of possible fenching method depends on the cloud providers possibilities
 //ifdef::Integrity[]
 //include::./Integrity/SA.adoc[]
 //endif::Integrity[]
-

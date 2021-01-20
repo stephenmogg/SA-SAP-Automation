@@ -32,7 +32,13 @@ ifeval::[ "{cloud}" == "Azure" ]
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS - S3 bucket
+. an AWS account, either the 'root' account, or one with enough IAM rights to run the project
+. installed the AWSCLI command line tool _aws_
+. installed _terraform_ (v12) (it comes with SLES within the public cloud module)
+. Downloaded the SAP HANA install media
+. Created an S3 Bucket
+. Copy the SAP HANA install media to a folder in the S3 Bucket
+. Extract the HANA install media (optional)
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -138,7 +144,7 @@ There is one additional file (salt_provisioner.tf), which is responsible for han
 
 === Simple Install
 
-SUSE provide an example terraform and example pillar files to provide a very easy start.
+SUSE provide an example terraform and example pillar files to provide an easy way to perform an initial simple deployment.
 
 . Open a browser and goto https://github.com/SUSE/ha-sap-terraform-deployments
 . Click on _tags_
@@ -152,7 +158,7 @@ The value/link to the repository will need to be included within the terraform v
 
 . Next go to _Assets_ and download the _Source code_ as .zip or .tar.gz
 . Extract it into a folder on your computer
-. Goto this folder and into the sub folder _azure_
+. Goto this folder and into the sub folder for the cloud provider
 . Copy the file _terraform.tfvars.example_ to _terraform.tfvars.example_
     There are many key-value variable pairs, some enabled some disabled with a _=_ in front.
     To have a simple start, only modify what is described below
@@ -177,7 +183,9 @@ This will make use of the on-demand images which have automatically all needed S
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS
+
+// not putting anything in here as the flow does not match the AWS config. //
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -259,7 +267,77 @@ Now we have all settings for Terraform done and are nearly at the step to run th
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS
+Edit terraform.tfvars and modify as follows. If duplicating the lines before modification, please ensure the original is commented out or the deployment will fail.
+
+Firstly, choose the region and instance types required for the deployment.  Ensure the region type is available in your selected region.
+
+----
+# Region where to deploy the configuration
+aws_region = "eu-central-1"
+
+# Instance type to use for the hana cluster nodes
+hana_instancetype = "r3.8xlarge"
+----
+
+Next, enter the path for the public and private SSH Keys that were generated earlier. eg. "~/.ssh/id_rsa.pub"
+
+----
+# SSH Public key location to configure access to the remote instances
+public_key_location = "/path/to/your/public/ssh/key"
+
+# Private SSH Key location
+private_key_location = "/path/to/your/private/ssh/key"
+----
+
+The following parameters select the version of SLES for SAP to deploy and where to deploy from.  For simplicity, the 'hana_os_owner' is set to the AWS Marketplace.  If existing SUSE Subscription can be used, this can be changed to use BYOS images.  Please refer to the project documentation.
+
+----
+hana_os_image = "suse-sles-sap-15-sp2"
+hana_os_owner = "679593333241"
+----
+
+This setting provides Terraform the credentials to deploy infrastrucuture on the AWS cloud.
+
+----
+aws_credentials = "~/.aws/credentials"
+----
+
+Modify the following to point to SAP Media that was uploaded to the S3 Bucket earlier.
+
+----
+hana_inst_master = "s3://mysapmedia/SAPHANA"
+
+hana_archive_file = "51052481_part1.exe"
+----
+
+To keep the cluster architecture simple and to provide additional packages needed to deploy, set the following.
+
+----
+hana_cluster_sbd_enabled = false
+
+# Repository url used to install HA/SAP deployment packages"
+ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v6"
+pre_deployment = true
+----
+
+Finally, ensure the following lines are commented *out* using a #
+
+----
+# hana_disk_device = "/dev/xvdd"
+# aws_access_key_id = my-access-key-id
+# aws_secret_access_key = my-secret-access-key
+----
+
+
+Subscribe to the AWS Marketplace offer
+
+To automatically deploy instances from the AWS Marketplace, ensure to 'Subscribe' to the offering.  
+
+A link for SLES for SAP 15 SP2 can be found here.
+https://aws.amazon.com/marketplace/server/procurement?productId=e9701ac9-43ee-4dda-b944-17c6c231c8db
+
+If a different version of SLES for SAP is required, subscribe to the relevant version on the marketplace.
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -281,6 +359,8 @@ Save any changes to the file and and go back to the main directory.
 . Now we are ready to run terraform
 
 
+ifeval::[ "{cloud}" == "Azure" ]
+
 [subs="attributes,quotes"]
 ----
     az login
@@ -292,7 +372,6 @@ Save any changes to the file and and go back to the main directory.
 
 If all goes well after ~40 Minutes (depends on the speed of the instances) you will have a installed and running HANA System Replication Cluster
 
-ifeval::[ "{cloud}" == "Azure" ]
 As a jumphost with a public ip address is created as part of the deployment, it is possible to login to any virtual machine as part of the deployment from your machine with
 [subs="attributes,quotes"]
 ----
@@ -302,7 +381,23 @@ As a jumphost with a public ip address is created as part of the deployment, it 
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS
+
+[subs="attributes,quotes"]
+----
+    terraform init
+    terraform workspace new yourprojectname
+    terraform plan
+    terraform apply
+----
+
+If all goes well after ~30-40 Minutes a fully configured HANA System Replication Cluster will have been deployed.
+
+The instances are currently provisioned with a public IP address as part of the deployment, you can ssh to them directly using the ec2-user.
+
+----
+    ssh ec2-user@public_ip_of_hana_node
+----
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -690,7 +785,11 @@ Accelerated networking:: true
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS Sizing
+
+Currently there is no sizing built into the SUSE Automation tooling.
+The instance size will determine the capability of the deployment, the disk size is fixed at 60GB (single EBS volume).
+These can be modified by editing the main.tf file in the ~/aws/modules/hana_node/ directory.
+ 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]

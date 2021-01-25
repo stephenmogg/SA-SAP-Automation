@@ -108,7 +108,7 @@ endif::[]
 
 ==== Additional Services
 
-Depending on the available services from the cloud provider, additional funcationality may need to be created as part of the deployment.  i.e. NFS.  This is reflected within the top.sls file.
+Depending on the available services from the cloud provider, additional funcationality may need to be created as part of the deployment.  i.e. NFS. This is reflected within the top.sls file.
 
 
 ===== NFS service

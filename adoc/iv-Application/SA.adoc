@@ -76,7 +76,7 @@ endif::[]
 
 Terraform is an open source tool created by HashiCorp for building, changing and versioning infrastructure.
 
-As a infrastructure provisioning tool, it is responsible for creating the servers, but also load balancers, queues, monitoring, subnet configurations, firewall settings, routing rules, SSL certificates, and many other infrastructure components.
+As an infrastructure provisioning tool, it is responsible for creating the servers, but also load balancers, queues, monitoring, subnet configurations, firewall settings, routing rules, SSL certificates, and many other infrastructure components.
 
 Terraform is seen as cloud-agnostic and allows a single configuration to be used to manage multiple providers. This simplifies management and orchestration, helping operators build large-scale multi-cloud infrastructures.
 

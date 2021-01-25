@@ -93,7 +93,12 @@ It is important to note that this IP address is not externally available, for th
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+
+Within a Google Cloud SAP HA Cluster, the HANA Primary and Secondary nodes each reside in 2 different Availability Zones (AZs), therefore to provide an IP address which is portable between the 2 AZs, there are two available options:
+
+. A _Standard GCE Load Balancer_ service from Google Cloud to provide traffic to only the active node.
+. An _GCE Overlay IP address_. It uses the _gcp-vpc-move-route_ resource agent which can send network traffic to an instance, no matter which Availability Zones (and subnet) the instance is located in.
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

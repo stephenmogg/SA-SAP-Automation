@@ -82,7 +82,7 @@ Terraform is seen as cloud-agnostic and allows a single configuration to be used
 
 It is imporant to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and Google Cloud.
 
-Terraform’s approach is that code is written specific to a (cloud)provider and will take advantage of the provider’s unique functionality, whilst the code will need to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
+Terraform’s approach is that code is written specific to a (cloud) provider and will take advantage of the provider’s unique functionality, whilst the code will need to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
 
 The name Terraform uses for these cloud specific modules is "provider". So for example the _Azure Provider_ can be used to configure infrastructure in Microsoft Azure using the Azure Resource Manager API's.
 

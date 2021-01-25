@@ -148,7 +148,7 @@ If the cloud native NFS service is used, no additional virtual machines will be 
 
 ===== Fencing service
 
-For high availability clusters, a mechanism to switch off one machine in the case of a so called "split-brain" is needed. This is used  when the 2 nodes can no longer communicate with each other. This action is called 'fencing'.
+For high availability clusters, a mechanism to switch off or reset one machine in the case of a so called "split-brain" is needed. This is used  when the 2 nodes can no longer communicate with each other. This action is called 'fencing'.
 
 There are several methods which can be used depending on the capability of the cloud provider.
 

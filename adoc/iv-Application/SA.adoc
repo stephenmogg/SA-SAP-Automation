@@ -202,7 +202,7 @@ The formula provides the capability to create and configure a multi node HA clus
 * Configure SBD (if needed)
 * Configure Corosync
 * Configure the resource agents
-* Install and configure the monitoring ha_cluster_exporter
+* Install and configure the monitoring _ha_cluster_exporter_
 
 // SM: Q: this should be cloud specific; 
 // PS: A: we are here describe the formulas

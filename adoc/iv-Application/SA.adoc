@@ -253,13 +253,14 @@ Enables monitoring of Pacemaker, Corosync, SBD, DRBD and other components of Hig
  * DRBD resources and connections status. Currently, only DRBD version 9 is supported.
 
 ==== SAP Host Exporter
-Enables the monitoring of SAP Netweaver, SAP HANA, and other applications. Gathered metrics are the data that can be obtained by running the sapcontrol command.
+Enables the monitoring of SAP Netweaver, SAP HANA, and other applications showing: 
 
  * SAP start service process list
  * SAP enqueue server metrics
  * SAP application server dispatcher metrics
  * SAP internal alerts
 
+TIP: The gathered metrics are the data that can be obtained by running the `sapcontrol` command.
 
 ifdef::Availability[]
 include::./Availability/SA.adoc[]

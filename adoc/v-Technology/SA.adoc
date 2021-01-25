@@ -130,7 +130,14 @@ On AWS, Shared SAP resources are managed in AWS Elastic File Systems (EFS). This
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+
+Currently, we need to build an NFS service with the tools we ship in {sles4sap}. As the NFS service should be highly available, we need two virtual machines to build a two-node cluster.
+
+// GCP image to be added here
+//image::Azure_HA_NFS_Service.png[scaledwidth="80%"]
+
+NOTE: Google Cloud provides a native NFS service (Google Cloud Filestore). It is planned to add the support for the Google Cloud Filestore service in the upcoming releases of the SUSE SAP automation platform.
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

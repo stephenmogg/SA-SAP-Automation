@@ -20,6 +20,7 @@ Application workloads will consider the components, these will include, but not 
 === SUSE Linux Enterprise Server for SAP Applications
 
 SUSE Linux Enterprise Server for SAP Applications is a product formed from a bundle of software and services.  It is targeted specifically at customers running SAP workloads. At it's foundation is SUSE Linux Enterprise Server and the High Availability Extension with many additional components and benefits for running SAP Applications.
+// "At it's foundation" -> "The foundation is" ??
 
 === SAP Application
 

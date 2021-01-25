@@ -63,6 +63,14 @@ SUSE Engineering continue to develop new scenarios based on the demands of custo
 
 The overall deployment using SUSE SAP Automation looks as follows:
 
+////
+- The HA NFS Service with DRBD is used in Azure and GCP environments. AWS environment uses EFS file shares
+- The iSCSI server provides SBD disks is used only in the Azure environment. GCP and AWS environments use the cloud fencing agents (`fence_gce` and `fence_aws`)
+
+I would suggest one of the following:
+  1. Using separate diagrams for GCP and AWS. @Peter If you can share the original LibreOffice Impress slide, that would be great.
+  2. Mentioning that the HA NFS Service with DRBD and the iSCSI server are optional components depend on the Cloud Service Providers.
+////
 image::SAP_Overview.png[Instance overview,scaledwidth="80%"]
 
 //image::SA-Business.png[title="Solution Architecture - {useCase} Business", scaledwidth=80%]

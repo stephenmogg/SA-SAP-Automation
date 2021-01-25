@@ -232,7 +232,7 @@ The iSCSI-formula from SaltStack is able to deploy iSNS, iSCSI initiator, and iS
 A SaltStack formula to install and configure nfs server and client.
 
 === Monitoring
-SUSE continually try to improve user experience,  one of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data.  In order to be able to monitor the clusters on either HANA or Netweaver SUSE have written Prometheus exporters whicah ship as part of SLES for SAP.
+SUSE continually try to improve user experience. One of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data. In order to be able to monitor the clusters on either HANA or Netweaver, SUSE has written Prometheus exporters which ship as part of SLES for SAP.
 
 ==== SAP HANA Database Exporter
 The exporter provide metrics from more than one database or tenant. It provides

@@ -20,7 +20,7 @@ Technology components utilized as a part of this solution: CSP Specific, Network
 
 Terraform along with the specific cloud provider modules is used to create the infrastructure to support the SAP application and supporting services.
 
-The Terraform templates describe everything needed to create the desired infrastructure components.  They also provide a range of predefined settings to make creating the correct virtual machines, disks, networks etc. simpler.
+The Terraform templates describe everything needed to create the desired infrastructure components. They also provide a range of pre-defined settings to make creating the correct virtual machines, disks, networks etc. simpler.
 
 === Salt
 
@@ -28,11 +28,11 @@ What is Salt?
 
 Salt is a different approach to infrastructure management, founded on the idea that high-speed communication with large numbers of systems can open up new capabilities. This approach makes Salt a powerful multitasking system that can solve many specific problems in an infrastructure.
 
-The backbone of Salt is the remote execution engine, which creates a high-speed, secure and bi-directional communication net for groups of systems. On top of this communication system, Salt provides an extremely fast, flexible, and easy-to-use configuration management system called Salt States.
+The backbone of Salt is the remote execution engine, which creates a high-speed, secure, and bi-directional communication net for groups of systems. On top of this communication system, Salt provides an extremely fast, flexible, and easy-to-use configuration management system called _Salt States_.
 
 An SAP landscape is made up of groups of machines, each machine in the group performing a role. Those groups of machines work in concert with each other to create an application stack.
 
-To effectively manage these groups of machines, an administrator needs to be able to create roles for those groups. As example, a group of machines that serve front-end web traffic might have roles which indicate that those machines should all have the webserver package installed and that the web service should always be running.
+To effectively manage these groups of machines, an administrator needs to be able to create roles for those groups. As an example, a group of machines that serve front-end web traffic might have roles which indicate that those machines should all have the webserver package installed and that the web service should always be running.
 
 In Salt, the file which contains a mapping between groups of machines on a network and the configuration roles that should be applied to them is called a _top file_.
 
@@ -40,9 +40,9 @@ Top files are named _top.sls_ by default and they are so-named because they alwa
 
 ==== SAP Sizing
 
-To make the SAP sizing more simple SUSE have introduced pre-defined sizes with well known abbreviation from T-Shirt sizes Small (S), Medium (M), Large (L).
+To make the SAP sizing more simple SUSE have introduced pre-defined sizes with well-known abbreviation from T-Shirt sizes Small (S), Medium (M), Large (L).
 
-The Small (S) size is targeted at non productive scenarios, where as the Medium (M) and Large (L) sizes are recommended for production setups, where certified instance types should be used.
+The Small (S) size is targeted at non-productive scenarios, where as the Medium (M) and Large (L) sizes are recommended for production setups, where certified instance types should be used.
 
 It is possible to tweak these pre-defined sizes or create a set of custom settings.
 
@@ -58,7 +58,7 @@ The centralized deployment is mostly used for non-production environments such a
 
 //todo - picture
 
-The distributed deployment, is the recommend way for production environments where each of the SAP application layer components is independently installed on different instances. This is the scenario used within the automation project.
+The distributed deployment is the recommended way for production environments where each of the SAP application layer components is independently installed on different instances. This is the scenario used within the automation project.
 
 //todo - picture
 
@@ -68,7 +68,7 @@ The automation project uses the building blocks described before, to create the 
 
 ==== High Availability
 
-There are two main building blocks which should be made highly available in order to acheive less downtime and eliminate single point of failures within the SAP Landscape. As there are many scenarios available from SAP, the Automation project supports the most popular scenarios.
+There are two main building blocks which should be made highly available in order to achieve less downtime and eliminate single point of failures within the SAP Landscape. As there are many scenarios available from SAP, the Automation project supports the most popular scenarios.
 
 For the Central Services this is Enqueue Replication and for the database its the HANA System Replication.
 

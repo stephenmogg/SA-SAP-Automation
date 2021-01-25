@@ -86,7 +86,7 @@ Terraform’s approach is that code is written specific to a (cloud) provider an
 
 The name Terraform uses for these cloud specific modules is "provider". So for example the _Azure Provider_ can be used to configure infrastructure in Microsoft Azure using the Azure Resource Manager API's.
 
-Configuration files describe to Terraform which components need to deploy in order to support the application. One of the first steps is to run the terraform command, this will generate an execution plan which describes the actions Terraform will perform to get to the planned desired state.  The plan is in the form of a list of cloud infrastructure to create, delete and modify, if this looks correct, the final step is to execute the plan to create the described infrastructure.
+Configuration files describe to Terraform which components need to deploy in order to support the application. One of the first steps is to run the `terraform` command, this will generate an execution plan which describes the actions Terraform will perform to get to the planned desired state.  The plan is in the form of a list of cloud infrastructure to create, delete and modify, if this looks correct, the final step is to execute the plan to create the described infrastructure.
 
 SUSE provides Terraform configuration files for AWS, Azure, GCE and libvirt.
 

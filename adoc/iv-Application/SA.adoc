@@ -141,7 +141,7 @@ Salt Client (Minion) only. All steps in must be executed on each individual Salt
 The Netweaver formula for bootstrapping and managing the SAP Netweaver platform takes care of:
 
  * Extracting the required SAP files for SAP Media (.tar,.sar,.exe)
- * and setting up
+ * Setting up
  ** ASCS instance
  ** ERS instance
  ** PAS instance

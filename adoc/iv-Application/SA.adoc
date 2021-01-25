@@ -107,6 +107,12 @@ https://console.aws.amazon.com/cloudshell/
 
 endif::[]
 
+ifeval::[ "{cloud}" == "GCP" ]
+
+In addition, GCP provides an easy to access https://shell.cloud.google.com/[web based command line shell] where Terraform is already pre-installed.
+
+endif::[]
+
 {cloud} provides different types of storage suitable for supporting SAP workloads, so it is important to fully understand the SAP requirements for {cloud}.
 
 The storage configuration included in the Terraform files are provided as an initial suggestion, based on best practices. It is still important to continue analyzing the storage utilization patterns during runtime of the application, it may be that the SAP workload is not utilizing all the storage bandwidth or IOPS provided. Therefore, downsizing storage may be an option.

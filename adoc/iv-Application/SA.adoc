@@ -187,9 +187,9 @@ ifeval::[ "{cloud}" == "AWS" ]
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
- * GCP Stuff
- * GCP Stuff
- * GCP Stuff
+ * Create and configure the High Availability cluster, pacemaker, corosync, GCE fencing and SAP resource agents.
+ * Adjustments for the Google Cloud Infrastructure
+ * Handle Netweaver, HANA and DRBD
 endif::[]
 
 The formula provides the capability to create and configure a multi node HA cluster. Here are some of the features:

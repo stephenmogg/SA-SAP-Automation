@@ -188,7 +188,14 @@ A working STONITH method is mandatory to run a supported SUSE cluster on AWS.
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+
+Google Cloud Supports the use of the GCE STONITH mechanism. This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff/reboot etc) GCE instances as part of cluster operations.
+
+The GCE fencing mechanism uses the cutting-edge Google Python APIs. There is no longer a need to install the Google Cloud SDK in each HA cluster node to enable the fencing functions.
+
+IMPORTANT: A working STONITH method is mandatory to run a supported SUSE cluster on Google Cloud.
+
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

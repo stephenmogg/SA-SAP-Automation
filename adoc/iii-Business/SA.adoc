@@ -17,7 +17,7 @@ Determine landscape impact, Factors Flavors, Deployment types.
  
 ////
 
-This document is targeted at consultants and end-customers who are deploying SAP Landscapes in the public cloud. Within cloud environments there is no strict separation of responsibility (e.g. Networking, DB, OS, Application), as most operations can be performed from a central control plane. However, this should not mean that this specialised knowledge is no longer needed. Functional teams still exist and will need to work together, this is often best acheived with a DevOps approach utilising Infrastructure-as-Code.
+This document is targeted at consultants and end-customers who are deploying SAP Landscapes in the public cloud. Within cloud environments, there is no strict separation of responsibility (e.g. Networking, DB, OS, Application), as most operations can be performed from a central control plane. However, this should not mean that this specialised knowledge is no longer needed. Functional teams still exist and will need to work together, this is often best acheived with a DevOps approach utilising Infrastructure-as-Code.
 
 This means that when implementing SAP in the cloud, knowledge will be required of the cloud infrastructure and the various possibilities that affords along with a good understanding of the operating system and the tooling surrounding it, e.g. High Availability (HA).  Finally an understanding around planning for the application usage and sizing is needed.
 

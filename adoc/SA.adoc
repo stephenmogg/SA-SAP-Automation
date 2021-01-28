@@ -5,14 +5,18 @@ include::./SA_vars.adoc[]
 
 = {title}
 ////
-{author}, {companyName} < {authorEMail} >
+Authors:
+Peter Schinagl, SUSE Solution GmbH, peters@suse.com
+Stephen Mogg, SUSE Solutions, Stephen.Mogg@suse.com
+Abdelrahman Mohamed, SUSE Solutions GmbH, abdelrahman.mohamed@suse.com
+Bryan Gartner, SUSE Solutions, bryan.gartner@suse.com
 ////
 
 == Preface
 
-This reference document contains best practices and planning considerations when using SUSE's Automation templates for SAP Landscapes. 
+This reference document contains best practices and planning considerations when using SUSE's Automation templates for SAP Landscapes.
 
-It is targeted at consultants and end-customers deploying SAP Landscapes in the public cloud and provides guidance on how Terraform, SALT, and other components work together to provide a consistent and validated architecture. 
+It is targeted at consultants and end-customers deploying SAP Landscapes in the public cloud and provides guidance on how Terraform, SALT, and other components work together to provide a consistent and validated architecture.
 
 The document can also be used as a guide for a partner enablement workshop covering the proper use of these tools.
 
@@ -106,7 +110,7 @@ More and more companies move to a computing _as a service_, rather than _as a pr
 
 The SUSE solution manages complex operations with automation and help ease the transition to Linux and the cloud, and reduce the problem resolution time with insights to the SAP infrastructure landscape.
 
-It help to deliver SAP services faster, more efficiently and with less risk. 
+It help to deliver SAP services faster, more efficiently and with less risk.
 
 
 ifdef::Glossary[]

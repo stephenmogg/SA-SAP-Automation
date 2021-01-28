@@ -69,7 +69,7 @@ share
 
 The project is hosted on a public github site where it can be downloaded to your local machine.
 
-After moving into this directory  following directory structure:
+After moving into this directory following directory structure:
 
 ----
 ├── aws
@@ -139,7 +139,7 @@ Modules are used as part of the technical building blocks e.g. a HANA node and t
 +
 These are the recommended filenames for a minimal module, even if they're empty. _main.tf_ is the primary entrypoint how to build the infrastructure building block.
 
-There is one additional file (salt_provisioner.tf), which is responsible for handing over the needed values to the salt building blocks. This is acheived by using a special terraform resource called _null_provider_, it remote executes the salt run to configure the instances and execute the application installation for the building block.
+There is one additional file (salt_provisioner.tf), which is responsible for handing over the needed values to the salt building blocks. This is achieved by using a special terraform resource called _null_provider_, it remote executes the salt run to configure the instances and execute the application installation for the building block.
 
 === Simple Install
 
@@ -151,7 +151,7 @@ SUSE provide an example terraform and example pillar files to provide an easy wa
 +
 What's new and what has changed can be seen from this screen, so if older versions of the project are used, ensure to carefully review and understand the differences.
 +
-The _Usage_ section provides you with a link to an OpenBuildServer (OBS) repository where the RPM packages of the building blocks discussed above are stored, each poject version has a unqiue repository.
+The _Usage_ section provides you with a link to an OpenBuildServer (OBS) repository where the RPM packages of the building blocks discussed above are stored, each project version has a unique repository.
 +
 The value/link to the repository will need to be included within the terraform variables (teraform.tfvars) file. So copy the line as described.
 
@@ -160,8 +160,8 @@ The value/link to the repository will need to be included within the terraform v
 . Goto this folder and into the sub folder for the cloud provider
 . Copy the file _terraform.tfvars.example_ to _terraform.tfvars.example_
     There are many key-value variable pairs, some enabled, some disabled with a _=_ or a _#_ in front.
-    In order to peform a simple deployment, only update the parameters as listed below.
-    
+    In order to perform a simple deployment, only update the parameters as listed below.
+
 ifeval::[ "{cloud}" == "Azure" ]
 
 . Change the region in which to deploy the solution, change _az_region = "westeurope"_ to the Azure region required.
@@ -187,7 +187,7 @@ endif::[]
 ifeval::[ "{cloud}" == "AWS" ]
 
 // not putting anything in here as the flow does not match the AWS config. //
-
+//@stephenmogg - could you not choose the AMI? PAYG or BYOS?
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -201,13 +201,12 @@ endif::[]
 
 . The next step is to provide ssh keys to access the machines which will be deployed.
 +
-SUSE recommend to create new sshkeys for the deployent as both public and private keys will need to be provided as they are copied to the cluster nodes as part of the deployment.
+SUSE recommend to create new sshkeys for the deployment as both public and private keys will need to be provided as they are copied to the cluster nodes as part of the deployment.
 
 Change the two locations variables and point them to your files.
 +
 
 ifeval::[ "{cloud}" == "Azure" ]
-
 
 . As the SAP Install Media is needed for the automatic deployment of HANA, an Azure storage account needs to be created.  The SAP HANA media will need to be copied to this storage location. If the SAP media is already extracted this will save time during the deployment.
 
@@ -268,6 +267,8 @@ Now we have all settings for Terraform done and are nearly at the step to run th
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
+// @stephenmogg - quite a lot of duplication
+
 Edit terraform.tfvars and modify as follows. If duplicating the lines before modification, please ensure the original is commented out or the deployment will fail.
 
 Firstly, choose the region and instance types required for the deployment.  Ensure the region type is available in your selected region.
@@ -297,7 +298,7 @@ hana_os_image = "suse-sles-sap-15-sp2"
 hana_os_owner = "679593333241"
 ----
 
-This setting provides Terraform the credentials to deploy infrastrucuture on the AWS cloud.
+This setting provides Terraform the credentials to deploy infrastructure on the AWS cloud.
 
 ----
 aws_credentials = "~/.aws/credentials"
@@ -332,7 +333,7 @@ Finally, ensure the following lines are commented *out* using a #
 
 Subscribe to the AWS Marketplace offer
 
-To automatically deploy instances from the AWS Marketplace, ensure to 'Subscribe' to the offering.  
+To automatically deploy instances from the AWS Marketplace, ensure to 'Subscribe' to the offering.
 
 A link for SLES for SAP 15 SP2 can be found here.
 https://aws.amazon.com/marketplace/server/procurement?productId=e9701ac9-43ee-4dda-b944-17c6c231c8db
@@ -359,7 +360,6 @@ Save any changes to the file and and go back to the main directory.
 
 . Now we are ready to run terraform
 
-
 ifeval::[ "{cloud}" == "Azure" ]
 
 [subs="attributes,quotes"]
@@ -374,6 +374,7 @@ ifeval::[ "{cloud}" == "Azure" ]
 If all goes well after ~40 Minutes (depends on the speed of the instances) you will have a installed and running HANA System Replication Cluster
 
 As a jumphost with a public ip address is created as part of the deployment, it is possible to login to any virtual machine as part of the deployment from your machine with
+
 [subs="attributes,quotes"]
 ----
 
@@ -382,7 +383,7 @@ As a jumphost with a public ip address is created as part of the deployment, it 
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-
+// @stephenmogg - duplication
 [subs="attributes,quotes"]
 ----
     terraform init
@@ -414,7 +415,7 @@ endif::[]
 
 All files in the Terraform directory using the .tf file format will be automatically loaded during operations.
 
-The _infrastructure.tf_ provides the _data sources_ for the network setup. This is computed in other terraform files and some _local_ variables used for mainly for the autogeneration of the network. 
+The _infrastructure.tf_ provides the _data sources_ for the network setup. This is computed in other terraform files and some _local_ variables used for mainly for the autogeneration of the network.
 
 ifeval::[ "{cloud}" == "Azure" ]
 In addition it provides the _resources_ for the network setup with virtual network, the needed subnet and routing, the needed resourcegroup to be used, a storage account, the all the network security groups (nsg) being used and defines the jumphost.
@@ -582,7 +583,7 @@ The respective file _salt_provisioner.tf_ sets the *_role_* of the *node* and wi
 
 ==== SAP Sizing
 
-One of the key points to consider in an SAP deployment is sizing and applies across three key areas: compute power, storage space and i/o capacity and network bandwith.
+One of the key points to consider in an SAP deployment is sizing and applies across three key areas: compute power, storage space and i/o capacity and network bandwidth.
 
 If this is a greenfield deployment, please use the SAP Quick Sizer tool to calculate the SAP Application Performance Standard (SAPS) compute requirement and choose the right instance types which have the closest match to the performance needed.
 
@@ -791,7 +792,7 @@ ifeval::[ "{cloud}" == "AWS" ]
 Currently there is no sizing built into the SUSE Automation tooling.
 The instance size will determine the capability of the deployment, the disk size is fixed at 60GB (single EBS volume).
 These can be modified by editing the main.tf file in the ~/aws/modules/hana_node/ directory.
- 
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -975,7 +976,7 @@ _Salt state_ files are organized into a directory tree, called the Salt state tr
 
 Within this directory structure all needed steps depending on the _role_ of the node can be seen.
 
-The _top.sls_ file describes two environments for the nodes, _pre-deployment_ and _base_ which reflect the steps 3 and 4 of the workflow above.  
+The _top.sls_ file describes two environments for the nodes, _pre-deployment_ and _base_ which reflect the steps 3 and 4 of the workflow above.
 
 //For each role of the nodes there more detailed files responsible.//
 
@@ -1039,7 +1040,7 @@ base:
 
 SaltStack comes with an interface to derive information about the underlying system. This is called the _grains_ interface, because it presents Salt with grains of information.
 It collects static informations about the underlying managed system, such as the operating system, domain name, IP address, kernel, OS type, memory, and many other system properties.
-The SUSE Auomation project uses custom grains to match the roles and the further states.
+The SUSE Automation project uses custom grains to match the roles and the further states.
 
 The _role_ is a _custom grains_ defined with help of the Terraform file _salt_provisioner.tf_ for the respective building block.
 
@@ -1052,7 +1053,7 @@ If using the Salt formulas independently from the Terraform templates, it is imp
 
 If targetting a directory during a _state.apply_ or in the state Top file, Salt looks for an init.sls file in that directory and applies it.
 
-Within the _os_setup_ directory 
+Within the _os_setup_ directory
 =======
 [subs="attributes,quotes"]
 ----
@@ -1091,7 +1092,7 @@ Looking deeper into one of the directories, e.g. _hana-node_ there are more file
 ----
 
 When targeting a directory during a _state.apply_ or in the state Top file, salt looks for an init.sls file in that directory and applies it.
-Salt executes what is in _init.sls_ in the order listed in the file. When an Salt file is named init.sls it inherits the name of the directory path that contains it. 
+Salt executes what is in _init.sls_ in the order listed in the file. When an Salt file is named init.sls it inherits the name of the directory path that contains it.
 This formula/state can then be referenced with the name of the directory.
 
 In our case here, it first it gets the SAP HANA Media with help of _hana_ins_media_, create the mountpoints and partition disks for SAP HANA and enter them into the fstab with help of the states in the _mount_ directory. Similar as before, the starting point is again the _init.sls_ file.
@@ -1102,14 +1103,14 @@ All other states files get processed in the same way as the example above.
 
 ==== Salt formula packages
 
-Formulas are pre-written Salt States. They are as open-ended as Salt States themselves and can be used for tasks such as installing a package, configuring and starting a service, setting up users or permissions, and many other common tasks. 
+Formulas are pre-written Salt States. They are as open-ended as Salt States themselves and can be used for tasks such as installing a package, configuring and starting a service, setting up users or permissions, and many other common tasks.
 Each Formula is intended to be immediately usable with sane defaults without any additional configuration.
 
 The formulas in the project are configurable by including data in _Pillar_ files, as discussed above.
 During RPM install, the files of the packages end up in the directory _/usr/share/salt-formulas/states_, this was defined as the directory where Salt searches for file in addition to /srv/salt (see os_setup state above).
 
 .shaptools package
-The directories __modules_ and __states_ come from the install of the package shaptools and provide a python wrapper for sap command line tools as API, in order to make it simple to be used from Salt. 
+The directories __modules_ and __states_ come from the install of the package shaptools and provide a python wrapper for sap command line tools as API, in order to make it simple to be used from Salt.
 This package is a base dependency for most of the SUSE formula packages as it provides the needed SAP commands.
 
 [subs="attributes,quotes"]
@@ -1147,7 +1148,7 @@ states/
 ----
 
 Salt includes the Jinja2 template engine which can be used in Salt state files, Salt pillar files, and other files managed by Salt.
-Salt lets you use Jinja to access minion configuration values, grains and Salt pillar data, and call Salt execution modules. 
+Salt lets you use Jinja to access minion configuration values, grains and Salt pillar data, and call Salt execution modules.
 One of the most common uses of Jinja is to insert conditional statements into Salt pillar files.
 
 1. The formula package is installed through the HANA Node state files
@@ -1158,7 +1159,7 @@ One of the most common uses of Jinja is to insert conditional statements into Sa
 ----
 
 The Salt formula will need input data through a pillar file which is part of the main project file (MAIN/pillar/... or on the node /srv/pillar )
-If using the formula standalone the data needs to be provided manually.
+If using the formula standalone the data needs to be provided manually. There are more options available as shown in the example file.
 
 .Example HANA pillar
 [subs="attributes,quotes"]
@@ -1225,10 +1226,13 @@ The SAP Netweaver deployment is performed using the _sapnwbootstrap-formula_ and
 
 The formula takes care of the ASCS, the Application Servers and if HA is selected, the Enqueue Replication server.
 
-The formula has some hard dependencies and all of them must be in place for a successful netweaver deployment. In order to deploy a valid Netweaver environment an NFS share is needed (SAP stores shared files there). The NFS share must have the folders _sapmnt_ and _usrsapsys_ in the exposed folder.
+The formula has some *hard dependencies* and *all of them must be in place* for a successful netweaver deployment. In order to deploy a valid Netweaver environment an NFS share is needed (SAP stores shared files there). The NFS share must have the folders _sapmnt_ and _usrsapsys_ in the exposed folder.
 The folders are created with the Netweaver SID name (for example /sapdata/HA1/sapmnt and /sapdata/HA1/usrsapsys). This subfolders content is removed by default during the deployment.
 
-Secondly, the SAP installation software (swpm) must be available in the system. To install the whole Netweaver environment with all the 4 components, the swpm folder, sapexe folder, Netweaver Export folder and HANA HDB Client folders must already exist, or be previously mounted when provided by external service, such as NFS share. The netweaver.sls pillar file must be updated with all this information. Netweaver Export and HANA HDB Client folders must go in additional_dvds list.
+Secondly, the SAP installation software (SWPM) must be available in the system.
+To install the whole Netweaver environment with all the 4 components, the need SAP media need to be provided. The structure depends on the version of SWPM.
+//FIXME - SWPM 1+2 and s4 example should be provided in the Appendix
+For SWPM 1.0 the swpm folder, sapexe folder, Netweaver Export folder and HANA HDB Client folders must already exist, or be previously mounted when provided by external service, such as NFS share. The netweaver.sls pillar file must be updated with all this information. Netweaver Export and HANA HDB Client folders must go in additional_dvds list.
 
 The structure is similar what has been illustrated above for the HANA formula.
 

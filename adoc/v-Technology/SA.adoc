@@ -20,7 +20,7 @@ Technology components utilized as a part of this solution: CSP Specific, Network
 
 Terraform along with the specific cloud provider modules is used to create the infrastructure to support the SAP application and supporting services.
 
-The Terraform templates describe everything needed to create the desired infrastructure components.  They also provide a range of predefined settings to make creating the correct virtual machines, disks, networks etc. simpler.
+The Terraform templates describe everything needed to create the desired infrastructure components. They also provide a range of predefined settings to make creating the correct virtual machines, disks, networks etc. simpler.
 
 === Salt
 
@@ -84,9 +84,9 @@ endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 
-Within an AWS SAP HA Cluster, the HANA Primary and Seconday nodes each reside in 2 different Availability Zones (AZs), therefore to provide an IP address which is portable between the 2 AZs, an AWS Overlay IP address is required. This uses a specific routing entry which can send network traffic to an instance, no matter which Availability Zones (and subnet) the instance is located in.
+Within an AWS SAP HA Cluster, the HANA Primary and Secondary nodes each reside in 2 different Availability Zones (AZs), therefore to provide an IP address which is portable between the 2 AZs, an AWS Overlay IP address is required. This uses a specific routing entry which can send network traffic to an instance, no matter which Availability Zones (and subnet) the instance is located in.
 
-Overlay IP addresses have one requirement, they need to have a CIDR range outside of the VPC. 
+Overlay IP addresses have one requirement, they need to have a CIDR range outside of the VPC.
 
 It is important to note that this IP address is not externally available, for this the Route53 service should be used. (this is currently not supported by the SUSE SAP Automation framework).
 
@@ -103,7 +103,7 @@ endif::[]
 
 ==== Additional Services
 
-Depending on the available services from the cloud provider, additional funcationality may need to be created as part of the deployment.  i.e. NFS.  This is reflected within the top.sls file.
+Depending on the available services from the cloud provider, additional functionality may need to be created as part of the deployment.  i.e. NFS.  This is reflected within the top.sls file.
 
 
 ===== NFS service
@@ -121,7 +121,7 @@ endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 On AWS, Shared SAP resources are managed in AWS Elastic File Systems (EFS). This provides the NFS services required to support the SAP deployment.
- 
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -141,13 +141,13 @@ For high availability clusters, a mechanism to switch off one machine in the cas
 There are several methods which can be used depending on the capability of the cloud provider.
 
 ifeval::[ "{cloud}" == "Azure" ]
-As Azure was the first Hyperscaler to support SUSE clustering, Microsoft and SUSE created a fencing agent for the cluster. This fencing agent should remove a machine as quickly as possible (immediately) from the cluster, to ensure that there is only one active node.  This avoids data corruption.
+Microsoft supported the SUSE clustering as first Linux HA solution on Azure. Microsoft and SUSE created a fencing agent for the cluster for Azure. This fencing agent should remove a machine as quickly as possible (immediately) from the cluster, to ensure that there is only one active node. This avoids data corruption.
 
 Initially, the Azure infrastructure only provided a way to gracefully shutdown a machine, which took 10-15 minutes.  This is too long for the split-brain fencing requirement.
 
 To improve on the time taken to fence nodes in Azure, SUSE implemented an OS native mechanism to fence virtual machines. This technology is provided within the SUSE HA Extension and uses storage as additional communication layer between the nodes. This requires a raw shared disk, this provides a mechanism so that both nodes can write messages to a central place. It is called SBD - Stonith Block Device or Split Brain Detector.
 
-When originally desinging this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes. Therefore it needed to be built with the Linux tools available in the SUSE Linux distribution. With help of a iSCSI server,  a raw shared disk within the cloud can be provided and therefore, the SBD fencing method which with help of the linux watchdog mechanism provides a fast and reliable fencing tooling.
+When originally desinging this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes. Therefore it needed to be built with the Linux tools available in the SUSE Linux distribution. With help of a iSCSI server, a raw shared disk within the cloud can be provided and therefore, the SBD fencing method which with help of the linux watchdog mechanism provides a fast and reliable fencing tooling.
 
 This requires one additional server to provide a iSCSI service.
 
@@ -162,12 +162,14 @@ image::Azure_fence_arm.png[scaledwidth="80%"]
 So you can choose between two ways
 . SDB fencing with help of an iSCSI service
 . agent based fencing through API access
+
+There is in the meantime a third option, as Azure provide also raw shared disks as a native service.
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 AWS Supports the use of the AWS EC2 STONITH mechanism.  This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff/reboot etc) EC2 instances as part of cluster operations.
 
-Behind the scenes, it uses the AWS CLI, EC2 Tags and IAM as a method to securely identify a node and then fence it. 
+Behind the scenes, it uses the AWS CLI, EC2 Tags and IAM as a method to securely identify a node and then fence it.
 
 It requires internet connectivity to ensure the EC2 endpoint can be reached.
 

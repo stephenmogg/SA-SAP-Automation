@@ -116,9 +116,9 @@ SLES-for-SAP Applications ships with all the Salt tools as part of the distribut
 
 Salt formulas can be applied in two ways:
 
-Salt Master with Salt Client. All steps are executed on the Salt Master machine which sends instructions to the client to perform the required configuration actions.
+Salt Master with Salt Client:: All steps are executed on the Salt Master machine which sends instructions to the client to perform the required configuration actions.
 
-Salt Client (Minion) only. All steps in must be executed on each individual Salt client where the formulas need to be executed.  This is the approach used by the SUSE Automation framework as it removes the need for a central master system.
+Salt Client (Minion) only:: All steps in must be executed on each individual Salt client where the formulas need to be executed.  This is the approach used by the SUSE Automation framework as it removes the need for a central master system.
 
 ==== Netweaver
 

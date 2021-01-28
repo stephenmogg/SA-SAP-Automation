@@ -15,7 +15,7 @@ Application workloads will consider the components, these will include, but not 
 #ADOC_ATTRIBUTES+=" --attribute SAP=1"
 #ADOC_ATTRIBUTES+=" --attribute Netweaver=1"
 #ADOC_ATTRIBUTES+=" --attribute HA=1"
- 
+
 ////
 === SUSE Linux Enterprise Server for SAP Applications
 
@@ -47,7 +47,7 @@ When deploying on AWS, an S3 Bucket is required to store the SAP Media. Using th
 * Create a folder within the bucket.
 * Upload the SAP media to the folder within the S3 bucket.
 
-image::s3_bucket.png[scalewidth=80%] 
+image::s3_bucket.png[scalewidth=80%]
 
 
 endif::[]
@@ -68,7 +68,7 @@ As a infrastructure provisioning tool, it is responsible for creating the server
 
 Terraform is seen as cloud-agnostic and allows a single configuration to be used to manage multiple providers. This simplifies management and orchestration, helping operators build large-scale multi-cloud infrastructures.
 
-It is imporant to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and Google Cloud.
+It is important to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and Google Cloud.
 
 Terraform’s approach is that code is written specific to a (cloud)provider and will take advantage of the provider’s unique functionality, whilst the code will need to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
 
@@ -83,7 +83,12 @@ An open source version of Terraform is shipped within the Public Cloud Module of
 ifeval::[ "{cloud}" == "Azure" ]
 In addition Azure provide an easy to access web based commandline (cloudshell) where Terraform is already pre-installed.
 
-// FixMe provide link
+https://shell.azure.com
+
+You will find documentation for it at
+https://docs.microsoft.com/en-us/azure/cloud-shell/overview
+
+
 
 endif::[]
 
@@ -185,19 +190,19 @@ The formula provides the capability to create and configure a multi node HA clus
 * Configure the resource agents
 * Install and configure the monitoring ha_cluster_exporter
 
-// SM: Q: this should be cloud specific; 
+// SM: Q: this should be cloud specific;
 // PS: A: we are here describe the formulas
 //        and no as this concept can be used at any cloud for sbd fencing. e.g. in azure we have more than one option
 // FIXME - provide more information on the case and better explanation
 Depending on the cloud requirements it may need an iSCSI server to be able to provide a shared disk for fencing where we use the iscsi-formula from SaltStack
 
-===== Other dependent services 
+===== Other dependent services
 
 // SM: Azure specific?
 // PS: No, as this could be used on any cloud. Azure provides 2 additional ways
 //     and we describe the formulas here
 // FIXME - provide more information on the case
-====== HA NFS Service 
+====== HA NFS Service
 
 To build a HA NFS Service if there is none available, we can create one with help of 3 Linux services and the following
 
@@ -213,7 +218,7 @@ The iSCSI-formula from SaltStack is able to deploy iSNS, iSCSI initiator, and iS
 A SaltStack formula to install and configure nfs server and client.
 
 === Monitoring
-SUSE continually try to improve user experience,  one of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data.  In order to be able to monitor the clusters on either HANA or Netweaver SUSE have written Prometheus exporters whicah ship as part of SLES for SAP.
+SUSE continually try to improve user experience,  one of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data.  In order to be able to monitor the clusters on either HANA or Netweaver SUSE have written Prometheus exporters which ship as part of SLES for SAP.
 
 ==== SAP HANA Database Exporter
 The exporter provide metrics from more than one database or tenant. It provides
@@ -241,7 +246,7 @@ Enables the monitoring of SAP Netweaver, SAP HANA, and other applications. Gathe
  * SAP application server dispatcher metrics
  * SAP internal alerts
 
-
+////
 ifdef::Availability[]
 include::./Availability/SA.adoc[]
 endif::Availability[]
@@ -257,4 +262,4 @@ endif::Security[]
 ifdef::Integrity[]
 include::./Integrity/SA.adoc[]
 endif::Integrity[]
-
+ ////

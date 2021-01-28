@@ -377,13 +377,14 @@ As a jumphost with a public ip address is created as part of the deployment, it 
 
 [subs="attributes,quotes"]
 ----
-
-    ssh -J <adminuser>@jumphost <adminuser@targethost>
+  ssh -J adminuser@jumphost adminuser@targethost
 ----
+
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 // @stephenmogg - duplication
+
 [subs="attributes,quotes"]
 ----
     terraform init
@@ -1051,10 +1052,10 @@ If using the Salt formulas independently from the Terraform templates, it is imp
 
 ===== State details
 
-If targetting a directory during a _state.apply_ or in the state Top file, Salt looks for an init.sls file in that directory and applies it.
+If targeting a directory during a _state.apply_ or in the state Top file, Salt looks for an init.sls file in that directory and applies it.
 
 Within the _os_setup_ directory
-=======
+
 [subs="attributes,quotes"]
 ----
 │   ├── os_setup
@@ -1065,6 +1066,7 @@ Within the _os_setup_ directory
 │   │   ├── registration.sls
 │   │   └── repos.sls
 ----
+
 there is one interesting file, the _minion_configuration.sls_. It provides the configuration how and where Salt / the Minion looks for Salt states and Salt formulas.
 
 
@@ -1211,10 +1213,10 @@ hana:
 
 1. The formula is executed within the salt of _hana_node_ state files
 2. If wanting to execute the formula manually
+
 ----
 salt '*' state.apply hana_node.sls
 ----
-//fixme - check if this is ok.
 
 So with help of the pillar data and the state file and the formula, Salt will create all needed configuration on the node, installs HANA and if enabled install hana systemreplication and set up the pacemaker cluster, correctly for {cloud}.
 
@@ -1231,6 +1233,7 @@ The folders are created with the Netweaver SID name (for example /sapdata/HA1/sa
 
 Secondly, the SAP installation software (SWPM) must be available in the system.
 To install the whole Netweaver environment with all the 4 components, the need SAP media need to be provided. The structure depends on the version of SWPM.
+
 //FIXME - SWPM 1+2 and s4 example should be provided in the Appendix
 For SWPM 1.0 the swpm folder, sapexe folder, Netweaver Export folder and HANA HDB Client folders must already exist, or be previously mounted when provided by external service, such as NFS share. The netweaver.sls pillar file must be updated with all this information. Netweaver Export and HANA HDB Client folders must go in additional_dvds list.
 
@@ -1288,9 +1291,7 @@ In addition here are the templates which are used by SWPM for an automated hands
 
 ==== High Availability formula
 
-The _habootstrap-formula_ provides the needed cluster setup for SAP HANA, SAP Netweaver and if needed for the HA NFS service built with drbd.
-
-// It will take care of
+The _habootstrap-formula_ will take care of the needed cluster setup for SAP HANA, SAP Netweaver and if needed for the HA NFS service built with drbd.
 
 The formula will be, similar to all the other formulas used, installed in /usr/share/salt-formulas/states/cluster.
 
@@ -1347,7 +1348,18 @@ We use here the _iscsi-formula_ provided by saltstack itself, see https://github
 It gets configured through the pillar files we provided through the role _iscsi_srv_
 
 The use of possible fenching method depends on the cloud providers possibilities. As of today SBD is needed only for Azure, but it is a general method which could be used nearly independent of the base infrastructure.
+endif::[]
 
+ifeval::[ "{cloud}" == "AWS" ]
+ AWS
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+ GCP
+endif::[]
+
+ifeval::[ "{cloud}" == "Libvirt" ]
+ Libvirt
 endif::[]
 
 // fixme - add monitoring
@@ -1356,39 +1368,3 @@ endif::[]
 //prometheus-ha_cluster_exporter
 //prometheus-hanadb_exporter
 //prometheus-sap_host_exporter
-
-
-//ifeval::[ "{cloud}" == "Azure" ]
-//Azure
-//endif::[]
-//
-//ifeval::[ "{cloud}" == "AWS" ]
-//AWS
-//endif::[]
-//
-//ifeval::[ "{cloud}" == "GCP" ]
-//GCP
-//endif::[]
-//
-//ifeval::[ "{cloud}" == "Libvirt" ]
-//Libvirt
-//endif::[]
-//
-//
-//image::SA-Physical.png[title="Solution Architecture - {useCase} Physical", scaledwidth=80%]
-//
-//ifdef::Availability[]
-//include::./Availability/SA.adoc[]
-//endif::Availability[]
-//
-//ifdef::Performance[]
-//include::./Performance/SA.adoc[]
-//endif::Performance[]
-//
-//ifdef::Security[]
-//include::./Security/SA.adoc[]
-//endif::Security[]
-//
-//ifdef::Integrity[]
-//include::./Integrity/SA.adoc[]
-//endif::Integrity[]

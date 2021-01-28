@@ -8,15 +8,8 @@ The Application Layer elements are typically used to model the Application Archi
 
 Application workloads will consider the components, these will include, but not limited to SLES4SAP, SALT, TF, Repos, etc. Considerations for Availability, Performance, should be outlined here.
 
-# Application (Workloads)
-#ADOC_ATTRIBUTES+=" --attribute Terraform=1"
-#ADOC_ATTRIBUTES+=" --attribute SUSE Linux=1"
-#ADOC_ATTRIBUTES+=" --attribute SALT=1"
-#ADOC_ATTRIBUTES+=" --attribute SAP=1"
-#ADOC_ATTRIBUTES+=" --attribute Netweaver=1"
-#ADOC_ATTRIBUTES+=" --attribute HA=1"
-
 ////
+
 === SUSE Linux Enterprise Server for SAP Applications
 
 SUSE Linux Enterprise Server for SAP Applicatinos is a product formed from a bundle of software and services.  It is targeted specifically at customers running SAP workloads.  At it's foundation is SUSE Linux Enterprise Server and the High Availablity Extension with many additional components and benefits for running SAP Applications.
@@ -245,21 +238,3 @@ Enables the monitoring of SAP Netweaver, SAP HANA, and other applications. Gathe
  * SAP enqueue server metrics
  * SAP application server dispatcher metrics
  * SAP internal alerts
-
-////
-ifdef::Availability[]
-include::./Availability/SA.adoc[]
-endif::Availability[]
-
-ifdef::Performance[]
-include::./Performance/SA.adoc[]
-endif::Performance[]
-
-ifdef::Security[]
-include::./Security/SA.adoc[]
-endif::Security[]
-
-ifdef::Integrity[]
-include::./Integrity/SA.adoc[]
-endif::Integrity[]
- ////

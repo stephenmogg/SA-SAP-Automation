@@ -5,23 +5,23 @@
 Business Layer elements are used to model the operational organization of an enterprise in a technology-independent manner, whereas strategy elements are used to model the strategic direction and choices of the enterprise.
 
 * *_Who_* to engage with, inform and collaborate with
-* *_What_* key factors are important 
+* *_What_* key factors are important
 * and *_When_* to consider them
 
 Business Considerations for this solution, which teams/resources should be included and consulted.
 Who to engage with, inform, and collaborate with
-What key factors are important and 
+What key factors are important and
 When to consider them
 
 Determine landscape impact, Factors Flavors, Deployment types.
- 
+
 ////
 
-This document is targeted at consultants and end-customers who are deploying SAP Landscapes in the public cloud. Within cloud environments there is no strict separation of responsibility (e.g. Networking, DB, OS, Application), as most operations can be performed from a central control plane. However, this should not mean that this specialised knowledge is no longer needed. Functional teams still exist and will need to work together, this is often best acheived with a DevOps approach utilising Infrastructure-as-Code.
+This document is targeted at consultants and end-customers who are deploying SAP Landscapes in the public cloud. Within cloud environments there is no strict separation of responsibility (e.g. Networking, DB, OS, Application), as most operations can be performed from a central control plane. However, this should not mean that this specialized knowledge is no longer needed. Functional teams still exist and will need to work together, this is often best achieved with a DevOps approach utilizing Infrastructure-as-Code.
 
 This means that when implementing SAP in the cloud, knowledge will be required of the cloud infrastructure and the various possibilities that affords along with a good understanding of the operating system and the tooling surrounding it, e.g. High Availability (HA).  Finally an understanding around planning for the application usage and sizing is needed.
 
-SAP architectures needs to be fine-tuned based on customer requirements around system availability i.e 99.99%, 99.95% or 99.9%.  Single Point of Failures (SPOF) in the components and services will need to be idenified and protected against, this is normally achieved with an HA Cluster.  Other SPOFs within the infrastructure will need to be protected using some form of redundancy.
+SAP architectures needs to be fine-tuned based on customer requirements around system availability i.e 99.99%, 99.95% or 99.9%.  Single Point of Failures (SPOF) in the components and services will need to be identified and protected against, this is normally achieved with an HA Cluster.  Other SPOFs within the infrastructure will need to be protected using some form of redundancy.
 
 If you look at a typical SAP implementation you will find:
 
@@ -49,8 +49,8 @@ SAP HANA and Netweaver applications can be deployed in many different scenarios 
 The following scenarios are supported:
 
 * HANA single node
-* HANA HA Scale-up System Replication 
-** Performance Optimized Scenario 
+* HANA HA Scale-up System Replication
+** Performance Optimized Scenario
 *** active/passive
 *** active/readonly
 ** Cost Optimized Scenario
@@ -59,7 +59,7 @@ The following scenarios are supported:
 * Netweaver HA with Enqueue Replication Version (ENSA1)
 * S/4 HANA
 
-SUSE Engineering continue to develop new scenarios based on the demands of customers and partners. 
+SUSE Engineering continue to develop new scenarios based on the demands of customers and partners.
 
 The overall deployment using SUSE SAP Automation looks as follows:
 
@@ -83,11 +83,11 @@ There are a few general prerequisites to ensure a supported SAP Landscape in pub
 
 . A good operational knowledge of the Linux OS, SAP systems operations and the cloud infrastructure is needed.
 
-. Where highly available solutions are deployed, a deep understanding of the HA concepts and tooling along with how this functions within along side the resiliency capability of the cloud infrastructure is required.  
+. Where highly available solutions are deployed, a deep understanding of the HA concepts and tooling along with how this functions within along side the resiliency capability of the cloud infrastructure is required.
 
 
 
-
+////
 === Roles and Collaboration
 
 FixMe - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Massa tincidunt nunc pulvinar sapien. Hendrerit dolor magna eget est lorem. Bibendum enim facilisis gravida neque convallis a cras semper auctor. Sit amet mattis vulputate enim nulla aliquet porttitor. Semper feugiat nibh sed pulvinar proin gravida. Tincidunt lobortis feugiat vivamus at augue eget arcu dictum varius. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin. Pretium quam vulputate dignissim suspendisse in. Lectus proin nibh nisl condimentum id venenatis a. Neque aliquam vestibulum morbi blandit cursus risus at ultrices mi.
@@ -100,7 +100,6 @@ FixMe - Egestas egestas fringilla phasellus faucibus scelerisque. Aliquet portti
 
 FixMe - Id diam maecenas ultricies mi eget mauris. Cras fermentum odio eu feugiat pretium nibh ipsum consequat. Mi sit amet mauris commodo. Quam nulla porttitor massa id neque aliquam vestibulum morbi blandit. Pretium viverra suspendisse potenti nullam ac tortor vitae purus faucibus. Diam donec adipiscing tristique risus nec feugiat in fermentum. Dui id ornare arcu odio ut sem nulla. Eu sem integer vitae justo. Elementum eu facilisis sed odio. Ut morbi tincidunt augue interdum velit euismod in pellentesque massa. Gravida neque convallis a cras semper. Tellus at urna condimentum mattis. Faucibus purus in massa tempor nec feugiat nisl pretium fusce. Ut lectus arcu bibendum at varius vel pharetra vel turpis. Velit egestas dui id ornare arcu odio ut sem. Faucibus interdum posuere lorem ipsum. In ante metus dictum at tempor commodo. Sed id semper risus in hendrerit gravida rutrum. Mauris pharetra et ultrices neque ornare aenean euismod. Sit amet tellus cras adipiscing enim eu turpis egestas pretium.
 
-////
 .Scope of Covered Factors, Flavors, and Deployment Types
 [width="80%",valign="middle",halign="center",options="header"]
 |===
@@ -115,23 +114,23 @@ ifdef::PoC[]
 | *_<<G_PoC,Proof-of-Concept>>_*
 ifdef::Availability[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Availability[]
 ifdef::Performance[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Performance[]
 ifdef::Security[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Security[]
 ifdef::Integrity[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Integrity[]
 endif::PoC[]
 
@@ -139,23 +138,23 @@ ifdef::Production[]
 |*_<<G_Production,Production>>_*
 ifdef::Availability[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Availability[]
 ifdef::Performance[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Performance[]
 ifdef::Security[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Security[]
 ifdef::Integrity[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Integrity[]
 endif::Production[]
 
@@ -163,29 +162,30 @@ ifdef::Scaling[]
 |*_<<G_Scaling,Scaling>>_*
 ifdef::Availability[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Availability[]
 ifdef::Performance[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Performance[]
 ifdef::Security[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Security[]
 ifdef::Integrity[]
 ^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
+ifdef::DT1[ <<G_DT1,DT1>> ]
+ifdef::DT2[ <<G_DT2,DT2>> ]
 endif::Integrity[]
 endif::Scaling[]
 
 |===
 ////
 
+////
 ==== Factors
 
 ifdef::Availability[]
@@ -204,7 +204,7 @@ ifdef::Integrity[]
 [[B_Integrity]]include::./SA-Integrity.adoc[]
 endif::Integrity[]
 
-==== Flavors 
+==== Flavors
 
 ifdef::PoC[]
 [[B_PoC]]include::./SA-PoC.adoc[]
@@ -229,3 +229,4 @@ ifdef::DT2[]
 [[B_DT2]]include::./SA-DT2.adoc[]
 endif::DT2[]
 
+////

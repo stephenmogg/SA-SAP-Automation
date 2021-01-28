@@ -3,7 +3,7 @@
 :title: SUSE SAP automation solution
 
 
-:author: Peter Schinagl 
+:author: Peter Schinagl
 :authorEmail: peters@suse.com
 
 
@@ -16,8 +16,8 @@ ifdef::env-github[]
 endif::[]
 
 // could be "Azure","AWS","GCE" or "libvirt"
-//:cloud: Azure
-:cloud: AWS
+:cloud: Azure
+//:cloud: AWS
 :sles: SUSE Linux Enterprise Server
 :sles4sap: {sles} for SAP Applications
 

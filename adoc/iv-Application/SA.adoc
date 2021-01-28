@@ -120,6 +120,8 @@ Salt Master with Salt Client:: All steps are executed on the Salt Master machine
 
 Salt Client (Minion) only:: All steps in must be executed on each individual Salt client where the formulas need to be executed.  This is the approach used by the SUSE Automation framework as it removes the need for a central master system.
 
+Below a short overview of the available formulas which are used within the SUSE Automation framework.
+
 ==== Netweaver
 
 The Netweaver formula for bootstrapping and managing the SAP Netweaver platform takes care of:

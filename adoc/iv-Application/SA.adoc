@@ -64,7 +64,7 @@ image::gcp_storage_bucket.png[scalewidth=80%]
 
 TIP:: The example shows a bucket called _sap-automation-media_, but a unique name should be used.
 
-NOTE:: For more information about how to create a Google Cloud Storage Bucket, refer to https://cloud.google.com/storage/docs/creating-buckets
+NOTE:: For more information about how to create a {gcloud} Storage Bucket, refer to https://cloud.google.com/storage/docs/creating-buckets
 
 endif::[]
 
@@ -80,7 +80,7 @@ As an infrastructure provisioning tool, it is responsible for creating the serve
 
 Terraform is seen as cloud-agnostic and allows a single configuration to be used to manage multiple providers. This simplifies management and orchestration, helping operators build large-scale multi-cloud infrastructures.
 
-It is imporant to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and Google Cloud.
+It is imporant to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and {gcloud}.
 
 Terraform’s approach is that code is written specific to a (cloud) provider and will take advantage of the provider’s unique functionality, whilst the code will need to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
 
@@ -88,7 +88,7 @@ The name Terraform uses for these cloud specific modules is "provider". So for e
 
 Configuration files describe to Terraform which components need to deploy in order to support the application. One of the first steps is to run the `terraform` command, this will generate an execution plan which describes the actions Terraform will perform to get to the planned desired state.  The plan is in the form of a list of cloud infrastructure to create, delete and modify, if this looks correct, the final step is to execute the plan to create the described infrastructure.
 
-SUSE provides Terraform configuration files for AWS, Azure, Google Cloud and libvirt.
+SUSE provides Terraform configuration files for AWS, Azure, {gcloud} and libvirt.
 
 An open source version of Terraform is shipped within the Public Cloud Module of {sles4sap}
 
@@ -188,7 +188,7 @@ endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
  * Create and configure the High Availability cluster, pacemaker, corosync, GCE fencing and SAP resource agents.
- * Adjustments for the Google Cloud Infrastructure
+ * Adjustments for the {gcloud}Infrastructure
  * Handle Netweaver, HANA and DRBD
 endif::[]
 

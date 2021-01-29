@@ -71,7 +71,21 @@ I would suggest one of the following:
   1. Using separate diagrams for GCP and AWS. @Peter If you can share the original LibreOffice Impress slide, that would be great.
   2. Mentioning that the HA NFS Service with DRBD and the iSCSI server are optional components depend on the Cloud Service Providers.
 ////
+
+ifeval::[ "{cloud}" == "Azure" ]
+
 image::SAP_Overview.png[Instance overview,scaledwidth="80%"]
+
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+
+endif::[]
+
 
 //image::SA-Business.png[title="Solution Architecture - {useCase} Business", scaledwidth=80%]
 

@@ -19,7 +19,7 @@ Application workloads will consider the components, these will include, but not 
 ////
 === SUSE Linux Enterprise Server for SAP Applications
 
-SUSE Linux Enterprise Server for SAP Applicatinos is a product formed from a bundle of software and services.  It is targeted specifically at customers running SAP workloads.  At it's foundation is SUSE Linux Enterprise Server and the High Availablity Extension with many additional components and benefits for running SAP Applications.
+SUSE Linux Enterprise Server for SAP Applications is a product formed from a bundle of software and services.  It is targeted specifically at customers running SAP workloads. At it's foundation is SUSE Linux Enterprise Server and the High Availability Extension with many additional components and benefits for running SAP Applications.
 
 === SAP Application
 
@@ -53,7 +53,18 @@ image::s3_bucket.png[scalewidth=80%]
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP - GCP storage
+When deploying on GCP, a Storage Bucket is required to store the SAP Media. Using the GCP Console:
+
+* Create a storage bucket.
+* Create two folders (for the SAP HANA and SAP NetWeaver media) within the bucket.
+* Upload the SAP media to the folder within the storage bucket.
+
+image::gcp_storage_bucket.png[scalewidth=80%] 
+
+TIP:: The example shows a bucket called _sap-automation-media_, but a unique name should be used.
+
+NOTE:: For more information about how to create a {gcloud} Storage Bucket, refer to https://cloud.google.com/storage/docs/creating-buckets
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -64,19 +75,19 @@ endif::[]
 
 Terraform is an open source tool created by HashiCorp for building, changing and versioning infrastructure.
 
-As a infrastructure provisioning tool, it is responsible for creating the servers, but also load balancers, queues, monitoring, subnet configurations, firewall settings, routing rules, SSL certificates, and many other infrastructure components.
+As an infrastructure provisioning tool, it is responsible for creating the servers, but also load balancers, queues, monitoring, subnet configurations, firewall settings, routing rules, SSL certificates, and many other infrastructure components.
 
 Terraform is seen as cloud-agnostic and allows a single configuration to be used to manage multiple providers. This simplifies management and orchestration, helping operators build large-scale multi-cloud infrastructures.
 
-It is imporant to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and Google Cloud.
+It is imporant to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and {gcloud}.
 
-Terraform’s approach is that code is written specific to a (cloud)provider and will take advantage of the provider’s unique functionality, whilst the code will need to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
+Terraform’s approach is that code is written specific to a (cloud) provider and will take advantage of the provider’s unique functionality, whilst the code will need to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
 
 The name Terraform uses for these cloud specific modules is "provider". So for example the _Azure Provider_ can be used to configure infrastructure in Microsoft Azure using the Azure Resource Manager API's.
 
-Configuration files describe to Terraform which components need to deploy in order to support the application. One of the first steps is to run the terraform command, this will generate an execution plan which describes the actions Terraform will perform to get to the planned desired state.  The plan is in the form of a list of cloud infrastructure to create, delete and modify, if this looks correct, the final step is to execute the plan to create the described infrastructure.
+Configuration files describe to Terraform which components need to deploy in order to support the application. One of the first steps is to run the `terraform` command, this will generate an execution plan which describes the actions Terraform will perform to get to the planned desired state.  The plan is in the form of a list of cloud infrastructure to create, delete and modify, if this looks correct, the final step is to execute the plan to create the described infrastructure.
 
-SUSE provides Terraform configuration files for AWS, Azure, GCE and libvirt.
+SUSE provides Terraform configuration files for AWS, Azure, {gcloud} and libvirt.
 
 An open source version of Terraform is shipped within the Public Cloud Module of {sles4sap}
 
@@ -95,9 +106,19 @@ https://console.aws.amazon.com/cloudshell/
 
 endif::[]
 
+ifeval::[ "{cloud}" == "GCP" ]
+
+In addition, GCP provides an easy to access https://shell.cloud.google.com/[web based command line shell] where Terraform is already pre-installed.
+
+endif::[]
+
 {cloud} provides different types of storage suitable for supporting SAP workloads, so it is important to fully understand the SAP requirements for {cloud}.
 
+// @Peter and @Stephen: I would suggest omitting the following paragraph and keep the one starting by "The suggestions from ...". The second paragraph shows the same info in the first paragraph plus some more information.
+
+////
 The storage configuration included in the Terraform files are provided as an initial suggestion, based on best practices. It is still important to continue analyzing the storage utilization patterns during runtime of the application, it may be that the SAP workload is not utilizing all the storage bandwidth or IOPS provided. Therefore, downsizing storage may be an option.
+////
 
 The suggestions from the Terraform files for the storage configurations are meant as good directions to start with. But you still should analyze the storage utilization patterns during runtime of the application. It could be the case that you realize that you are not utilizing all the storage bandwidth or IOPS provided. Therefore you might consider downsizing on storage or you will see the opposite way and your workload might need more storage throughput than suggested with these configurations. As a result, you might need to change the capacity, IOPS or throughput. Independent what you needs between storage capacity required, storage latency needed, storage throughput and IOPS required and least expensive configuration, {cloud} offers enough different storage types with different capabilities and different price points to find and adjust to the right compromise for you and your SAP workload.
 
@@ -115,14 +136,14 @@ Salt formulas can be applied in two ways:
 
 Salt Master with Salt Client. All steps are executed on the Salt Master machine which sends instructions to the client to perform the required configuration actions.
 
-Salt Client (Minion) only. All steps in must be executed on each individual Salt client where the formulas need to be executed.  This is the approach used by the SUSE Automation framework as it removes the need for a central master system.
+Salt Client (Minion) only. All steps in must be executed on each individual Salt client where the formulas need to be executed. This is the approach used by the SUSE Automation framework as it removes the need for a central master system.
 
 ==== Netweaver
 
 The Netweaver formula for bootstrapping and managing the SAP Netweaver platform takes care of:
 
  * Extracting the required SAP files for SAP Media (.tar,.sar,.exe)
- * and setting up
+ * Setting up:
  ** ASCS instance
  ** ERS instance
  ** PAS instance
@@ -168,9 +189,9 @@ ifeval::[ "{cloud}" == "AWS" ]
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
- * GCP Stuff
- * GCP Stuff
- * GCP Stuff
+ * Create and configure the High Availability cluster, pacemaker, corosync, GCE fencing and SAP resource agents.
+ * Adjustments for the {gcloud}Infrastructure
+ * Handle Netweaver, HANA and DRBD
 endif::[]
 
 The formula provides the capability to create and configure a multi node HA cluster. Here are some of the features:
@@ -183,7 +204,7 @@ The formula provides the capability to create and configure a multi node HA clus
 * Configure SBD (if needed)
 * Configure Corosync
 * Configure the resource agents
-* Install and configure the monitoring ha_cluster_exporter
+* Install and configure the monitoring _ha_cluster_exporter_
 
 // SM: Q: this should be cloud specific; 
 // PS: A: we are here describe the formulas
@@ -213,10 +234,10 @@ The iSCSI-formula from SaltStack is able to deploy iSNS, iSCSI initiator, and iS
 A SaltStack formula to install and configure nfs server and client.
 
 === Monitoring
-SUSE continually try to improve user experience,  one of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data.  In order to be able to monitor the clusters on either HANA or Netweaver SUSE have written Prometheus exporters whicah ship as part of SLES for SAP.
+SUSE continually try to improve user experience. One of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data. In order to be able to monitor the clusters on either HANA or Netweaver, SUSE has written Prometheus exporters which ship as part of SLES for SAP.
 
 ==== SAP HANA Database Exporter
-The exporter provide metrics from more than one database or tenant. It provides
+The exporter provide metrics from more than one database or tenant. It provides:
 
  * Memory metrics
  * CPU metrics
@@ -234,13 +255,14 @@ Enables monitoring of Pacemaker, Corosync, SBD, DRBD and other components of Hig
  * DRBD resources and connections status. Currently, only DRBD version 9 is supported.
 
 ==== SAP Host Exporter
-Enables the monitoring of SAP Netweaver, SAP HANA, and other applications. Gathered metrics are the data that can be obtained by running the sapcontrol command.
+Enables the monitoring of SAP Netweaver, SAP HANA, and other applications showing: 
 
  * SAP start service process list
  * SAP enqueue server metrics
  * SAP application server dispatcher metrics
  * SAP internal alerts
 
+TIP: The gathered metrics are the data that can be obtained by running the `sapcontrol` command.
 
 ifdef::Availability[]
 include::./Availability/SA.adoc[]
@@ -257,4 +279,3 @@ endif::Security[]
 ifdef::Integrity[]
 include::./Integrity/SA.adoc[]
 endif::Integrity[]
-

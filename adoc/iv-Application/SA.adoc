@@ -12,7 +12,7 @@ Application workloads will consider the components, these will include, but not 
 
 === SUSE Linux Enterprise Server for SAP Applications
 
-SUSE Linux Enterprise Server for SAP Applicatinos is a product formed from a bundle of software and services.  It is targeted specifically at customers running SAP workloads.  At it's foundation is SUSE Linux Enterprise Server and the High Availablity Extension with many additional components and benefits for running SAP Applications.
+SUSE Linux Enterprise Server for SAP Applications is a product formed from a bundle of software and services.  It is targeted specifically at customers running SAP workloads. At it's foundation is SUSE Linux Enterprise Server and the High Availability Extension with many additional components and benefits for running SAP Applications.
 
 === SAP Application
 
@@ -42,11 +42,21 @@ When deploying on AWS, an S3 Bucket is required to store the SAP Media. Using th
 
 image::s3_bucket.png[scalewidth=80%]
 
-
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP - GCP storage
+When deploying on GCP, a Storage Bucket is required to store the SAP Media. Using the GCP Console:
+
+* Create a storage bucket.
+* Create two folders (for the SAP HANA and SAP NetWeaver media) within the bucket.
+* Upload the SAP media to the folder within the storage bucket.
+
+image::gcp_storage_bucket.png[scalewidth=80%]
+
+TIP:: The example shows a bucket called _sap-automation-media_, but a unique name should be used.
+
+NOTE:: For more information about how to create a {gcloud} Storage Bucket, refer to https://cloud.google.com/storage/docs/creating-buckets
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -57,24 +67,24 @@ endif::[]
 
 Terraform is an open source tool created by HashiCorp for building, changing and versioning infrastructure.
 
-As a infrastructure provisioning tool, it is responsible for creating the servers, but also load balancers, queues, monitoring, subnet configurations, firewall settings, routing rules, SSL certificates, and many other infrastructure components.
+As an infrastructure provisioning tool, it is responsible for creating the servers, but also load balancers, queues, monitoring, subnet configurations, firewall settings, routing rules, SSL certificates, and many other infrastructure components.
 
 Terraform is seen as cloud-agnostic and allows a single configuration to be used to manage multiple providers. This simplifies management and orchestration, helping operators build large-scale multi-cloud infrastructures.
 
-It is important to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and Google Cloud.
+It is important to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and {gcloud}.
 
-Terraform’s approach is that code is written specific to a (cloud)provider and will take advantage of the provider’s unique functionality, whilst the code will need to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
+Terraform’s approach is that code is written specific to a (cloud) provider and will take advantage of the provider’s unique functionality, whilst the code will need to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
 
 The name Terraform uses for these cloud specific modules is "provider". So for example the _Azure Provider_ can be used to configure infrastructure in Microsoft Azure using the Azure Resource Manager API's.
 
-Configuration files describe to Terraform which components need to deploy in order to support the application. One of the first steps is to run the terraform command, this will generate an execution plan which describes the actions Terraform will perform to get to the planned desired state.  The plan is in the form of a list of cloud infrastructure to create, delete and modify, if this looks correct, the final step is to execute the plan to create the described infrastructure.
+Configuration files describe to Terraform which components need to deploy in order to support the application. One of the first steps is to run the `terraform` command, this will generate an execution plan which describes the actions Terraform will perform to get to the planned desired state.  The plan is in the form of a list of cloud infrastructure to create, delete and modify, if this looks correct, the final step is to execute the plan to create the described infrastructure.
 
-SUSE provides Terraform configuration files for AWS, Azure, GCE and libvirt.
+SUSE provides Terraform configuration files for AWS, Azure, {gcloud} and libvirt.
 
 An open source version of Terraform is shipped within the Public Cloud Module of {sles4sap}
 
 ifeval::[ "{cloud}" == "Azure" ]
-Azure provide an easy to access web based commandline (cloudshell) where Terraform is already pre-installed.
+In addition, Azure provide an easy to access web based commandline (cloudshell) where Terraform is already pre-installed.
 
 https://shell.azure.com
 
@@ -88,6 +98,12 @@ ifeval::[ "{cloud}" == "AWS" ]
 In addition, AWS provides an easy to access web based command line shell where Terraform can be downloaded and installed.
 
 https://console.aws.amazon.com/cloudshell/
+
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+
+In addition, GCP provides an easy to access https://shell.cloud.google.com/[web based command line shell] where Terraform is already pre-installed.
 
 endif::[]
 
@@ -113,14 +129,15 @@ Salt Master with Salt Client:: All steps are executed on the Salt Master machine
 
 Salt Client (Minion) only:: All steps in must be executed on each individual Salt client where the formulas need to be executed.  This is the approach used by the SUSE Automation framework as it removes the need for a central master system.
 
-Below a short overview of the available formulas which are used within the SUSE Automation framework.
 
-==== Netweaver
+==== Overview of the available formulas which are used within the SUSE Automation framework.
+
+===== Netweaver
 
 The Netweaver formula for bootstrapping and managing the SAP Netweaver platform takes care of:
 
  * Extracting the required SAP files for SAP Media (.tar,.sar,.exe)
- * and setting up
+ * Setting up:
  ** ASCS instance
  ** ERS instance
  ** PAS instance
@@ -137,7 +154,7 @@ Besides that, the formula sets up all of the prerequisites as:
 
 The Salt formula follows the best practices defined in the official SUSE documentation http://documentation.suse.com/sbp
 
-==== HANA
+===== HANA
 
 The HANA formula takes care of the following:
 
@@ -149,26 +166,29 @@ The HANA formula takes care of the following:
 * Configure the SAP HANA Prometheus exporter
 
 
-==== HA
+===== HA
 
 The HA bootstrap formula takes care of creating and managing a high availability cluster:
 
+ * Create and configure the High Availability cluster, pacemaker, corosync, Fencing and SAP resource agents.
+ * Adjustments for the {cloud} Infrastructure
+
 ifeval::[ "{cloud}" == "Azure" ]
- * Create and configure the High Availability cluster, pacemaker, corosync, SBD and SAP resource agents.
- * Adjustments for the Azure Infrastructure
+ * SBD for fencing
  * Handle Netweaver, HANA and DRBD
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
- * Create and configure the High Availability cluster, pacemaker, corosync, EC2 fencing and SAP resource agents.
+ * EC2 fencing
  * Adjustments for the AWS Infrastructure
  * Handle Netweaver, HANA
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
- * GCP Stuff
- * GCP Stuff
- * GCP Stuff
+ * GCE fencing and SAP resource agents.
+ * Adjustments for the {gcloud}Infrastructure
+ * Handle Netweaver, HANA and DRBD
+// Ab: does gce use drbd?
 endif::[]
 
 The formula provides the capability to create and configure a multi node HA cluster. Here are some of the features:
@@ -178,24 +198,19 @@ The formula provides the capability to create and configure a multi node HA clus
 * Remove a node from an existing cluster
 * Configure the pre-requirements (install required packages, configure ntp/chrony, create ssh-keys, etc)
 * Auto detect if the cluster is running in a cloud provider (Azure, AWS, or GCP)
-* Configure SBD (if needed)
+* Configure fencing (agent or SBD)
 * Configure Corosync
 * Configure the resource agents
-* Install and configure the monitoring ha_cluster_exporter
+* Install and configure the monitoring _ha_cluster_exporter_
 
 // SM: Q: this should be cloud specific;
-// PS: A: we are here describe the formulas
-//        and no as this concept can be used at any cloud for sbd fencing. e.g. in azure we have more than one option
-// FIXME - provide more information on the case and better explanation
-Depending on the cloud requirements it may need an iSCSI server to be able to provide a shared disk for fencing where we use the iscsi-formula from SaltStack
+// PS: A: we describe the formulas here - and there dependent services
+//        second, the concept of sbd can be used at any cloud e.g. in azure we have more than one option, e.g. sbd+iscsi, sbd+rawdisk, agent
+Depending on the fencing requirements it may need an iSCSI server to provide a raw shared disk for the fencing with SBD, where we use the iscsi-formula from SaltStack.
 
-===== Other dependent services
+====== Other dependent services
 
-// SM: Azure specific?
-// PS: No, as this could be used on any cloud. Azure provides 2 additional ways
-//     and we describe the formulas here
-// FIXME - provide more information on the case
-====== HA NFS Service
+. HA NFS Service
 
 To build a HA NFS Service if there is none available, we can create one with help of 3 Linux services and the following
 
@@ -203,18 +218,19 @@ To build a HA NFS Service if there is none available, we can create one with hel
  * HA formula
  * NFS formula from SaltStack
 
-====== iSCSI Service
+. iSCSI Service
 
 The iSCSI-formula from SaltStack is able to deploy iSNS, iSCSI initiator, and iSCSI target packages, manage configuration files and then starts the associated iSCSI services.
 
-====== NFS formula
+. NFS Service
+
 A SaltStack formula to install and configure nfs server and client.
 
 === Monitoring
-SUSE continually try to improve user experience,  one of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data.  In order to be able to monitor the clusters on either HANA or Netweaver SUSE have written Prometheus exporters which ship as part of SLES for SAP.
+SUSE continually try to improve user experience. One of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data. In order to be able to monitor the clusters on either HANA or Netweaver, SUSE has written Prometheus exporters which ship as part of SLES for SAP.
 
 ==== SAP HANA Database Exporter
-The exporter provide metrics from more than one database or tenant. It provides
+The exporter provide metrics from more than one database or tenant. It provides:
 
  * Memory metrics
  * CPU metrics
@@ -232,9 +248,11 @@ Enables monitoring of Pacemaker, Corosync, SBD, DRBD and other components of Hig
  * DRBD resources and connections status. Currently, only DRBD version 9 is supported.
 
 ==== SAP Host Exporter
-Enables the monitoring of SAP Netweaver, SAP HANA, and other applications. Gathered metrics are the data that can be obtained by running the sapcontrol command.
+Enables the monitoring of SAP Netweaver, SAP HANA, and other applications showing:
 
  * SAP start service process list
  * SAP enqueue server metrics
  * SAP application server dispatcher metrics
  * SAP internal alerts
+
+TIP: The gathered metrics are the data that can be obtained by running the `sapcontrol` command.

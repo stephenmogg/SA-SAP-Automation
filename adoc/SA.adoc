@@ -4,15 +4,6 @@
 include::./SA_vars.adoc[]
 
 = {title}
-////
-
-Authors
-Peter Schinagl, SUSE Solution GmbH, peters@suse.com
-Stephen Mogg, SUSE Solutions, Stephen.Mogg@suse.com
-Abdelrahman Mohamed, SUSE Solutions GmbH, abdelrahman.mohamed@suse.com
-Bryan Gartner, SUSE Solutions, bryan.gartner@suse.com
-
-////
 
 == Preface
 

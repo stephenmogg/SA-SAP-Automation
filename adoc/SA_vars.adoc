@@ -2,10 +2,13 @@
 
 :title: SUSE SAP automation solution
 
-
-:author: Peter Schinagl
-:authorEmail: peters@suse.com
-
+.Authors
+----
+Peter Schinagl,      SUSE Software Solutions Germany GmbH, peters@suse.com
+Stephen Mogg,        SUSE Software Solutions UK LTD,       Stephen.Mogg@suse.com
+Abdelrahman Mohamed, SUSE Software Solutions Germany GmbH, abdelrahman.mohamed@suse.com
+Bryan Gartner,       SUSE Software Solutions LLC,          bryan.gartner@suse.com
+----
 
 # :authorGHURL: <FixMe>
 

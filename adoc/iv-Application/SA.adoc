@@ -156,7 +156,7 @@ The Salt formula follows the best practices defined in the official SUSE documen
 
 ===== HANA
 
-The HANA formula takes care of the following:
+The HANA bootstrap formula takes care of the following:
 
 * Extract the required SAP files for SAP Media (.tar,.sar,.exe)
 * Install SAP HANA.
@@ -210,21 +210,15 @@ Depending on the fencing requirements it may need an iSCSI server to provide a r
 
 ====== Other dependent services
 
-. HA NFS Service
-
+HA NFS Service::
 To build a HA NFS Service if there is none available, we can create one with help of 3 Linux services and the following
 
- * DRBD formula
- * HA formula
- * NFS formula from SaltStack
+ * DRBD bootstrap formula
+ * HA bootstrap formula
+ * NFS formula from SaltStack to install and configure nfs server and client
 
-. iSCSI Service
-
+iSCSI Service::
 The iSCSI-formula from SaltStack is able to deploy iSNS, iSCSI initiator, and iSCSI target packages, manage configuration files and then starts the associated iSCSI services.
-
-. NFS Service
-
-A SaltStack formula to install and configure nfs server and client.
 
 === Monitoring
 SUSE continually try to improve user experience. One of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data. In order to be able to monitor the clusters on either HANA or Netweaver, SUSE has written Prometheus exporters which ship as part of SLES for SAP.

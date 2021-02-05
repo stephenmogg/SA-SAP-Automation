@@ -82,3 +82,5 @@ ifdef::Appendix[]
 include::./SA-Appendix.adoc[]
 endif::Appendix[]
 
+include::./SUSE/common_sbp_legal_notice.adoc[]
+//include::./SUSE/common_gfdl.1.2_i.adoc[]

@@ -15,7 +15,9 @@ image::SLES4SAPBenefits.png[Benefits of SLES-for-SAP Applications,scaledwidth="8
 *Accelerate*::    customer deployments and migrations to the public cloud.
 
 
-Building the infrastructure to run SAP Applications can be complex and demand significant effort, especially if a manual deployment method is used. When delivering multiple environments, for multiple engagements, reproducing the deployment can be tedious and error-prone. Additional complexities arise from ensuring the infrastructure is highly available.
+Building the infrastructure to run SAP Applications can be complex and demand significant effort, especially if a manual deployment method is used. When delivering multiple environments, for multiple engagements, reproducing the deployment can be tedious and error-prone.
+
+Highly available infrastructure configurations raise additional complexities that further delay time to value.
 
 When deploying and managing a large number of systems in an SAP Landscape, there is often a secondary need, getting an overview of what is happening in the environment after the installation is complete.
 

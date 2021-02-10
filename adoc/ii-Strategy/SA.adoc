@@ -17,7 +17,9 @@ With today's quickly changing environments, many businesses need to accelerate i
 With moving products and services into the cloud, a modern trend in organizations, businesses meet changing demands and become flexible and agile in making business decisions.
 ////
 
-One key benefit of the cloud is that a business no longer needs to plan hardware sizing for the next five or more years.  Larger, faster, or even smaller infrastructure is only one reboot away.  Still, infrastructure optimization ("rightsizing") remains an important consideration, as businesses that actively manage "rightsizing" their environment can cut costs by 30 to 60 percent.
+One key benefit of the cloud is that a business no longer needs to plan hardware sizing for the next five or more years.  Larger, faster, or even smaller infrastructure is only one reboot away.
+
+However, "rightsizing" (or infrastructure optimization) remains an important consideration.  Businesses that actively manage "rightsizing" their environment can cut operating costs by 30 to 60 percent.
 
 //image::SA-Strategy.png[title="Solution Architecture - {useCase} Strategy", scaledwidth=80%]
 
@@ -30,8 +32,7 @@ Quick deployment:: If you need fast application implementation and deployment, t
 
 Reduce Costs:: Many businesses experience large CapEx (Capital Expenditure) to maintain IT infrastructure, with purchases often in advance of actual need.  SUSE, together with the cloud providers, help businesses transform to a more efficient OpEx (Operating Expenditure) model, with ‘pay as you use’ options that empower businesses with greater agility.
  
-Scalability & Flexibility:: With ready-to-run SUSE images in the cloud providers' marketplaces, businesses can scale up or scale down resources as required.  "Rightsizing" and instance optimization becomes much easier.
-+    
+Scalability & Flexibility:: With the cloud and the ability to use pay-as-you-go subscriptions, businesses can scale up or scale down resources as needed.  It is much easier to "rightsize" and ensure an efficient environment that meets changing business demands.
 
 Maintenance:: In the cloud, IT departments no longer have to worry about managing and maintaining the hardware and underlying infrastructure.  The cloud service provider handles this, freeing up company resources to focus on innovation and other business needs.
       

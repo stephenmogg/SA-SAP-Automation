@@ -12,11 +12,11 @@ Application workloads will consider the components, these will include, but not 
 
 === SUSE Linux Enterprise Server for SAP Applications
 
-SUSE Linux Enterprise Server for SAP Applications is a product formed from a bundle of software and services.  It is targeted specifically at customers running SAP workloads. At it's foundation is SUSE Linux Enterprise Server and the High Availability Extension with many additional components and benefits for running SAP Applications.
+SUSE Linux Enterprise Server for SAP Applications is a product formed from a bundle of software and services.  It is targeted specifically at customers running SAP workloads.  At its foundation is SUSE Linux Enterprise Server and the High Availability Extension with many additional components and benefits for running SAP Applications.
 
 === SAP Application
 
-In order to use the automation project, there are preliminary steps which need to be taken. One of these is to prepare the SAP installation software. The SAP software can be downloaded from https://launchpad.support.sap.com/#/softwarecenter, this will need to be performed manually before you start the automated deployment.
+In order to use the automation project, there are preliminary steps which need to be taken.  One of these is to prepare the SAP installation software.  The SAP software can be downloaded from https://launchpad.support.sap.com/#/softwarecenter.  This will need to be performed manually before starting the automated deployment.
 
 === Presenting the SAP Media
 
@@ -24,9 +24,9 @@ After downloading the required SAP software, the files must be presented via clo
 
 ifeval::[ "{cloud}" == "Azure" ]
 
-Azure offers shared storage (Azure Files) for applications using the Server Message Block (SMB) protocol which is a simple way to upload the SAP Media to it an use it from the installed machines for the SAP installation.
+Azure offers shared storage (Azure Files) for applications using the Server Message Block (SMB) protocol, providing a simple way to upload the SAP media and use it from the installed machines for the SAP installation.
 
-To use Azure Storage, you need to create first a storage account.
+To use Azure Storage, start by creating a storage account.
 
 https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction
 
@@ -34,28 +34,30 @@ endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 
-When deploying on AWS, an S3 Bucket is required to store the SAP Media. Using the AWS Console:
+When deploying on AWS, an S3 Bucket is required to store the SAP media.  Using the AWS Console:
 
-* Create an S3 bucket.  (The example shows a bucket called mysapmedia, but a unique name should be used.)
+* Create an S3 bucket.
 * Create a folder within the bucket.
 * Upload the SAP media to the folder within the S3 bucket.
+
+TIP:  The example shows a bucket called _mysapmedia_, but a unique name should be used.
 
 image::s3_bucket.png[scalewidth=80%]
 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-When deploying on GCP, a Storage Bucket is required to store the SAP Media. Using the GCP Console:
+When deploying on GCP, a Storage Bucket is required to store the SAP Media.  Using the GCP Console:
 
 * Create a storage bucket.
 * Create two folders (for the SAP HANA and SAP NetWeaver media) within the bucket.
-* Upload the SAP media to the folder within the storage bucket.
+* Upload the SAP Media to the folder within the storage bucket.
 
 image::gcp_storage_bucket.png[scalewidth=80%]
 
-TIP:: The example shows a bucket called _sap-automation-media_, but a unique name should be used.
+TIP: The example shows a bucket called _sap-automation-media_, but a unique name should be used.
 
-NOTE:: For more information about how to create a {gcloud} Storage Bucket, refer to https://cloud.google.com/storage/docs/creating-buckets
+NOTE: For more information about how to create a {gcloud} Storage Bucket, refer to https://cloud.google.com/storage/docs/creating-buckets
 
 endif::[]
 
@@ -65,26 +67,26 @@ endif::[]
 
 === Terraform
 
-Terraform is an open source tool created by HashiCorp for building, changing and versioning infrastructure.
+Terraform is an open source tool created by HashiCorp for building, changing, and versioning infrastructure.
 
 As an infrastructure provisioning tool, it is responsible for creating the servers, but also load balancers, queues, monitoring, subnet configurations, firewall settings, routing rules, SSL certificates, and many other infrastructure components.
 
 Terraform is seen as cloud-agnostic and allows a single configuration to be used to manage multiple providers. This simplifies management and orchestration, helping operators build large-scale multi-cloud infrastructures.
 
-It is important to note that Terraform can not simply create a landscape with a press of a button in another cloud. The cloud providers use different types of infrastructure. For example the VMs, load balancers and other services offered by AWS are very different to those in Azure and {gcloud}.
+It is important to note that Terraform can not simply create a landscape in another cloud with the press of a button. The cloud providers use different types of infrastructure.  For example the VMs, load balancers, and other services offered by AWS are very different to those in Azure and {gcloud}.
 
-Terraform’s approach is that code is written specific to a (cloud) provider and will take advantage of the provider’s unique functionality, whilst the code will need to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
+Terraform’s approach is that code is written specific to a (cloud) provider and will take advantage of the provider’s unique functionality.  While the code needs to be modified when used on a different cloud provider, being able to use the same language and toolset for all providers makes this effortless.
 
-The name Terraform uses for these cloud specific modules is "provider". So for example the _Azure Provider_ can be used to configure infrastructure in Microsoft Azure using the Azure Resource Manager API's.
+The name Terraform uses for these cloud specific modules is "provider." So, for example, the _Azure Provider_ can be used to configure infrastructure in Microsoft Azure using the Azure Resource Manager API's.
 
-Configuration files describe to Terraform which components need to deploy in order to support the application. One of the first steps is to run the `terraform` command, this will generate an execution plan which describes the actions Terraform will perform to get to the planned desired state.  The plan is in the form of a list of cloud infrastructure to create, delete and modify, if this looks correct, the final step is to execute the plan to create the described infrastructure.
+Configuration files describe to Terraform which components need to deploy in order to support the application.  One of the first steps is to run the `terraform` command, this will generate an execution plan that describes the actions Terraform will perform to get to the planned desired state.  The plan is in the form of a list of cloud infrastructure to create, delete, and modify.  If this looks correct, the final step is to execute the plan to create the described infrastructure.
 
 SUSE provides Terraform configuration files for AWS, Azure, {gcloud} and libvirt.
 
 An open source version of Terraform is shipped within the Public Cloud Module of {sles4sap}
 
 ifeval::[ "{cloud}" == "Azure" ]
-In addition, Azure provide an easy to access web based commandline (cloudshell) where Terraform is already pre-installed.
+In addition, Azure provides an easy-to-access, web-based command line (Cloud Shell), where Terraform is already pre-installed.
 
 https://shell.azure.com
 
@@ -95,7 +97,7 @@ endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 
-In addition, AWS provides an easy to access web based command line shell where Terraform can be downloaded and installed.
+In addition, AWS provides an easy-to-access, web-based command line shell where Terraform can be downloaded and installed.
 
 https://console.aws.amazon.com/cloudshell/
 
@@ -103,15 +105,15 @@ endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
 
-In addition, GCP provides an easy to access https://shell.cloud.google.com/[web based command line shell] where Terraform is already pre-installed.
+In addition, GCP provides an easy-to-access https://shell.cloud.google.com/[web-based command line shell] where Terraform is already pre-installed.
 
 endif::[]
 
 As {cloud} provides different types of storage suitable for supporting SAP workloads, it is important to fully understand the SAP storage requirements for {cloud}.
 
-The suggestions from SUSE's Terraform files for the storage configurations are meant as good directions to start with.
+The suggestions from SUSE's Terraform files for the storage configurations are meant as a good starting point.
 
-You still should analyze the storage utilization patterns during runtime of the application. It could be the case that you realize that you are not utilizing all the storage bandwidth or IOPS provided. Therefore you might consider downsizing on storage or you will see the opposite way and your workload might need more storage throughput than suggested with these configurations. As a result, you might need to change the capacity, IOPS or throughput. Independent what you needs between storage capacity required, storage latency needed, storage throughput and IOPS required and least expensive configuration, {cloud} offers enough different storage types with different capabilities and different price points to find and adjust to the right compromise for you and your SAP workload.
+You should still analyze the storage utilization patterns during runtime of the application.  You could realize, for example, that you are not utilizing all the storage bandwidth or IOPS provided, and you might consider downsizing storage.  Alternatively, you could see that your workload needs more storage throughput than suggested; in which case, you might choose to change the capacity, IOPS, or throughput to optimize the configuration.  {cloud} offers different storage types to allow you to find and select the right storage to support your SAP workload and meet your capacity, latency, throughput, IOPS, and cost needs.
 
 === SALT
 

@@ -28,18 +28,28 @@ However, "rightsizing" (or infrastructure optimization) remains an important con
 
 There are many benefits gained when moving SAP workloads to the cloud:
 
-Quick deployment:: If you need fast application implementation and deployment, the cloud is the best choice. You can set up a cloud environment within a few hours, whereas, in-house IT infrastructure can take days or even  months to order, install, configure, and bring online.  With the cloud and SUSE's automation solution for SAP, IT teams can easily configure and manage the setup remotely.
+Quick deployment:: If you need fast application implementation and deployment, the cloud is the best choice. You can set up a cloud environment within a few hours, whereas, in-house IT infrastructure can take days or even  months to order, install, configure, and bring online.
++
+With SUSE's automation solution for SAP, IT teams can easily and quickly implement and deploy their SAP Landscape remotely in the cloud.
 
-Reduce Costs:: Many businesses experience large CapEx (Capital Expenditure) to maintain IT infrastructure, with purchases often in advance of actual need.  SUSE, together with the cloud providers, help businesses transform to a more efficient OpEx (Operating Expenditure) model, with ‘pay as you use’ options that empower businesses with greater agility.
- 
-Scalability & Flexibility:: With the cloud and the ability to use pay-as-you-go subscriptions, businesses can scale up or scale down resources as needed.  It is much easier to "rightsize" and ensure an efficient environment that meets changing business demands.
+Reduce Costs:: Many businesses experience large CapEx (Capital Expenditure) to maintain IT infrastructure, with purchases often in advance of actual need.  The cloud helps businesses transform to a more efficient OpEx (Operating Expenditure) model, with several consumption options, including "pay as you use," that let businesses manage their infrastructure costs.
++
+SUSE, together with the cloud providers, can offer the right options to control costs, but this also requires businesses to adapt how they use the resources and SAP software.
 
-Maintenance:: In the cloud, IT departments no longer have to worry about managing and maintaining the hardware and underlying infrastructure.  The cloud service provider handles this, freeing up company resources to focus on innovation and other business needs.
+Scalability & Flexibility:: With the cloud, businesses can scale up or scale down resources as needed.  This makes it much easier to "rightsize" the environment and ensure efficient use of resources that can also adjust to meet changing business demands.
+
+Maintenance:: With the cloud, IT departments no longer have to worry about managing and maintaining the hardware and underlying infrastructure.  The cloud service provider handles this, freeing up company resources to focus on innovation and other business needs.
++
+Businesses who deploy their SAP Landscapes with SUSE products and SUSE best practices automation experience simplified maintenance and less downtime.
       
 Resiliency:: Uptime is of prime importance to ensure day-to-day business operations run smoothly.  Moving to the cloud maximizes uptime and reduces downtime.
-The cloud improves disaster recovery and business continuity without the need to spend a huge amount of capital on robust disaster recovery tools.  Cloud providers offer a variety of services to help protect businesses from security threats and outages.  SUSE's SAP HA automation augments these services to further reduce downtime of SAP applications.
+The cloud improves disaster recovery and business continuity without the need to spend a huge amount of capital on robust disaster recovery tools.  And, cloud providers offer a variety of services to help protect businesses from security threats and outages.
++
+SUSE's SAP HA automation augments these services to further reduce downtime of SAP applications.
 
-Remote access:: The cloud allows employees to access data from anywhere and at any time, making business more flexible and increasing productivity.  SUSE products natively provide many options for remote access and control.
+Remote access:: The cloud allows employees to access data from anywhere and at any time, making business more flexible and increasing productivity.
++
+SUSE products natively provide many options for remote access and control.
 
 
 Overall, SUSE and public clouds offer significant benefits for all customers, regardless of size.  The use of cloud resources can lower infrastructure costs and improve the scalability, agility, flexibility, and availability of SAP applications. 

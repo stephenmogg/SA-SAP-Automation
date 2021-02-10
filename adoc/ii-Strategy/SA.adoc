@@ -7,56 +7,42 @@ The strategy elements are typically used to model the strategic direction and ch
 *Why* one should consider this strategy
 ////
 
-Most SAP services are deployed on-premises with well-established procedures, but it is important to plan and size the required hardware several years ahead and estimate the maximum workload e.g. for the next 5 years. 
+Most SAP services are deployed on-premises with well-established procedures, but significant planning must go into these deployments.  For example, workload growth must be estimated and planned for in hardware requirements, often several years in advance.
 
-It is difficult to predict the future, so when considering requirements such as capacity, as there are many factors which may affect this over the system lifespan, the values selected for this often ends up being a 'best guess'.
+Predicting the future is not easy.  When considering requirements, such as storage capacity, many factors may affect the system over its lifespan.  Selections often end up being just "best guesses."
 
-Today, with quickly changing environments, many businesses need to accelerate innovation and increase agility across their business. This allows them to achieve a faster time-to-market in addition to lowering costs.
+With today's quickly changing environments, many businesses need to accelerate innovation and increase agility across their entire landscape in order to achieve a faster time-to-market and manage costs.  Migrating products and services to the cloud can help businesses become more flexible and agile to meet changing business demands.
 
 ////
 With moving products and services into the cloud, a modern trend in organizations, businesses meet changing demands and become flexible and agile in making business decisions.
 ////
 
-One key example here is that you no longer need to plan the hardware sizing for the next 5 years, as a larger, faster, or even smaller infrastructure is only one reboot away. 
+One key benefit of the cloud is that a business no longer needs to plan hardware sizing for the next five or more years.  Larger, faster, or even smaller infrastructure is only one reboot away.
 
-"Rightsizing" or infrastructure optimization remains an important task and should be front of mind when managing an SAP Landscape in the cloud. Not taking care of this cloud benefit could have large cost implications, companies that “rightsize” their workloads are often able to cut costs by of 30-60%.
+However, "rightsizing" (or infrastructure optimization) remains an important consideration.  Businesses that actively manage "rightsizing" their environment can cut operating costs by 30 to 60 percent.
 
 //image::SA-Strategy.png[title="Solution Architecture - {useCase} Strategy", scaledwidth=80%]
 
 
 === Context
 
-There are many benefits gained when moving your SAP workloads to the cloud:
+There are many benefits gained when moving SAP workloads to the cloud:
 
-Quick deployment:: If you need fast application implementation and deployment, the cloud is the best choice. You can set up a cloud environment within a few hours, whereas, in-house IT infrastructure set-up takes days and sometimes months to order it and set up. With the cloud, IT teams can easily configure and manage the setup remotely.
-+    
-This is the area where SUSE's automation solution for SAP can help.
+Quick deployment:: If you need fast application implementation and deployment, the cloud is the best choice. You can set up a cloud environment within a few hours, whereas, in-house IT infrastructure can take days or even  months to order, install, configure, and bring online.  With the cloud and SUSE's automation solution for SAP, IT teams can easily configure and manage the setup remotely.
 
-Reduce Costs:: Many businesses spent a lot of their capital on maintaining their IT Infrastructure. With help of the cloud, they can transform their CapEx (Capital Expenditure) to stable OpEx (Operating Expenditure).
-Costs can be controlled as the cloud model is a ‘pay as you use’ scenario and many cloud vendors provide several consumption options to provide more choice to their customers. 
-+    
-This is an area where SUSE can help together with the cloud providers to offer the right options, but this also means you need to adapt to how you use the resources and the SAP software.
+Reduce Costs:: Many businesses experience large CapEx (Capital Expenditure) to maintain IT infrastructure, with purchases often in advance of actual need.  SUSE, together with the cloud providers, help businesses transform to a more efficient OpEx (Operating Expenditure) model, with ‘pay as you use’ options that empower businesses with greater agility.
  
-Scalability & Flexibility:: With the cloud, you can scale up your system as and when required, add or remove resources when the business demands it and as mentioned above, "rightsizing" and instance optimization to provide an efficient solution.
-+    
-////
-With SUSE ready to run images available in the cloud providers marketplace it is easy to scale.
-////
+Scalability & Flexibility:: With the cloud and the ability to use pay-as-you-go subscriptions, businesses can scale up or scale down resources as needed.  It is much easier to "rightsize" and ensure an efficient environment that meets changing business demands.
 
-
-Maintenance:: With the public cloud, IT departments no longer have to worry about managing and maintaining the hardware and underlying infrastructure, the cloud service provider handles this for your organization and frees up company resources to focus on other business activities.
+Maintenance:: In the cloud, IT departments no longer have to worry about managing and maintaining the hardware and underlying infrastructure.  The cloud service provider handles this, freeing up company resources to focus on innovation and other business needs.
       
-Resiliency:: For businesses these days, uptime is of prime importance to ensure day-to-day business operations run smoothly. Moving to the cloud maximizes uptime and reduces downtime.
-The cloud improves disaster recovery and business continuity without the need to spend a huge amount of capital on robust disaster recovery tools.  Cloud providers offer a variety of services to help protect businesses from any security threat or outage.
+Resiliency:: Uptime is of prime importance to ensure day-to-day business operations run smoothly.  Moving to the cloud maximizes uptime and reduces downtime.
+The cloud improves disaster recovery and business continuity without the need to spend a huge amount of capital on robust disaster recovery tools.  Cloud providers offer a variety of services to help protect businesses from security threats and outages.  SUSE's SAP HA automation augments these services to further reduce downtime of SAP applications.
 
-+
-SUSE's SAP HA Automation can add to these services to provide less downtime of your SAP application.
-    
-Remote access:: With the cloud, your employees can access data from anywhere, and at any time via the internet making business more flexible and increase the productivity of the employees.
-+    
-SUSE products natively provide many options for remote access and control.
-    
-So overall, public clouds offer significant benefits for all customers regardless of size. The use of public cloud resources can lower infrastructure costs and improve the scalability, agility, flexibility and availability of applications. 
+Remote access:: The cloud allows employees to access data from anywhere and at any time, making business more flexible and increasing productivity.  SUSE products natively provide many options for remote access and control.
+
+
+Overall, SUSE and public clouds offer significant benefits for all customers, regardless of size.  The use of cloud resources can lower infrastructure costs and improve the scalability, agility, flexibility, and availability of SAP applications. 
 
 ////
 === Categories and Variants

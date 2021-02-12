@@ -138,33 +138,33 @@ Salt Minion Only:: All steps defined in Salt formulas are executed on the indivi
 
 The Netweaver formula for bootstrapping and managing the SAP Netweaver platform takes care of:
 
- * Extracting the required SAP files for SAP Media (.tar,.sar,.exe)
- * Setting up:
+ * Extract the required SAP files for SAP Media (.tar,.sar,.exe)
+ * Set up:
  ** ASCS instance
  ** ERS instance
  ** PAS instance
  ** AAS instance
  ** Database instance (currently only HANA)
 
-Besides that, the formula sets up all of the prerequisites as:
+Besides that, the formula sets up all of the prerequisites, such as:
 
  * Hostnames
  * Virtual addresses
  * NFS mounts
  * Shared disks
- * SWAP partition space
+ * SWAP partitions
 
-The Salt formula follows the best practices defined in the official SUSE documentation http://documentation.suse.com/sbp
+The Salt formula follows the best practices defined in the official SUSE documentation http://documentation.suse.com/sbp.
 
 ===== HANA
 
 The HANA bootstrap formula takes care of the following:
 
 * Extract the required SAP files for SAP Media (.tar,.sar,.exe)
-* Install SAP HANA.
+* Install SAP HANA
 * Apply "saptune" for HANA to configure and tune the OS for HANA usage
-* Configure SAP System Replication.
-* Preconfigure the High Availability cluster requirements.
+* Configure SAP System Replication
+* Preconfigure the High Availability cluster requirements
 * Configure the SAP HANA Prometheus exporter
 
 
@@ -172,7 +172,7 @@ The HANA bootstrap formula takes care of the following:
 
 The HA bootstrap formula takes care of creating and managing a high availability cluster:
 
- * Create and configure the High Availability cluster, pacemaker, corosync, Fencing and SAP resource agents.
+ * Create and configure the High Availability cluster, pacemaker, corosync, Fencing, and SAP resource agents
  * Adjustments for the {cloud} Infrastructure
 
 ifeval::[ "{cloud}" == "Azure" ]
@@ -187,18 +187,18 @@ ifeval::[ "{cloud}" == "AWS" ]
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
- * GCE fencing and SAP resource agents.
- * Adjustments for the {gcloud}Infrastructure
- * Handle Netweaver, HANA and DRBD
+ * GCE fencing and SAP resource agents
+ * Adjustments for the {gcloud} Infrastructure
+ * Handle Netweaver, HANA, and DRBD
 // Ab: does gce use drbd?
 endif::[]
 
-The formula provides the capability to create and configure a multi node HA cluster. Here are some of the features:
+The formula provides the capability to create and configure a multi-node HA cluster.  Here are some of the features:
 
 * Initialize a cluster
 * Join a node to an existing cluster
 * Remove a node from an existing cluster
-* Configure the pre-requirements (install required packages, configure ntp/chrony, create ssh-keys, etc)
+* Configure the prerequisites (install required packages, configure ntp/chrony, create ssh-keys, etc.)
 * Auto detect if the cluster is running in a cloud provider (Azure, AWS, or GCP)
 * Configure fencing (agent or SBD)
 * Configure Corosync
@@ -213,20 +213,20 @@ Depending on the fencing requirements it may need an iSCSI server to provide a r
 ====== Other dependent services
 
 HA NFS Service::
-To build a HA NFS Service if there is none available, we can create one with help of 3 Linux services and the following
+To build a HA NFS Service, if there is none available, we can create one with help of 3 Linux services and the following:
 
  * DRBD bootstrap formula
  * HA bootstrap formula
  * NFS formula from SaltStack to install and configure nfs server and client
 
 iSCSI Service::
-The iSCSI-formula from SaltStack is able to deploy iSNS, iSCSI initiator, and iSCSI target packages, manage configuration files and then starts the associated iSCSI services.
+The iscsi-formula from SaltStack is able to deploy iSNS, iSCSI initiator, and iSCSI target packages, manage configuration files and then starts the associated iSCSI services.
 
 === Monitoring
-SUSE continually try to improve user experience. One of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data. In order to be able to monitor the clusters on either HANA or Netweaver, SUSE has written Prometheus exporters which ship as part of SLES for SAP.
+SUSE continually works to improve user experience. One of the developments is how to provide a modern solution to monitor the several High Availability clusters that manage SAP HANA and SAP Netweaver. The Monitoring components use the Prometheus toolkit and the Grafana project to visualize the data. In order to be able to monitor the clusters on either HANA or Netweaver, SUSE has written Prometheus exporters which ship as part of SLES for SAP.
 
 ==== SAP HANA Database Exporter
-The exporter provide metrics from more than one database or tenant. It provides:
+The exporter provides metrics from more than one database or tenant.  Specifically, it provides:
 
  * Memory metrics
  * CPU metrics
@@ -236,12 +236,12 @@ The exporter provide metrics from more than one database or tenant. It provides:
  * Top queries consuming time and memory
 
 ==== High Availability Cluster Exporter
-Enables monitoring of Pacemaker, Corosync, SBD, DRBD and other components of High Availability clusters. This provides the ability to easily monitor cluster status and health.
+Enables monitoring of Pacemaker, Corosync, SBD, DRBD, and other components of High Availability clusters. This gives administrators the ability to easily monitor cluster status and health.  The following capabilities are included: 
 
  * Pacemaker cluster summary, nodes, and resource status
- * Corosync ring errors and quorum votes. Currently, only Corosync version 2 is supported.
- * Health status of SBD devices.
- * DRBD resources and connections status. Currently, only DRBD version 9 is supported.
+ * Corosync ring errors and quorum votes (currently, only Corosync version 2 is supported)
+ * Health status of SBD devices
+ * DRBD resources and connections status (currently, only DRBD version 9 is supported)
 
 ==== SAP Host Exporter
 Enables the monitoring of SAP Netweaver, SAP HANA, and other applications showing:

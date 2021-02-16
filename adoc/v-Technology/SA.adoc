@@ -18,58 +18,60 @@ Technology components utilized as a part of this solution: CSP Specific, Network
 
 === Terraform
 
+What is Terraform?
+
 Terraform along with the specific cloud provider modules is used to create the infrastructure to support the SAP application and supporting services.
 
-The Terraform templates describe everything needed to create the desired infrastructure components. They also provide a range of pre-defined settings to make creating the correct virtual machines, disks, networks etc. simpler.
+The Terraform templates describe everything needed to create the desired infrastructure components.  They also provide a range of pre-defined settings to simplify creation of the correct virtual machines, disks, networks, etc.
 
 === Salt
 
 What is Salt?
 
-Salt is a different approach to infrastructure management, founded on the idea that high-speed communication with large numbers of systems can open up new capabilities. This approach makes Salt a powerful multitasking system that can solve many specific problems in an infrastructure.
+Salt is a different approach to infrastructure management, founded on the idea that high-speed communication with large numbers of systems can open up new capabilities.  This approach makes Salt a powerful multitasking system that can solve many specific problems in an infrastructure.
 
-The backbone of Salt is the remote execution engine, which creates a high-speed, secure, and bi-directional communication net for groups of systems. On top of this communication system, Salt provides an extremely fast, flexible, and easy-to-use configuration management system called _Salt States_.
+The backbone of Salt is the remote execution engine, which creates a high-speed, secure, and bi-directional communication net for groups of systems.  On top of this communication system, Salt provides an extremely fast, flexible, and easy-to-use configuration management system called _Salt States_.
 
-An SAP landscape is made up of groups of machines, each machine in the group performing a role. Those groups of machines work in concert with each other to create an application stack.
+An SAP landscape is made up of groups of machines, each machine in the group performing a role.  These groups of machines work in concert with each other to create an application stack.
 
-To effectively manage these groups of machines, an administrator needs to be able to create roles for those groups. As an example, a group of machines that serve front-end web traffic might have roles which indicate that those machines should all have the webserver package installed and that the web service should always be running.
+To effectively manage these groups of machines, an administrator needs to be able to create roles for those groups.  As an example, a group of machines that serve front-end web traffic might have roles which indicate that those machines should all have the webserver package installed and that the web service should always be running.
 
 In Salt, the file which contains a mapping between groups of machines on a network and the configuration roles that should be applied to them is called a _top file_.
 
-Top files are named _top.sls_ by default and they are so-named because they always exist in the "top" of a directory hierarchy that contains state files. That directory hierarchy is called a state tree and this is what is used to reference the building blocks for the SAP Landscape.
+Top files are named _top.sls_ by default and they are so-named because they always exist in the "top" of a directory hierarchy that contains state files.  That directory hierarchy is called a state tree and this is what is used to reference the building blocks for the SAP Landscape.
 
 === SAP Sizing
 
-To make the SAP sizing more simple SUSE have introduced pre-defined sizes with well-known abbreviation from T-Shirt sizes Small (S), Medium (M), Large (L).
+To make the SAP sizing simpler, SUSE has introduced pre-defined sizes with well-known abbreviations from T-Shirt sizes: Small (S), Medium (M), and Large (L).
 
-The Small (S) size is targeted at non-productive scenarios, where as the Medium (M) and Large (L) sizes are recommended for production setups, where certified instance types should be used.
+The Small (S) size is targeted at non-production scenarios, whereas Medium (M) and Large (L) sizes are recommended for production setups and certified instance types should be used.
 
 It is possible to tweak these pre-defined sizes or create a set of custom settings.
 
-As sizing is critical, it is important to choose the right instance sizes from the cloud provider which are certified by SAP and choose the right number of disks to provide the right I/O, as similar the network throughput for the solution.
+Sizing is critical.  It includes choosing the right, SAP-certified instance types from the cloud provider, the right number of disks to support I/O requirements, and the right network options to meet throughput needs.
 
 === Building Blocks
 
-The main building blocks for an SAP Landscape are the _Application Layer_, based on Netweaver with SAP Central Services (xSCS) with an Primary Application Server (PAS) and Additional application server (AAS) and the _Database Layer_, which within the Automation project is SAP HANA.
+The main building blocks for an SAP Landscape are the _Application Layer_, based on Netweaver with SAP Central Services (xSCS), a Primary Application Server (PAS), and Additional Application Server (AAS), as well as the _Database Layer_, which, for this context, is SAP HANA.
 
-There are two possible models how SAP Business Suite can be deployed, a centralized deployment where all runs on one server or distributed deployment where every service has its own node.
+There are two possible models for how SAP Business Suite can be deployed: a centralized deployment where everything runs on one server or a distributed deployment where every service has its own node.
 
-The centralized deployment is mostly used for non-production environments such as sandbox and development environments.
+The centralized deployment is mostly used for non-production, such as sandbox and development environments.
 
 //todo - picture
 
-The distributed deployment is the recommended way for production environments where each of the SAP application layer components is independently installed on different instances. This is the scenario used within the automation project.
+The distributed deployment is the recommended way for production environments where each of the SAP application layer components is independently installed on different instances.  This is the scenario used within the automation project.
 
 //todo - picture
 
 
 === High Availability
 
-There are two main parts in an SAP system which should be made highly available in order to achieve less downtime and eliminate single point of failures within the SAP Landscape.
+There are two main parts in an SAP system which should be made highly available in order to achieve less downtime and eliminate single points of failure within the SAP Landscape.
 
-For the Central Services this is Enqueue Replication, and for the database its the HANA System Replication.
+For the Central Services this is Enqueue Replication, and for the database it is the HANA System Replication.
 
-Therefore, for each of these building blocks, one additional machine is required to build a two-node cluster within the HA Scenarios.
+For each of these building blocks, one additional machine is required to build a two-node cluster within HA scenarios.
 
 ifeval::[ "{cloud}" == "Azure" ]
 
@@ -81,20 +83,20 @@ endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 
-Within an AWS SAP HA Cluster, the HANA Primary and Secondary nodes each reside in 2 different Availability Zones (AZs), therefore to provide an IP address which is portable between the 2 AZs, an AWS Overlay IP address is required. This uses a specific routing entry which can send network traffic to an instance, no matter which Availability Zones (and subnet) the instance is located in.
+Within an AWS SAP HA Cluster, the HANA Primary and Secondary nodes each reside in 2 different Availability Zones (AZs).  Therefore, to provide an IP address which is portable between the two AZs, an AWS Overlay IP address is required.  This uses a specific routing entry which can send network traffic to an instance, no matter in which Availability Zone (and subnet) the instance is located.
 
-Overlay IP addresses have one requirement, they need to have a CIDR range outside of the VPC.
+Overlay IP addresses have one requirement: they need to have a CIDR range outside of the VPC.
 
-It is important to note that this IP address is not externally available, for this the Route53 service should be used. (this is currently not supported by the SUSE SAP Automation framework).
+It is important to note that this IP address is not externally available.  For this, the Route53 service should be used (this is currently not supported by the SUSE SAP Automation framework).
 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
 
-Within a Google Cloud SAP HA Cluster, the HANA Primary and Secondary nodes each reside in 2 different Availability Zones (AZs), therefore to provide an IP address which is portable between the 2 AZs, there are two available options:
+Within a Google Cloud SAP HA Cluster, the HANA Primary and Secondary nodes each reside in 2 different Availability Zones (AZs).  To provide an IP address which is portable between the two AZs, there are two available options:
 
 . A _Standard GCE Load Balancer_ service from Google Cloud to provide traffic to only the active node.
-. An _GCE Overlay IP address_. It uses the _gcp-vpc-move-route_ resource agent which can send network traffic to an instance, no matter which Availability Zones (and subnet) the instance is located in.
+. A _GCE Overlay IP address_.  This uses the _gcp-vpc-move-route_ resource agent which can send network traffic to an instance, no matter in which Availability Zone (and subnet) the instance is located.
 
 endif::[]
 
@@ -105,18 +107,18 @@ endif::[]
 
 === Additional Services
 
-Depending on the available services from the cloud provider, additional functionality may need to be created as part of the deployment.  i.e. NFS. This is reflected within the top.sls file.
+Depending on the available services from the cloud provider, additional functionality may need to be created as part of the deployment (e.g., NFS).  This is reflected within the top.sls file.
 
 
 ==== NFS service
 
 ifeval::[ "{cloud}" == "Azure" ]
 
-As we started with Azure, there was no NFS service available, so we need to build some with the tools we ship in {sles4sap}. As the NFS service should be high available, we need a second virtual machine to build a two node cluster.
+When we started with Azure, there was no NFS service available.  We needed to build an NFS service with the tools we ship in {sles4sap}.  As the NFS service should be highly available, we also needed a second virtual machine to build a two node cluster.
 
 image::Azure_HA_NFS_Service.png[scaledwidth="80%"]
 
-Over the time, Azure provide more and more services. So as of time of writing, there is a native NFS service with help of Netapp available (Azure Netapp files - ANF) and the Azure file service is extending in this direction too.
+Over time, Azure has provided more services.  At the time of this writing, there is a native NFS service (Azure Netapp files - ANF).  The Azure file service is also being extended with similar functionality.
 //todo - link
 
 endif::[]

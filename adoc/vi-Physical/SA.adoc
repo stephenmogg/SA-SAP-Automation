@@ -148,8 +148,8 @@ _terraform.tfvars.example_:: is an example configuration file with many pre-fill
 
 _variables.tf_:: provides all input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
 Please have a deep look at all variable and the comments for it, to get aware whats is possible.
-
-e.g. the variable provisioner is like a switch to run either the Salt or Terraform portion only
++
+E.g., the variable provisioner is like a switch to run either the Salt or Terraform portion only
 
 
 A _module_:: is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that infrastructure can be described in terms of its architecture, rather than directly in terms of physical objects.
@@ -287,8 +287,6 @@ by removing the _#_.
 
     #pre_deployment = true
 
-Now, we have all settings for Terraform done and are nearly at the step to run the deployment, so save your changes.
-
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
@@ -375,12 +373,18 @@ ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt
 endif::[]
 
-. Go one directory up and change into the _pillar_example_ directory and then into the _automatic_ directory, where you can see 3 additional directories. They will provide the configuration variable for the relevant services. This automatic folder will work for all cloud providers we support today.
+
+Now, we have all settings for Terraform done and are nearly at the step to run the deployment, so save your changes.
+
+First, go one directory up, change to the _pillar_example_ directory, and then change to the _automatic_ directory.  Here you can see 3 additional directories. They will provide the configuration variables for the relevant services. This automatic folder will work for all cloud providers we support today.
 
 It is possible to change other settings (e.g., passwords), but, for a simple test, do not modify these values.
+
 Save any changes to the file and and go back to the main directory.
 
-Now we are ready to run Terraform.
+
+We are ready to run Terraform.
+
 
 ifeval::[ "{cloud}" == "Azure" ]
 
@@ -644,52 +648,58 @@ https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-op
 
 The maps below describe how the disks for SAP HANA will be used and created during the provisioning.
 
-disks_type:: as HANA has high I/O requirements the disk type Premium SSD needs to be used
-disks_size:: the size of the additional disk in GB, as every size has certain IOPS caps
-caching:: the caching recommendations for Azure premium disks assume the I/O
-characteristics for SAP HANA
-/hana/data - no caching or read caching
-/hana/log - no caching - exception for M- and Mv2-Series VMs where Azure Write Accelerator should be enabled
-/hana/shared - read caching
+disks_type:: As HANA has high I/O requirements the disk type Premium SSD needs to be used.
+disks_size:: The size of the additional disk is expressed in GB. Every size has certain IOPS caps.
+caching:: The caching recommendations for Azure premium disks assume the I/O characteristics for SAP HANA, as follows:
++
+* /hana/data - no caching or read caching
+* /hana/log - no caching - exception for M- and Mv2-Series VMs where Azure Write Accelerator should be enabled
+* /hana/shared - read caching
 
-writeaccelerator:: Azure Write Accelerator is a functionality that is available for Azure M-Series VMs exclusively. As the name states, the purpose of the functionality is to improve I/O latency of writes against the Azure premium storage. For SAP HANA, Write Accelerator is supposed to be used against the /hana/log volume only. Therefore, the /hana/data and /hana/log are separate volumes with Azure Write Accelerator supporting the /hana/log volume only.
+writeaccelerator:: Azure Write Accelerator is a functionality that is available for Azure M-Series VMs exclusively. As the name implies, the purpose of the functionality is to improve I/O latency of writes against the Azure premium storage. For SAP HANA, Write Accelerator is supposed to be used against the /hana/log volume only. Therefore, the /hana/data and /hana/log are separate volumes with Azure Write Accelerator supporting the /hana/log volume only.
 
 Number of Disks:: The number of disks which get used, depend on the performance requirements. We join disks to a stripe set to provide more performance. At a minimum we need 4 to 5 disks.
 
-LogicalVolumes::  We are using LVM to build stripe sets across several Azure premium disks. These stripe sizes differ between /hana/data and /hana/log and the recommendations is
-256 KB for /hana/data
-64 KB for /hana/log
+LogicalVolumes::  We are using LVM to build stripe sets across several Azure premium disks. These stripe sizes differ between /hana/data and /hana/log. The recommendations are:
++
+* 256 KB for /hana/data
+* 64 KB for /hana/log
 
-Name of the VolumeGroup:: The name of the volume group used
+Name of the VolumeGroup:: This is the name of the volume group used.
 
-Mount path:: The mount point where the volume gets mounted
+Mount path:: This is the mount point where the volume gets mounted.
 
-The number of elements *must match* in all of them
 
-_#_ character:: is used to split the volume groups
-_,_ (comma):: is used to define the logical volumes for each volume group
+The number of elements *must match* in all of them.
 
-The number of groups splitted by "#" *must match* in all of the entries
+_#_ (hash character):: is used to split the volume groups.
++
+The number of groups split by "#" *must match* in all of the entries
 
-_names_:: The names of the volume groups (example datalog#shared#usrsap#backup#sapmnt)
+_,_ (comma):: is used to define the logical volumes for each volume group.
 
-_luns_:: The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5#6)
 
-_sizes_:: The size dedicated for each logical volume and folder. Example 70,100#100#100#100#100
+_names_:: The names of the volume groups (e.g., datalog#shared#usrsap#backup#sapmnt).
 
-_paths_:: Folder where each volume group will be mounted. Example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/
+_luns_:: The luns or disks used for each volume group. The number of luns must match with that configured in the previous disks variables (e.g., 0,1,2#3#4#5#6).
 
-The values could be set with the variables "hana_vm_size", "hana_enable_accelerated_networking" and "hana_data_disks_configuration" in the _variables.tf_ file if a change to the default (demo) is needed, or better still, in the _terraform.tfvars_ to set actual values.
+_sizes_:: The size dedicated for each logical volume and folder (e.g, 70,100#100#100#100#100).
+
+_paths_:: Folder where each volume group will be mounted (e.g., /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/).
+
+The values could be set with the variables "hana_vm_size", "hana_enable_accelerated_networking," and "hana_data_disks_configuration" in the _variables.tf_ file if a change to the default (demo) is needed or, better still, in the _terraform.tfvars_ to set actual values.
 
 ===== Netweaver
 
-NetWeaver is SAP's integrated technology platform and is not a product in itself, but it provides the required services for the SAP business applications and always needs a database to talk to.
+NetWeaver is SAP's integrated technology platform and is not a product in itself, but it provides the required services for the SAP business applications and always needs a database.
 
-It is the overall task of sizing to fulfil the requirements of Netweaver plus the Database and this is what is combined within the T-Shirt sizes of the solution.
+It is the overall task of sizing to fulfil the requirements of Netweaver plus the database, and this is what is combined within the T-Shirt sizes of the solution.
+
+
+Details of the solution T-Shirt sizes are provided below.
 
 
 ====== Demo
-Here is the detail for the demo size
 
 HANA instance size:: Standard_E4s_v3
 Accelerated networking:: false
@@ -816,9 +826,9 @@ endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 
-Currently there is no sizing built into the SUSE Automation tooling.
-The instance size will determine the capability of the deployment, the disk size is fixed at 60GB (single EBS volume).
-These can be modified by editing the main.tf file in the ~/aws/modules/hana_node/ directory.
+Currently, there is no sizing built into the SUSE Automation tooling.
+The instance size will determine the capability of the deployment, and the disk size is fixed at 60GB (single EBS volume).
+These can be modified by editing the _main.tf_ file in the ~/aws/modules/hana_node/ directory.
 
 endif::[]
 
@@ -832,7 +842,7 @@ endif::[]
 
 === Salt Building Blocks
 
-Resources are the most important elements in terraform, there is an other resource type used as last step from the Terraform process, the _Provisioner_ resource.
+Resources are the most important elements in Terraform, there is an other resource type used as last step from the Terraform process, the _Provisioner_ resource.
 
 It can be used to model specific actions on a remote machine in order to prepare them for other services.
 

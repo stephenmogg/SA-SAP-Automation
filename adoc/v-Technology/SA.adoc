@@ -152,15 +152,15 @@ In high availability clusters, a so-called "split-brain" condition occurs when c
 There are several methods which can be used, depending on the capability of the cloud provider.
 
 ifeval::[ "{cloud}" == "Azure" ]
-Microsoft supported the SUSE clustering as first Linux HA solution on Azure. Microsoft and SUSE created a fencing agent for the cluster for Azure. This fencing agent should remove a machine as quickly as possible (immediately) from the cluster, to ensure that there is only one active node. This avoids data corruption.
+Microsoft supported SUSE clustering as the first Linux HA solution on Azure. Microsoft and SUSE created a fencing agent for the cluster for Azure. This fencing agent should remove a machine as quickly as possible (immediately) from the cluster to ensure that there is only one active node and avoid data corruption.
 
-Initially, the Azure infrastructure only provided a way to gracefully shutdown a machine, which took 10-15 minutes.  This is too long for the split-brain fencing requirement.
+Initially, the Azure infrastructure only provided a way to gracefully shutdown a machine, which took 10 to 15 minutes.  This is too long for the split-brain fencing requirement.
 
-To improve on the time taken to fence nodes in Azure, SUSE implemented an OS native mechanism to fence virtual machines. This technology is provided within the SUSE HA Extension and uses storage as additional communication layer between the nodes. This requires a raw shared disk, this provides a mechanism so that both nodes can write messages to a central place. It is called SBD - Stonith Block Device or Split Brain Detector.
+To improve on this time, SUSE implemented an OS native mechanism to fence virtual machines. This technology is provided within the SUSE HA Extension and uses storage as an additional communication layer between the nodes. This requires a raw shared disk, a central place where both nodes can write messages. This is called 'SBD' or Stonith Block Device or Split Brain Detector.
 
-When originally desinging this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes. Therefore it needed to be built with the Linux tools available in the SUSE Linux distribution. With help of a iSCSI server, a raw shared disk within the cloud can be provided and therefore, the SBD fencing method which with help of the linux watchdog mechanism provides a fast and reliable fencing tooling.
+When originally desinging this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes. Therefore, it needed to be built with the Linux tools available in the SUSE Linux distribution. With help of an iSCSI server and the Linux watchdog, SBD provides a fast and reliable fencing mechanism.
 
-This requires one additional server to provide a iSCSI service.
+NOTE: This requires one additional server to provide a iSCSI service.
 
 image::Azure_fence_iscsi.png[scaledwidth="80%"]
 

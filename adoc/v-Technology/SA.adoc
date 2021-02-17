@@ -160,39 +160,37 @@ To improve on this time, SUSE implemented an OS native mechanism to fence virtua
 
 When originally desinging this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes. Therefore, it needed to be built with the Linux tools available in the SUSE Linux distribution. With help of an iSCSI server and the Linux watchdog, SBD provides a fast and reliable fencing mechanism.
 
-NOTE: This requires one additional server to provide a iSCSI service.
+This requires one additional server to provide a iSCSI service.
 
 image::Azure_fence_iscsi.png[scaledwidth="80%"]
 
 // fixme - this is not implemented from the automation as of today
-Following recent improvements, there is now a method in the Azure API to "kill" a virtual machine, so that the fencing agent can make use of it and no additional iSCSI machine is needed if the fence agent is used.
-The drawback here is, in order to talk to the Azure API, there is a need for public network connection.
+Following recent improvements, there is now a method in the Azure API to "kill" a virtual machine.  The fencing agent can make use of this, and no additional iSCSI machine is needed.
+However, the drawback of using the Azure API for this is that a public network connection is needed.
 
 image::Azure_fence_arm.png[scaledwidth="80%"]
 
-So you can choose between two ways
+So, you can choose between two methods: 
 
-* SDB fencing with help of an iSCSI service
-* agent based fencing through API access
+* SDB fencing with the help of an iSCSI service
+* Agent based fencing through API access
 
-There is in the meantime a third option, as Azure provide also raw shared disks as a native service.
-As of the time of writing the document, there is only the SBD-fencing mechanism implemented within the automation.
+In the meantime, there is a third option.  Azure also provides a raw shared disks as a native service.
+As of the time of writing the document, only the SBD-fencing mechanism is implemented within the automation.
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS Supports the use of the AWS EC2 STONITH mechanism.  This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff/reboot etc) EC2 instances as part of cluster operations.
+AWS Supports the use of the AWS EC2 STONITH mechanism.  This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff, reboot, etc.) EC2 instances as part of cluster operations.
 
-Behind the scenes, it uses the AWS CLI, EC2 Tags and IAM as a method to securely identify a node and then fence it.
+Behind the scenes, it uses the AWS CLI, EC2 Tags, and IAM as a method to securely identify a node and then fence it.
 
-It requires internet connectivity to ensure the EC2 endpoint can be reached.
-
-A working STONITH method is mandatory to run a supported SUSE cluster on AWS.
+It requires Internet connectivity to ensure the EC2 endpoint can be reached.
 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
 
-Google Cloud Supports the use of the GCE STONITH mechanism. This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff/reboot etc) GCE instances as part of cluster operations.
+Google Cloud Supports the use of the GCE STONITH mechanism. This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff, reboot, etc.) GCE instances as part of cluster operations.
 
 The GCE fencing mechanism uses the cutting-edge Google Python APIs. There is no longer a need to install the Google Cloud SDK in each HA cluster node to enable the fencing functions.
 
@@ -206,4 +204,4 @@ IMPORTANT: A working STONITH method is mandatory to run a supported SUSE cluster
 
 ==== Monitoring service
 
-If the Monitoring Service is to be deployed as part of the Automation, an additional virtual machine for this service to support the he Prometheus and Grafana services used to provide this capability.
+If the Monitoring Service is to be deployed as part of the Automation, an additional virtual machine to support the Prometheus and Grafana services used to provide this capability.

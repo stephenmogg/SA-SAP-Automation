@@ -11,33 +11,32 @@ The SAP automation consists of several building blocks, this section is in two p
 [NOTE]
 ---
 As the project is under active development to improve it and make it simpler to use, this document focuses on the project version 6.0.0 for the Terraform section and v6 of the rpm packages for Salt formulas.
-New versions may have additional features or different files than shown here, but the general guidelines should
-still be applicable.
+New versions may have additional features or different files than shown here, but the general guidelines should still be applicable.
 ---
 
-=== Pre-Requiremnts
+=== Prerequisites
 
-First make sure that all pre-requirements are met:
+First make sure that all prerequisites are met:
 
 ifeval::[ "{cloud}" == "Azure" ]
 
 . Have an Azure account
-. Have installed the Azure command line tool _az_
-. Have installed _terraform_ (v12) (it comes with SLES within the public cloud module)
-. Have the SAP HANA install media downloaded from SAP
-. Have created an Azure File Share
-. Copy or write down the the name of the storage account and the storage key, which is similar to a password.
+. Install the Azure command line tool _az_
+. Install _terraform_ (v12) (it comes with SLES within the public cloud module)
+. Download the SAP HANA install media
+. Create an Azure File Share
+. Copy or write down the the name of the storage account and the storage key, which is similar to a password
 . Copy the SAP HANA install media to the Azure fileshare
 . Extract the HANA install media (if required)
 
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-. an AWS account, either the 'root' account, or one with enough IAM rights to run the project
-. installed the AWSCLI command line tool _aws_
-. installed _terraform_ (v12) (it comes with SLES within the public cloud module)
-. Downloaded the SAP HANA install media
-. Created an S3 Bucket
+. Have an AWS account, either the 'root' account, or one with enough IAM rights to run the project
+. Install the AWSCLI command line tool _aws_
+. Install _terraform_ (v12) (it comes with SLES within the public cloud module)
+. Download the SAP HANA install media
+. Create an S3 Bucket
 . Copy the SAP HANA install media to a folder in the S3 Bucket
 . Extract the HANA install media (optional)
 endif::[]
@@ -50,7 +49,7 @@ ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt - NFS share
 endif::[]
 
-SUSE recommend to use the following directory structure:
+SUSE recommends to use the following directory structure:
 ----
 version
   ├SWPM
@@ -78,7 +77,7 @@ version
      └xxxxxxxx_part4.rar
 
 BASKET   : contains SAP kernel, patch + more, like the hostagent.
-DBCLIENT : contains the package corresponding to DB CLIENT, e.g HANA
+DBCLIENT : contains the package corresponding to DB CLIENT, e.g., HANA
 EXPORT   : contains the package corresponding to EXPORT files
 SWPM     : contain the corresponding files of SAPCAR and of the SWPM
 HANA     : contain the full HANA media
@@ -86,10 +85,10 @@ HANA     : contain the full HANA media
 
 === Get the project
 
-The project is hosted on a public github site where it can be downloaded to your local machine.
+The project is hosted on a public GitHub site where it can be downloaded to your local machine.
 https://github.com/SUSE/ha-sap-terraform-deployments
 
-After moving into this directory following directory structure:
+The project has the following directory structure:
 
 ----
 ├── aws
@@ -105,13 +104,13 @@ After moving into this directory following directory structure:
 └── salt
 ----
 
-The directories with the names of the _cloud provider_ (aws,azure,gcp,libvirt) are the Terraform templates for the relevant provider.
+The directories with the names of the _cloud provider_ (aws, azure, gcp, libvirt) are the Terraform templates for the relevant provider.
 
-The _doc_ directory has some brief but important documents for certain parts of the solution
+The _doc_ directory has some brief but important documents for certain parts of the solution.
 
-The directory _generic_modules_ provides modules which are used by all cloud vendor templates, e.g. common variables, locally executed functions within the building block, dependent actions on destroy and the functions to start the SALT execution on the module building blocks.
+The directory _generic_modules_ provides modules which are used by all cloud vendor templates.  That includes common variables, locally executed functions within the building block, dependent actions on destroy, and the functions to start the SALT execution on the module building blocks.
 
-The other directories _pillar_, _pillar_examples_ and _salt_ contain the part of the Salt configuration management.
+The other directories _pillar_, _pillar_examples_, and _salt_ contain part of the Salt configuration management.
 
 === Terraform Building Blocks
 
@@ -137,13 +136,13 @@ When creating Terraform configurations, best practice is to separate out parts o
 
 The _infrastructure.tf_ file:: provides the cloud specific setup with the relevant provider module of Terraform and defines all the needed cloud specific entities.
 
-The _main.tf_ file:: provides all the values for the variables needed for the modules. It is the main entry point for terraform.
+The _main.tf_ file:: provides all the values for the variables needed for the modules. It is the main entry point for Terraform.
 
-The _modules_ directory:: provides more subdirectories which are the nested child modules which represent the technical building blocks in the project.
+The _modules_ directory:: provides more subdirectories which are the nested child modules that represent the technical building blocks in the project.
 
-The _output.tf_ file:: provides the values returned from the modules, i.e to be used or displayed.
+The _output.tf_ file:: provides the values returned from the modules; i.e., to be used or displayed.
 
-_terraform.tfvars_:: is a variable definitions file which will get automatically consumed.  This is used instead of providing values manually. It is the main configuration file and should be the only Terraform file which requires modification.
+_terraform.tfvars_:: is a variable definitions file which will gets automatically consumed.  This is used instead of providing values manually. It is the main configuration file and should be the only Terraform file which requires modification.
 
 _terraform.tfvars.example_:: is an example configuration file with many pre-filled values to set up the solution. *It can be used as a starting point for your own file.*
 
@@ -153,42 +152,49 @@ Please have a deep look at all variable and the comments for it, to get aware wh
 e.g. the variable provisioner is like a switch to run either the Salt or Terraform portion only
 
 
-A _module_:: is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that infrastructure can be described in terms of it's architecture, rather than directly in terms of physical objects.
+A _module_:: is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that infrastructure can be described in terms of its architecture, rather than directly in terms of physical objects.
 +
-Modules are used as part of the technical building blocks e.g. a HANA node and the module directory consist again  _main.tf_, _variables.tf_, _outputs.tf_.
+Modules are used as part of the technical building blocks; e.g., a HANA node.
 +
-These are the recommended filenames for a minimal module, even if they're empty. _main.tf_ is the primary entrypoint how to build the infrastructure building block.
+The module directory consists of _main.tf_, _variables.tf_, and _outputs.tf_.
++
+These are the recommended filenames for a minimal module, even if they are empty. _main.tf_ is the primary entrypoint for defining the infrastructure building block.
 
-There is one additional file (salt_provisioner.tf), which is responsible for handing over the needed values to the salt building blocks. This is achieved by using a special terraform resource called _null_provider_, it remote executes the salt run to configure the instances and execute the application installation for the building block.
+There is one additional file, _salt_provisioner.tf_, which is responsible for handing over the needed values to the Salt building blocks. This is achieved by using a special Terraform resource called _null_provider_, which remotely runs the Salt pillar to configure the instances and execute the application installation for the building block.
 
 === Simple Install
 
-SUSE provide an example terraform and example pillar files to provide an easy way to perform an initial simple deployment.
+SUSE provides example Terraform template and Salt pillar files to provide an easy way to perform an initial simple deployment.
 
 . Open a browser and goto https://github.com/SUSE/ha-sap-terraform-deployments
 . Click on _tags_
 . Click on _6.0.0_
 +
-What's new and what has changed can be seen from this screen, so if older versions of the project are used, ensure to carefully review and understand the differences.
+What is new and what has changed can be seen from this page.  If older versions of the project are used, be sure to carefully review and understand the differences.
 +
-The _Usage_ section provides you with a link to an OpenBuildServer (OBS) repository where the RPM packages of the building blocks discussed above are stored, each project version has a unique repository.
+The _Usage_ section provides you with a link to an OpenBuildServer (OBS) repository where the RPM packages of the building blocks discussed above are stored. Each project version has a unique repository.
 +
-The value/link to the repository will need to be included within the terraform variables (teraform.tfvars) file. So copy the line as described.
+The value/link to the repository will need to be included within the Terraform variables (teraform.tfvars) file. So copy the line as described.
 
 . Next go to _Assets_ and download the _Source code_ as .zip or .tar.gz
 . Extract it into a folder on the local computer
-. Goto this folder and into the sub folder for the cloud provider
-. Copy the file _terraform.tfvars.example_ to _terraform.tfvars.example_
-    There are many key-value variable pairs, some enabled, some disabled with a _=_ or a _#_ in front.
+. Go to this folder and into the subfolder for the cloud provider
+. Copy the file _terraform.tfvars.example_ to _terraform.tfvars_
+    There are many key-value variable pairs, some enabled and some disabled with a _=_ or a _#_ in front.
     In order to perform a simple deployment, only update the parameters as listed below.
 
 ifeval::[ "{cloud}" == "Azure" ]
 
 . Change the region in which to deploy the solution, change _az_region = "westeurope"_ to the Azure region required.
 
-. To make it easier to start, change all 4 images types to pay-as-you-go (PAYG) to do so replace all _offer_ settings with  "sles-sap-15-sp2" and _sku_ with 15
+////
+@peterschinagl is the _sku_ "15" or "gen2"?
+////
+. To make it easier to start, change all 4 image types to pay-as-you-go (PAYG).  To do so, replace all _offer_ settings with "sles-sap-15-sp2" and _sku_ with 15.
 +
-Do this for hana, iscsi, monitoring, drbd e.g.
+Do this for hana, iscsi, monitoring, drbd.
++
+E.g., replace
 
     hana_public_offer     = "SLES-SAP-BYOS"
     hana_public_sku       = "12-sp4"
@@ -198,9 +204,9 @@ with
     hana_public_offer = "sles-sap-15-sp2"
     hana_public_sku   = "gen2"
 +
-This will make use of the on-demand images which have all needed SUSE repositories attached automatically
+This will make use of the on-demand images, which have all needed SUSE repositories attached automatically.
 +
-Next is to set the name of the _admin_user_ to a name which you want to use
+Next, set the name of the _admin_user_ to the name you want to use.
 
 endif::[]
 
@@ -218,33 +224,33 @@ ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt
 endif::[]
 
-. The next step is to provide ssh keys to access the machines which will be deployed.
+. The next step is to provide ssh keys to access the machines that will be deployed.
 +
-SUSE recommend to create new sshkeys for the deployment as both public and private keys will need to be provided as they are copied to the cluster nodes as part of the deployment.
+SUSE recommends creating new sshkeys for the deployment. Both public and private keys will need to be provided, as they are copied to the cluster nodes during the deployment.
 +
-Change the two locations variables and point them to your files.
+Change the two location variables and point them to your files.
 +
 
 ifeval::[ "{cloud}" == "Azure" ]
 
 . As the SAP Install Media is needed for the automatic deployment of HANA, an Azure storage account needs to be created.  The SAP HANA media will need to be copied to this storage location. If the SAP media is already extracted this will save time during the deployment.
 +
-Next, provide the name,key and the path to this storage account to the system, change:
+Next, provide the name, key, and path to this storage account, change:
 
     storage_account_name
     storage_account_key
     hana_inst_master
 +
-The inst_master variable should point to the directory where you have the extracted hana install files.
-There are more possibilities, but for the simples usage have everything already extracted on your share
+The inst_master variable should point to the directory where you have the extracted the hana install files.
+There are more possibilities, but, for simplicity, have everything already extracted on your share.
 +
-So disable the other hana variables with adding a '#' in front of them
+Disable the other hana variables by adding a '#' in front of them:
 
    #hana_archive_file = "IMDB_SERVER.SAR"
    #hana_sapcar_exe = "SAPCAR"
    #hana_extract_dir = "/sapmedia/HDBSERVER"
 
-. We need additional ssh keys for the cluster communications, so please save your changes and run the following commands from the azure directory
+. Additional ssh keys are needed for the cluster communications, so please save your changes and run the following commands from the azure directory:
 +
 [subs="attributes,quotes"]
 ----
@@ -254,34 +260,34 @@ So disable the other hana variables with adding a '#' in front of them
 
 . Open the tfvars file again to make final changes.
 +
-To create a HANA Systemreplication HA automation uncomment
+To create a HANA Systemreplication HA automation, uncomment:
 
     #hana_ha_enabled = true
 +
-by removing the _#_
+by removing the _#_.
 +
-As now the system creates a cluster, we need to enable a few other services. Uncomment
+To create a cluster, we need to enable a few other services. Uncomment:
 
     #hana_cluster_sbd_enabled = true
 +
-by removing the _#_
+by removing the _#_.
 
-. Now we need to point the place where the right packages for the v6 could be found. Copy the variable from step 1 e.g.
+. Now we need to point to where the right packages for the v6 could be found. Copy the variable from step 1; e.g.,
 +
 [subs="attributes,quotes"]
 ----
     ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v6"
 ----
 
-. If you want the additional monitoring be deployed, simply uncomment
+. If you want the additional monitoring be deployed, simply uncomment:
 
     #monitoring_enabled = true
 
-. As last step we enable a simplification parameter which try to find out a few settings automatically. So scroll down to the end and uncomment
+. As the last step, we enable a simplification parameter which tries to determine a few settings automatically. So scroll down to the end and uncomment
 
     #pre_deployment = true
 
-Now we have all settings for Terraform done and are nearly at the step to run the deployment, so save your changes.
+Now, we have all settings for Terraform done and are nearly at the step to run the deployment, so save your changes.
 
 endif::[]
 
@@ -300,7 +306,7 @@ aws_region = "eu-central-1"
 hana_instancetype = "r3.8xlarge"
 ----
 
-Next, enter the path for the public and private SSH Keys that were generated earlier. eg. "~/.ssh/id_rsa.pub"
+Next, enter the path for the public and private SSH Keys that were generated earlier. E.g., "~/.ssh/id_rsa.pub"
 
 ----
 # SSH Public key location to configure access to the remote instances
@@ -310,20 +316,20 @@ public_key_location = "/path/to/your/public/ssh/key"
 private_key_location = "/path/to/your/private/ssh/key"
 ----
 
-The following parameters select the version of SLES for SAP to deploy and where to deploy from.  For simplicity, the 'hana_os_owner' is set to the AWS Marketplace.  If existing SUSE Subscription can be used, this can be changed to use BYOS images.  Please refer to the project documentation.
+The following parameters select the version of SLES for SAP to deploy and from where to deploy them.  For simplicity, the 'hana_os_owner' is set to the AWS Marketplace.  If an existing SUSE Subscription can be used, this can be changed to use BYOS images.  Please refer to the project documentation.
 
 ----
 hana_os_image = "suse-sles-sap-15-sp2"
 hana_os_owner = "679593333241"
 ----
 
-This setting provides Terraform the credentials to deploy infrastructure on the AWS cloud.
+This setting provides to Terraform the credentials to deploy infrastructure on the AWS cloud.
 
 ----
 aws_credentials = "~/.aws/credentials"
 ----
 
-Modify the following to point to SAP Media that was uploaded to the S3 Bucket earlier.
+Modify the following to point to the SAP Media that was uploaded to the S3 Bucket earlier.
 
 ----
 hana_inst_master = "s3://mysapmedia/SAPHANA"
@@ -341,7 +347,7 @@ ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-
 pre_deployment = true
 ----
 
-Finally, ensure the following lines are commented *out* using a #
+Finally, ensure the following lines are commented *out* using a #:
 
 ----
 # hana_disk_device = "/dev/xvdd"
@@ -350,9 +356,9 @@ Finally, ensure the following lines are commented *out* using a #
 ----
 
 
-Subscribe to the AWS Marketplace offer
+Subscribe to the AWS Marketplace offer.
 
-To automatically deploy instances from the AWS Marketplace, ensure to 'Subscribe' to the offering.
+To automatically deploy instances from the AWS Marketplace, be sure to 'Subscribe' to the offering.
 
 A link for SLES for SAP 15 SP2 can be found here.
 https://aws.amazon.com/marketplace/server/procurement?productId=e9701ac9-43ee-4dda-b944-17c6c231c8db
@@ -369,15 +375,12 @@ ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt
 endif::[]
 
-. go one directory up and change into the _pillar_example_ directory and here into the _automatic_ directory where you can see 3 further directories. They will provide the configuration variable for the relevant services. This automatic folder will work for all cloud providers we support today, but is more complex as it normally need to be.
+. Go one directory up and change into the _pillar_example_ directory and then into the _automatic_ directory, where you can see 3 additional directories. They will provide the configuration variable for the relevant services. This automatic folder will work for all cloud providers we support today.
 
-. For a simple deployment, which uses only HANA, please switch to the _hana_ directory and open the file _hana_sls_.
-
-. Change the PRIMARY_SITE_NAME to the desired value, along with value for the SECONDARY_SITE_NAME.
-It is possible to change other settings e.g. passwords, but for a simple test do not modify these values.
+It is possible to change other settings (e.g., passwords), but, for a simple test, do not modify these values.
 Save any changes to the file and and go back to the main directory.
 
-Now we are ready to run terraform
+Now we are ready to run Terraform.
 
 ifeval::[ "{cloud}" == "Azure" ]
 
@@ -390,9 +393,9 @@ ifeval::[ "{cloud}" == "Azure" ]
     terraform apply
 ----
 
-If all goes well after ~40 Minutes (depends on the speed of the instances) you will have a installed and running HANA System Replication Cluster
+If all goes well, after ~40 minutes (depending on the speed of the instances) you will have an installed and running HANA System Replication Cluster.
 
-As a jumphost with a public ip address is created as part of the deployment, it is possible to login to any virtual machine as part of the deployment from your machine with
+As a jumphost with a public ip address is created as part of the deployment, it is possible to log in to any virtual machine as part of the deployment from your machine with
 
 [subs="attributes,quotes"]
 ----
@@ -412,7 +415,7 @@ ifeval::[ "{cloud}" == "AWS" ]
     terraform apply
 ----
 
-If all goes well after ~30-40 Minutes a fully configured HANA System Replication Cluster will have been deployed.
+If all goes well, after ~30-40 Minutes a fully configured HANA System Replication Cluster will have been deployed.
 
 The instances are currently provisioned with a public IP address as part of the deployment, you can ssh to them directly using the ec2-user.
 

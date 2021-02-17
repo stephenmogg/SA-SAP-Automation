@@ -147,9 +147,9 @@ If the cloud native NFS service is used, no additional virtual machines will be 
 
 ==== Fencing service
 
-For high availability clusters, a mechanism to switch off or reset one machine in the case of a so called "split-brain" is needed. This is used  when the 2 nodes can no longer communicate with each other. This action is called 'fencing'.
+In high availability clusters, a so-called "split-brain" condition occurs when cluster nodes can no longer communicate with each other.  This is a serious situation that can result in transaction inconsistencies as each node continues to write data.  Thus, a mechanism, called 'fencing', is needed to switch off or reset one machine until synchronization can be restored.
 
-There are several methods which can be used depending on the capability of the cloud provider.
+There are several methods which can be used, depending on the capability of the cloud provider.
 
 ifeval::[ "{cloud}" == "Azure" ]
 Microsoft supported the SUSE clustering as first Linux HA solution on Azure. Microsoft and SUSE created a fencing agent for the cluster for Azure. This fencing agent should remove a machine as quickly as possible (immediately) from the cluster, to ensure that there is only one active node. This avoids data corruption.

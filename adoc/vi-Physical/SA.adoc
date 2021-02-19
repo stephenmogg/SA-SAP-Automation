@@ -266,7 +266,7 @@ To create a HANA Systemreplication HA automation, uncomment:
 +
 by removing the _#_.
 +
-To create a cluster, we need to enable a few other services. Uncomment:
+Next, we need to enable a few other services. Uncomment:
 
     #hana_cluster_sbd_enabled = true
 +

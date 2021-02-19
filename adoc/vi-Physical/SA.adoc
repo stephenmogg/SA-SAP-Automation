@@ -374,16 +374,19 @@ Libvirt
 endif::[]
 
 
-Now, we have all settings for Terraform done and are nearly at the step to run the deployment, so save your changes.
+We are nearly done, so take a moment to save your changes before proceeding.
 
-First, go one directory up, change to the _pillar_example_ directory, and then change to the _automatic_ directory.  Here you can see 3 additional directories. They will provide the configuration variables for the relevant services. This automatic folder will work for all cloud providers we support today.
+. Go one directory up, change to the _pillar_example_ directory, and then change to the _automatic_ directory.  Here you can see 3 additional subdirectories. They provide the configuration variables for the relevant services. This _automatic_ folder will work for all cloud providers we support today, which is why it is more complex.
 
+. For a simple deployment, which uses only HANA, please switch to the _hana_ directory and open the file _hana_sls_.
+
+. Change the PRIMARY_SITE_NAME to the desired value, along with value for the SECONDARY_SITE_NAME.
 It is possible to change other settings (e.g., passwords), but, for a simple test, do not modify these values.
 
-Save any changes to the file and and go back to the main directory.
+. Save any changes to the file and and go back to the main directory.
 
 
-We are ready to run Terraform.
+We are now ready to run Terraform.
 
 
 ifeval::[ "{cloud}" == "Azure" ]

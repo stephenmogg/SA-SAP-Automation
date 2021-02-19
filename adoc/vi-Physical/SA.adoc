@@ -1391,7 +1391,7 @@ ifeval::[ "{cloud}" == "Azure" ]
 
 To build an HA-NFS service, we use the above described _habootstrap-formula_ together with _drbd-formula_ to mirror the data between two nodes and the _linux nfs-server: packages been setup with the SaltStack _nfs_formula ( see https://github.com/saltstack-formulas/nfs-formula )
 
-DRBD®– software is a distributed replicated storage system for the Linux atform. It is implemented as a kernel driver, several userspace management applications, and some shell scripts. So think about it as "RAID-1 over network."
+DRBD®– software is a distributed replicated storage system for the Linux platform. It is implemented as a kernel driver, several userspace management applications, and some shell scripts. So think about it as "RAID-1 over network."
 
 Details are available at the SUSE documentation page for the SLE HA Extension
 https://documentation.suse.com/sle-ha/15-SP2/single-html/SLE-HA-nfs-quick/#art-sleha-nfs-quick

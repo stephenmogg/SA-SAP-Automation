@@ -494,7 +494,7 @@ AWS
 Within AWS, the Availability Zones (AZ) of a VPC get used for the HA scenario.
 Each of the AZs has its own network and, therefore, each of the machines in a cluster is in a different subnet. The floating virtual IP address is created with help of a special resource agent, which changes the routing table entry of a virtual router for VPC so the adress is outside of the VPC and AZs
 
-Example based on `10.0.0.0/16` address range (VPC address range) and `192.168.1.0/24` as `virtual_address_range` (the default value):
+Example based on `10.0.0.0/16` address range (VPC address range) and `192.168.1.0/24` as `virtual_address_range` (the default value).
 
 [with="80%",options="header"]
 |==========================
@@ -514,7 +514,7 @@ endif::[]
 ifeval::[ "{cloud}" == "GCP" ]
 GCP
 
-Example based on `10.0.0.0/24` VPC address range (the virtual addresses must be outside of the VPC address range):
+Example based on `10.0.0.0/24` VPC address range. The virtual addresses must be outside of the VPC address range.
 
 [with="70%",options="header"]
 |==========================
@@ -534,7 +534,7 @@ endif::[]
 ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt
 
-Example based on `192.168.135.0/24` address range:
+Example based on `192.168.135.0/24` address range.
 
 [with="70%",options="header"]
 |==========================

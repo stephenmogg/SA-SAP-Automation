@@ -156,11 +156,13 @@ Microsoft supported SUSE clustering as the first Linux HA solution on Azure. Mic
 
 Initially, the Azure infrastructure only provided a way to gracefully shutdown a machine, which took 10 to 15 minutes.  This is too long for the split-brain fencing requirement.
 
-To improve on this time, SUSE implemented an OS native mechanism to fence virtual machines. This technology is provided within the SUSE HA Extension and uses storage as an additional communication layer between the nodes. This requires a raw shared disk, a central place where both nodes can write messages. This is called 'SBD' or Stonith Block Device or Split Brain Detector.
+To improve on this time, SUSE implemented an OS native mechanism to fence virtual machines. This technology is provided within the SUSE HA Extension and uses storage as an additional communication layer between the nodes. This requires a shared raw disk, a central place where both nodes can write messages. This is called 'SBD' or Stonith Block Device or Split Brain Detector.
 
-When originally desinging this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes. Therefore, it needed to be built with the Linux tools available in the SUSE Linux distribution. With help of an iSCSI server and the Linux watchdog, SBD provides a fast and reliable fencing mechanism.
+When originally designing this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes.  Fortunately, SUSE Linux enterprise provides built-in tooling to create an iSCSI server to provide this functionality.
 
-This requires one additional server to provide a iSCSI service.
+Thus, with the help of a shared raw disk and the Linux watchdog, SBD provides a fast and reliable fencing mechanism.
+
+NOTE: If an iSCSI server is used to implement the shared raw disk for SBD, one additional server is required.
 
 image::Azure_fence_iscsi.png[scaledwidth="80%"]
 

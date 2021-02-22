@@ -147,52 +147,52 @@ If the cloud native NFS service is used, no additional virtual machines will be 
 
 ==== Fencing service
 
-For high availability clusters, a mechanism to switch off or reset one machine in the case of a so called "split-brain" is needed. This is used  when the 2 nodes can no longer communicate with each other. This action is called 'fencing'.
+In high availability clusters, a so-called "split-brain" condition occurs when cluster nodes can no longer communicate with each other.  This is a serious situation that can result in transaction inconsistencies as each node continues to write data.  Thus, a mechanism, called 'fencing', is needed to switch off or reset one machine until synchronization can be restored.
 
-There are several methods which can be used depending on the capability of the cloud provider.
+There are several methods which can be used, depending on the capability of the cloud provider.
 
 ifeval::[ "{cloud}" == "Azure" ]
-Microsoft supported the SUSE clustering as first Linux HA solution on Azure. Microsoft and SUSE created a fencing agent for the cluster for Azure. This fencing agent should remove a machine as quickly as possible (immediately) from the cluster, to ensure that there is only one active node. This avoids data corruption.
+Microsoft supported SUSE clustering as the first Linux HA solution on Azure. Microsoft and SUSE created a fencing agent for the cluster for Azure. This fencing agent should remove a machine as quickly as possible (immediately) from the cluster to ensure that there is only one active node and avoid data corruption.
 
-Initially, the Azure infrastructure only provided a way to gracefully shutdown a machine, which took 10-15 minutes.  This is too long for the split-brain fencing requirement.
+Initially, the Azure infrastructure only provided a way to gracefully shutdown a machine, which took 10 to 15 minutes.  This is too long for the split-brain fencing requirement.
 
-To improve on the time taken to fence nodes in Azure, SUSE implemented an OS native mechanism to fence virtual machines. This technology is provided within the SUSE HA Extension and uses storage as additional communication layer between the nodes. This requires a raw shared disk, this provides a mechanism so that both nodes can write messages to a central place. It is called SBD - Stonith Block Device or Split Brain Detector.
+To improve on this time, SUSE implemented an OS native mechanism to fence virtual machines. This technology is provided within the SUSE HA Extension and uses storage as an additional communication layer between the nodes. This requires a shared raw disk, a central place where both nodes can write messages. This is called 'SBD' or Stonith Block Device or Split Brain Detector.
 
-When originally desinging this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes. Therefore it needed to be built with the Linux tools available in the SUSE Linux distribution. With help of a iSCSI server, a raw shared disk within the cloud can be provided and therefore, the SBD fencing method which with help of the linux watchdog mechanism provides a fast and reliable fencing tooling.
+When originally designing this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes.  Fortunately, SUSE Linux enterprise provides built-in tooling to create an iSCSI server to provide this functionality.
 
-This requires one additional server to provide a iSCSI service.
+Thus, with the help of a shared raw disk and the Linux watchdog, SBD provides a fast and reliable fencing mechanism.
+
+NOTE: If an iSCSI server is used to implement the shared raw disk for SBD, one additional server is required.
 
 image::Azure_fence_iscsi.png[scaledwidth="80%"]
 
 // fixme - this is not implemented from the automation as of today
-Following recent improvements, there is now a method in the Azure API to "kill" a virtual machine, so that the fencing agent can make use of it and no additional iSCSI machine is needed if the fence agent is used.
-The drawback here is, in order to talk to the Azure API, there is a need for public network connection.
+Following recent improvements, there is now a method in the Azure API to "kill" a virtual machine.  The fencing agent can make use of this, and no additional iSCSI machine is needed.
+However, the drawback of using the Azure API for this is that a public network connection is needed.
 
 image::Azure_fence_arm.png[scaledwidth="80%"]
 
-So you can choose between two ways
+So, you can choose between two methods: 
 
-* SDB fencing with help of an iSCSI service
-* agent based fencing through API access
+* SDB fencing with the help of an iSCSI service
+* Agent based fencing through API access
 
-There is in the meantime a third option, as Azure provide also raw shared disks as a native service.
-As of the time of writing the document, there is only the SBD-fencing mechanism implemented within the automation.
+In the meantime, there is a third option.  Azure also provides a raw shared disks as a native service.
+As of the time of writing the document, only the SBD-fencing mechanism is implemented within the automation.
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS Supports the use of the AWS EC2 STONITH mechanism.  This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff/reboot etc) EC2 instances as part of cluster operations.
+AWS Supports the use of the AWS EC2 STONITH mechanism.  This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff, reboot, etc.) EC2 instances as part of cluster operations.
 
-Behind the scenes, it uses the AWS CLI, EC2 Tags and IAM as a method to securely identify a node and then fence it.
+Behind the scenes, it uses the AWS CLI, EC2 Tags, and IAM as a method to securely identify a node and then fence it.
 
-It requires internet connectivity to ensure the EC2 endpoint can be reached.
-
-A working STONITH method is mandatory to run a supported SUSE cluster on AWS.
+It requires Internet connectivity to ensure the EC2 endpoint can be reached.
 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
 
-Google Cloud Supports the use of the GCE STONITH mechanism. This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff/reboot etc) GCE instances as part of cluster operations.
+Google Cloud Supports the use of the GCE STONITH mechanism. This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff, reboot, etc.) GCE instances as part of cluster operations.
 
 The GCE fencing mechanism uses the cutting-edge Google Python APIs. There is no longer a need to install the Google Cloud SDK in each HA cluster node to enable the fencing functions.
 
@@ -206,4 +206,4 @@ IMPORTANT: A working STONITH method is mandatory to run a supported SUSE cluster
 
 ==== Monitoring service
 
-If the Monitoring Service is to be deployed as part of the Automation, an additional virtual machine for this service to support the he Prometheus and Grafana services used to provide this capability.
+If the Monitoring Service is to be deployed as part of the Automation, an additional virtual machine to support the Prometheus and Grafana services used to provide this capability.

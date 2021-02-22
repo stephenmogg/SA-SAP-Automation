@@ -7,10 +7,29 @@ endif::[]
 
 //:useCase: FixMe
 
+:author: Peter Schinagl, SUSE Software Solutions Germany GmbH
+:email: peters@suse.com
+
+:author_2: Stephen Mogg, SUSE Software Solutions UK LTD
+:email_2: Stephen.Mogg@suse.com
+
+:author_3: Abdelrahman Mohamed, SUSE Software Solutions Germany GmbH
+:email_3: abdelrahman.mohamed@suse.com
+
+:author_4: Bryan Gartner, SUSE Software Solutions LLC
+:email_4: bryan.gartner@suse.com
+
+:author_5: Terry Smith, SUSE Software Solutions LLC
+:email_5: terry.smith@suse.com
+
+
+// Flag which version should be compiled
 // cloud could be "Azure","AWS","GCE" or "libvirt"
 :cloud: Azure
 //:cloud: AWS
 //:cloud: GCE
+
+// Variables used within the text
 :sles: SUSE Linux Enterprise Server
 :sles4sap: {sles} for SAP Applications
 :gcloud: Google Cloud
@@ -19,10 +38,13 @@ endif::[]
 
 :title: SUSE SAP automation solution for {cloud}
 
-Authors
-----
-Peter Schinagl,      SUSE Software Solutions Germany GmbH, peters@suse.com
-Stephen Mogg,        SUSE Software Solutions UK LTD,       Stephen.Mogg@suse.com
-Abdelrahman Mohamed, SUSE Software Solutions Germany GmbH, abdelrahman.mohamed@suse.com
-Bryan Gartner,       SUSE Software Solutions LLC,          bryan.gartner@suse.com
-----
+The authors
+
+* {author}
+* {author_2}
+* {author_3}
+
+Thanks to
+
+* {author_4}
+* {author_5}

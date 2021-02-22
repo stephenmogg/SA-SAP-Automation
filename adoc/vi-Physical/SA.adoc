@@ -855,7 +855,7 @@ Finally, the Terraform _remote-exec provisioner_ is used to call the script, _pr
 ==== Our Architecture for the Salt building blocks
 
 //fixme - image our salt module arch.
-//image::
+image::shap_deployment_small.png[role="right",scaledwidth="40%"]
 
 shaptools:: low level python wrapper (API) around SAP utilities and commands
 

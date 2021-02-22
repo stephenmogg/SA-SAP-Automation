@@ -187,10 +187,7 @@ ifeval::[ "{cloud}" == "Azure" ]
 
 . Change the region in which to deploy the solution, change _az_region = "westeurope"_ to the Azure region required.
 
-////
-@peterschinagl is the _sku_ "15" or "gen2"?
-////
-. To make it easier to start, change all 4 image types to pay-as-you-go (PAYG).  To do so, replace all _offer_ settings with "sles-sap-15-sp2" and _sku_ with 15.
+. To make it easier to start, change all 4 image types to pay-as-you-go (PAYG).  To do so, replace all _offer_ settings with "sles-sap-15-sp2" and _sku_ with gen2.
 +
 Do this for hana, iscsi, monitoring, drbd.
 +
@@ -984,8 +981,7 @@ SaltStack GPG renderer provides a secure encryption/decryption of pillar data. T
 
 . https://docs.saltstack.com/en/latest/ref/renderers/all/salt.renderers.gpg.html[SaltStack GPG RENDERERS]
 
-*Encryption is not included in this automation solution.  You are strongly advised to take apporpriate security precautions.*
-
+*Encryption is not included in this automation solution.  You are strongly advised to take appropriate security precautions.*
 ====
 
 
@@ -1398,7 +1394,7 @@ https://documentation.suse.com/sle-ha/15-SP2/single-html/SLE-HA-nfs-quick/#art-s
 
 ===== Fencing service
 
-If the setup is using HA for SAP Netweaver or for SAP HANA or with the NFS service and there is mechanism for fencing of the virtual machines over an API, we use the SUSE SBD-device method. Such a SBD-Device is normally a raw shared disk beween two nodes.
+If the setup is using HA for SAP Netweaver or for SAP HANA or with the NFS service, and there is no mechanism for fencing of the virtual machines over an API, we use the SUSE SBD-device method. Such a SBD-Device is normally a raw shared disk beween two nodes.
 
 Unfortunately not all clouds are able to provide a raw shared disk, but with the help of Linux native services (iSCSI) we can build this by our own.
 

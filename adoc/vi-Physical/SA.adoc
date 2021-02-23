@@ -209,8 +209,29 @@ endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 
-// not putting anything in here as the flow does not match the AWS config. //
-//@stephenmogg - could you not choose the AMI? PAYG or BYOS?
+Change the region in which to deploy the solution.
+
+----
+aws_region = "eu-central-1"
+----
+
+To make it easier to start, change the images types for the SAP instances to pay-as-you-go (PAYG).  In order to do this, set the hana os image and owner accordingly.  The instances sizes/types can should also be set depending on your requirements.
+
+----
+# Instance type to use for the hana cluster nodes
+hana_instancetype = "r3.8xlarge"
+
+hana_os_image = "suse-sles-sap-15-sp2"
+hana_os_owner = "679593333241"
+----
+
+To automatically deploy PAYG instances from the AWS Marketplace, be sure to 'Subscribe' to the offering.
+
+A link for SLES for SAP 15 SP2 can be found here.
+https://aws.amazon.com/marketplace/server/procurement?productId=e9701ac9-43ee-4dda-b944-17c6c231c8db
+
+If a different version of SLES for SAP is required, subscribe to the relevant version on the marketplace.
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -287,44 +308,14 @@ by removing the _#_.
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-// @stephenmogg - quite a lot of duplication
 
-Edit terraform.tfvars and modify as follows. If duplicating the lines before modification, please ensure the original is commented out or the deployment will fail.
-
-Firstly, choose the region and instance types required for the deployment.  Ensure the region type is available in your selected region.
-
-----
-# Region where to deploy the configuration
-aws_region = "eu-central-1"
-
-# Instance type to use for the hana cluster nodes
-hana_instancetype = "r3.8xlarge"
-----
-
-Next, enter the path for the public and private SSH Keys that were generated earlier. E.g., "~/.ssh/id_rsa.pub"
-
-----
-# SSH Public key location to configure access to the remote instances
-public_key_location = "/path/to/your/public/ssh/key"
-
-# Private SSH Key location
-private_key_location = "/path/to/your/private/ssh/key"
-----
-
-The following parameters select the version of SLES for SAP to deploy and from where to deploy them.  For simplicity, the 'hana_os_owner' is set to the AWS Marketplace.  If an existing SUSE Subscription can be used, this can be changed to use BYOS images.  Please refer to the project documentation.
-
-----
-hana_os_image = "suse-sles-sap-15-sp2"
-hana_os_owner = "679593333241"
-----
-
-This setting provides to Terraform the credentials to deploy infrastructure on the AWS cloud.
+This setting provides credentials to Terraform in order to deploy infrastructure on the AWS cloud.
 
 ----
 aws_credentials = "~/.aws/credentials"
 ----
 
-Modify the following to point to the SAP Media that was uploaded to the S3 Bucket earlier.
+Modify the following to point to the SAP Media that was uploaded to the S3 Bucket earlier.  The credentials provided above require permissions to read from this S3 bucket.
 
 ----
 hana_inst_master = "s3://mysapmedia/SAPHANA"
@@ -349,16 +340,6 @@ Finally, ensure the following lines are commented *out* using a #:
 # aws_access_key_id = my-access-key-id
 # aws_secret_access_key = my-secret-access-key
 ----
-
-
-Subscribe to the AWS Marketplace offer.
-
-To automatically deploy instances from the AWS Marketplace, be sure to 'Subscribe' to the offering.
-
-A link for SLES for SAP 15 SP2 can be found here.
-https://aws.amazon.com/marketplace/server/procurement?productId=e9701ac9-43ee-4dda-b944-17c6c231c8db
-
-If a different version of SLES for SAP is required, subscribe to the relevant version on the marketplace.
 
 endif::[]
 
@@ -385,9 +366,6 @@ It is possible to change other settings (e.g., passwords), but, for a simple tes
 
 We are now ready to run Terraform.
 
-
-ifeval::[ "{cloud}" == "Azure" ]
-
 [subs="attributes,quotes"]
 ----
     az login
@@ -396,6 +374,8 @@ ifeval::[ "{cloud}" == "Azure" ]
     terraform plan
     terraform apply
 ----
+
+ifeval::[ "{cloud}" == "Azure" ]
 
 If all goes well, after ~40 minutes (depending on the speed of the instances) you will have an installed and running HANA System Replication Cluster.
 
@@ -409,15 +389,6 @@ As a jumphost with a public ip address is created as part of the deployment, it 
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-// @stephenmogg - duplication
-
-[subs="attributes,quotes"]
-----
-    terraform init
-    terraform workspace new yourprojectname
-    terraform plan
-    terraform apply
-----
 
 If all goes well, after ~30-40 Minutes a fully configured HANA System Replication Cluster will have been deployed.
 
@@ -1406,7 +1377,15 @@ The use of possible fencing method depends on the cloud provider's features. As 
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
- AWS
+ 
+===== NFS service
+
+In order to use NFS, AWS EFS Service is recommended.  No additional SUSE infrastructure needs to be deployed.
+
+==== Fencing service
+
+Fencing in the cluster will be provided by the EC2 Fencing capability.  This mechanism uses the AWS API framework to fence nodes as required.  The additional IAM and AWS requirements are setup as part of the automation workflow.  No additional SUSE Infrastructure needs to be deployed.
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]

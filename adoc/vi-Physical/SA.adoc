@@ -77,7 +77,7 @@ share
             ├─ ...
 ----
 
-=== Get the project from the github site
+=== Get the project from the GitHub site
 
 The project is hosted on a public github site where you can download it to your local machine.
 

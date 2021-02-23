@@ -3,9 +3,10 @@
 :title: SUSE SAP automation solution
 
 
-:author: Peter Schinagl 
-:authorEmail: peters@suse.com
-
+//:author: Peter Schinagl 
+//:authorEmail: peters@suse.com
+:author: Abdelrahman Mohamed 
+:authorEmail: amohamed@suse.com
 
 # :authorGHURL: <FixMe>
 
@@ -17,9 +18,12 @@ endif::[]
 
 // could be "Azure","AWS","GCE" or "libvirt"
 //:cloud: Azure
-:cloud: AWS
+//:cloud: AWS
+:cloud: GCP
 :sles: SUSE Linux Enterprise Server
 :sles4sap: {sles} for SAP Applications
 :gcloud: Google Cloud
+:proj_gcp_ver: 6.0.3 
+
 
 

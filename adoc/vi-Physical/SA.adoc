@@ -48,13 +48,12 @@ endif::[]
 ifeval::[ "{cloud}" == "GCP" ]
 . Have a Google Cloud Platform account
 . Have a Service Account Key saved in the machine that will be used to initiate the environment. 
-//. Have installed the Google Cloud SDK command line tool _az_
 . Have installed _terraform_ (v12) (it comes with SLES within the public cloud module)
 . Have the SAP HANA install media downloaded from SAP
 . Have created a Google Cloud Storage Bucket 
-. Copy or write down the the name of the Google Cloud Storage Bucket
+. Copy or write down the name of the Google Cloud Storage Bucket
 . Copy the SAP HANA install media to the created Google Cloud Storage Bucket
-. Extract the HANA install media to the Google Cloud Storage Bucket (if required)
+. Extract the HANA install media to the Google Cloud Storage Bucket
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

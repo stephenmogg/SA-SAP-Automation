@@ -23,16 +23,19 @@ endif::[]
 :email_5: terry.smith@suse.com
 
 
-// Flag which version should be compiled
-// cloud could be "Azure","AWS","GCE" or "libvirt"
-:cloud: Azure
+// could be "Azure","AWS","GCE" or "libvirt"
+//:cloud: Azure
 //:cloud: AWS
-//:cloud: GCE
+:cloud: GCP
 
 // Variables used within the text
+
 :sles: SUSE Linux Enterprise Server
 :sles4sap: {sles} for SAP Applications
 :gcloud: Google Cloud
+:proj_ver: 6.0.0
+:proj_gcp_ver: 6.0.3 
+
 
 
 

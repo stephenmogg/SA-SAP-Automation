@@ -4,15 +4,12 @@
 include::./SA_vars.adoc[]
 
 = {title}
-////
-{author}, {companyName} < {authorEMail} >
-////
 
 == Preface
 
-This reference document contains best practices and planning considerations when using SUSE's Automation templates for SAP Landscapes. 
+This reference document contains best practices and planning considerations when using SUSE's Automation templates for SAP Landscapes.
 
-It is targeted at consultants and end-customers deploying SAP Landscapes in the public cloud and provides guidance on how Terraform, SALT, and other components work together to provide a consistent and validated architecture. 
+It is targeted at consultants and end-customers deploying SAP Landscapes in the public cloud and provides guidance on how Terraform, SALT, and other components work together to provide a consistent and validated architecture.
 
 The document can also be used as a guide for a partner enablement workshop covering the proper use of these tools.
 
@@ -34,38 +31,6 @@ endif::Technology[]
 ifdef::Physical[]
 * *_Where_* the resulting solution may physically or virtually reside
 endif::Physical[]
-
-//Additional characteristics, like decision factors such as:
-
-ifdef::Availability[]
-* availability
-endif::Availability[]
-ifdef::Performance[]
-* performance
-endif::Performance[]
-ifdef::Security[]
-* security
-endif::Security[]
-ifdef::Integrity[]
-* integrity
-endif::Integrity[]
-
-//are also described and incorporated in the respective layers.  Deployment aspect flavors along the lines of
-
-ifdef::PoC[]
-* proof-of-concept
-endif::PoC[]
-ifdef::Production[]
-* production
-endif::Production[]
-ifdef::Scaling[]
-* scaling
-endif::Scaling[]
-ifdef::Migration[]
-* migration
-endif::Migration[]
-
-//implementations and considerations may also be covered.
 
 // Introduction
 include::./i-Introduction/SA.adoc[]
@@ -106,7 +71,7 @@ More and more companies move to a computing _as a service_, rather than _as a pr
 
 The SUSE solution manages complex operations with automation and help ease the transition to Linux and the cloud, and reduce the problem resolution time with insights to the SAP infrastructure landscape.
 
-It help to deliver SAP services faster, more efficiently and with less risk. 
+It help to deliver SAP services faster, more efficiently and with less risk.
 
 
 ifdef::Glossary[]
@@ -117,3 +82,5 @@ ifdef::Appendix[]
 include::./SA-Appendix.adoc[]
 endif::Appendix[]
 
+include::./SUSE/common_sbp_legal_notice.adoc[]
+//include::./SUSE/common_gfdl.1.2_i.adoc[]

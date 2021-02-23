@@ -60,7 +60,7 @@ ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt - NFS share
 endif::[]
 
-SUSE recommend to use the following directory structure:
+SUSE recommends to use the following directory structure:
 //fixme check directory structure
 ----
 share

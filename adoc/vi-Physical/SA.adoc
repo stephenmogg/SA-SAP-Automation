@@ -79,7 +79,7 @@ share
 
 === Get the project from the GitHub site
 
-The project is hosted on a public github site where you can download it to your local machine.
+The project is hosted on a public GitHub site where you can download it to your local machine.
 
 After moving into this directory you will see the following directory structure:
 

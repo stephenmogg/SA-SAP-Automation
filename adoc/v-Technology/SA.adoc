@@ -18,61 +18,60 @@ Technology components utilized as a part of this solution: CSP Specific, Network
 
 === Terraform
 
+What is Terraform?
+
 Terraform along with the specific cloud provider modules is used to create the infrastructure to support the SAP application and supporting services.
 
-The Terraform templates describe everything needed to create the desired infrastructure components.  They also provide a range of predefined settings to make creating the correct virtual machines, disks, networks etc. simpler.
+The Terraform templates describe everything needed to create the desired infrastructure components.  They also provide a range of pre-defined settings to simplify creation of the correct virtual machines, disks, networks, etc.
 
 === Salt
 
 What is Salt?
 
-Salt is a different approach to infrastructure management, founded on the idea that high-speed communication with large numbers of systems can open up new capabilities. This approach makes Salt a powerful multitasking system that can solve many specific problems in an infrastructure.
+Salt is a different approach to infrastructure management, founded on the idea that high-speed communication with large numbers of systems can open up new capabilities.  This approach makes Salt a powerful multitasking system that can solve many specific problems in an infrastructure.
 
-The backbone of Salt is the remote execution engine, which creates a high-speed, secure and bi-directional communication net for groups of systems. On top of this communication system, Salt provides an extremely fast, flexible, and easy-to-use configuration management system called Salt States.
+The backbone of Salt is the remote execution engine, which creates a high-speed, secure, and bi-directional communication net for groups of systems.  On top of this communication system, Salt provides an extremely fast, flexible, and easy-to-use configuration management system called _Salt States_.
 
-An SAP landscape is made up of groups of machines, each machine in the group performing a role. Those groups of machines work in concert with each other to create an application stack.
+An SAP landscape is made up of groups of machines, each machine in the group performing a role.  These groups of machines work in concert with each other to create an application stack.
 
-To effectively manage these groups of machines, an administrator needs to be able to create roles for those groups. As example, a group of machines that serve front-end web traffic might have roles which indicate that those machines should all have the webserver package installed and that the web service should always be running.
+To effectively manage these groups of machines, an administrator needs to be able to create roles for those groups.  As an example, a group of machines that serve front-end web traffic might have roles which indicate that those machines should all have the webserver package installed and that the web service should always be running.
 
 In Salt, the file which contains a mapping between groups of machines on a network and the configuration roles that should be applied to them is called a _top file_.
 
-Top files are named _top.sls_ by default and they are so-named because they always exist in the "top" of a directory hierarchy that contains state files. That directory hierarchy is called a state tree and this is what is used to reference the building blocks for the SAP Landscape.
+Top files are named _top.sls_ by default and they are so-named because they always exist in the "top" of a directory hierarchy that contains state files.  That directory hierarchy is called a state tree and this is what is used to reference the building blocks for the SAP Landscape.
 
-==== SAP Sizing
+=== SAP Sizing
 
-To make the SAP sizing more simple SUSE have introduced pre-defined sizes with well known abbreviation from T-Shirt sizes Small (S), Medium (M), Large (L).
+To make the SAP sizing simpler, SUSE has introduced pre-defined sizes with well-known abbreviations from T-Shirt sizes: Small (S), Medium (M), and Large (L).
 
-The Small (S) size is targeted at non productive scenarios, where as the Medium (M) and Large (L) sizes are recommended for production setups, where certified instance types should be used.
+The Small (S) size is targeted at non-production scenarios, whereas Medium (M) and Large (L) sizes are recommended for production setups and certified instance types should be used.
 
 It is possible to tweak these pre-defined sizes or create a set of custom settings.
 
-As sizing is critical, it is important to choose the right instance sizes from the cloud provider which are certified by SAP and choose the right number of disks to provide the right I/O, as similar the network throughput for the solution.
+Sizing is critical.  It includes choosing the right, SAP-certified instance types from the cloud provider, the right number of disks to support I/O requirements, and the right network options to meet throughput needs.
 
-==== Building Blocks
+=== Building Blocks
 
-The main building blocks for an SAP Landscape are the _Application Layer_, based on Netweaver with SAP Central Services (xSCS) with an Primary Application Server (PAS) and Additional application server (AAS) and the _Database Layer_, which within the Automation project is SAP HANA.
+The main building blocks for an SAP Landscape are the _Application Layer_, based on Netweaver with SAP Central Services (xSCS), a Primary Application Server (PAS), and Additional Application Server (AAS), as well as the _Database Layer_, which, for this context, is SAP HANA.
 
-There are two possible models how SAP Business Suite can be deployed, a centralized deployment where all runs on one server or distributed deployment where every service has its own node.
+There are two possible models for how SAP Business Suite can be deployed: a centralized deployment where everything runs on one server or a distributed deployment where every service has its own node.
 
-The centralized deployment is mostly used for non-production environments such as sandbox and development environments.
-
-//todo - picture
-
-The distributed deployment, is the recommend way for production environments where each of the SAP application layer components is independently installed on different instances. This is the scenario used within the automation project.
+The centralized deployment is mostly used for non-production, such as sandbox and development environments.
 
 //todo - picture
 
-//@PS - what does the below mean?
+The distributed deployment is the recommended way for production environments where each of the SAP application layer components is independently installed on different instances.  This is the scenario used within the automation project.
 
-The automation project uses the building blocks described before, to create the distributed landscape. It is described within the top.sls file, depending on the role of the node.
+//todo - picture
 
-==== High Availability
 
-There are two main building blocks which should be made highly available in order to acheive less downtime and eliminate single point of failures within the SAP Landscape. As there are many scenarios available from SAP, the Automation project supports the most popular scenarios.
+=== High Availability
 
-For the Central Services this is Enqueue Replication and for the database its the HANA System Replication.
+There are two main parts in an SAP system which should be made highly available in order to achieve less downtime and eliminate single points of failure within the SAP Landscape.
 
-Therefore, for each of these building blocks, one additional machine is required to build a two-node cluster within the HA Scenarios.
+For the Central Services this is Enqueue Replication, and for the database it is the HANA System Replication.
+
+For each of these building blocks, one additional machine is required to build a two-node cluster within HA scenarios.
 
 ifeval::[ "{cloud}" == "Azure" ]
 
@@ -84,16 +83,21 @@ endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 
-Within an AWS SAP HA Cluster, the HANA Primary and Seconday nodes each reside in 2 different Availability Zones (AZs), therefore to provide an IP address which is portable between the 2 AZs, an AWS Overlay IP address is required. This uses a specific routing entry which can send network traffic to an instance, no matter which Availability Zones (and subnet) the instance is located in.
+Within an AWS SAP HA Cluster, the HANA Primary and Secondary nodes each reside in 2 different Availability Zones (AZs).  Therefore, to provide an IP address which is portable between the two AZs, an AWS Overlay IP address is required.  This uses a specific routing entry which can send network traffic to an instance, no matter in which Availability Zone (and subnet) the instance is located.
 
-Overlay IP addresses have one requirement, they need to have a CIDR range outside of the VPC. 
+Overlay IP addresses have one requirement: they need to have a CIDR range outside of the VPC.
 
-It is important to note that this IP address is not externally available, for this the Route53 service should be used. (this is currently not supported by the SUSE SAP Automation framework).
+It is important to note that this IP address is not externally available.  For this, the Route53 service should be used (this is currently not supported by the SUSE SAP Automation framework).
 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+
+Within a Google Cloud SAP HA Cluster, the HANA Primary and Secondary nodes each reside in 2 different Availability Zones (AZs).  To provide an IP address which is portable between the two AZs, there are two available options:
+
+. A _Standard GCE Load Balancer_ service from Google Cloud to provide traffic to only the active node.
+. A _GCE Overlay IP address_.  This uses the _gcp-vpc-move-route_ resource agent which can send network traffic to an instance, no matter in which Availability Zone (and subnet) the instance is located.
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -101,31 +105,38 @@ Libvirt
 endif::[]
 
 
-==== Additional Services
+=== Additional Services
 
-Depending on the available services from the cloud provider, additional funcationality may need to be created as part of the deployment.  i.e. NFS.  This is reflected within the top.sls file.
+Depending on the available services from the cloud provider, additional functionality may need to be created as part of the deployment (e.g., NFS).  This is reflected within the top.sls file.
 
 
-===== NFS service
+==== NFS service
 
 ifeval::[ "{cloud}" == "Azure" ]
 
-As we started with Azure, there was no NFS service available, so we need to build some with the tools we ship in {sles4sap}. As the NFS service should be high available, we need a second virtual machine to build a two node cluster.
+When we started with Azure, there was no NFS service available.  We needed to build an NFS service with the tools we ship in {sles4sap}.  As the NFS service should be highly available, we also needed a second virtual machine to build a two node cluster.
 
 image::Azure_HA_NFS_Service.png[scaledwidth="80%"]
 
-Over the time, Azure provide more and more services. So as of time of writing, there is a native NFS service with help of Netapp available (Azure Netapp files - ANF) and the Azure file service is extending in this direction too.
+Over time, Azure has provided more services.  At the time of this writing, there is a native NFS service (Azure Netapp files - ANF).  The Azure file service is also being extended with similar functionality.
 //todo - link
 
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 On AWS, Shared SAP resources are managed in AWS Elastic File Systems (EFS). This provides the NFS services required to support the SAP deployment.
- 
+
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+
+Currently, we need to build an NFS service with the tools we ship in {sles4sap}. As the NFS service should be highly available, we need two virtual machines to build a two-node cluster.
+
+// GCP image to be added here
+//image::Azure_HA_NFS_Service.png[scaledwidth="80%"]
+
+NOTE: Google Cloud provides a native NFS service (Google Cloud Filestore). It is planned to add the support for the Google Cloud Filestore service in the upcoming releases of the SUSE SAP automation platform.
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -134,55 +145,65 @@ endif::[]
 
 If the cloud native NFS service is used, no additional virtual machines will be created and the native service need to be set up in advance.
 
-===== Fencing service
+==== Fencing service
 
-For high availability clusters, a mechanism to switch off one machine in the case of a so called "split-brain" is needed. This is used  when the 2 nodes can no longer communicate with each other. This action is called 'fencing'.
+In high availability clusters, a so-called "split-brain" condition occurs when cluster nodes can no longer communicate with each other.  This is a serious situation that can result in transaction inconsistencies as each node continues to write data.  Thus, a mechanism, called 'fencing', is needed to switch off or reset one machine until synchronization can be restored.
 
-There are several methods which can be used depending on the capability of the cloud provider.
+There are several methods which can be used, depending on the capability of the cloud provider.
 
 ifeval::[ "{cloud}" == "Azure" ]
-As Azure was the first Hyperscaler to support SUSE clustering, Microsoft and SUSE created a fencing agent for the cluster. This fencing agent should remove a machine as quickly as possible (immediately) from the cluster, to ensure that there is only one active node.  This avoids data corruption.
+Microsoft supported SUSE clustering as the first Linux HA solution on Azure. Microsoft and SUSE created a fencing agent for the cluster for Azure. This fencing agent should remove a machine as quickly as possible (immediately) from the cluster to ensure that there is only one active node and avoid data corruption.
 
-Initially, the Azure infrastructure only provided a way to gracefully shutdown a machine, which took 10-15 minutes.  This is too long for the split-brain fencing requirement.
+Initially, the Azure infrastructure only provided a way to gracefully shutdown a machine, which took 10 to 15 minutes.  This is too long for the split-brain fencing requirement.
 
-To improve on the time taken to fence nodes in Azure, SUSE implemented an OS native mechanism to fence virtual machines. This technology is provided within the SUSE HA Extension and uses storage as additional communication layer between the nodes. This requires a raw shared disk, this provides a mechanism so that both nodes can write messages to a central place. It is called SBD - Stonith Block Device or Split Brain Detector.
+To improve on this time, SUSE implemented an OS native mechanism to fence virtual machines. This technology is provided within the SUSE HA Extension and uses storage as an additional communication layer between the nodes. This requires a shared raw disk, a central place where both nodes can write messages. This is called 'SBD' or Stonith Block Device or Split Brain Detector.
 
-When originally desinging this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes. Therefore it needed to be built with the Linux tools available in the SUSE Linux distribution. With help of a iSCSI server,  a raw shared disk within the cloud can be provided and therefore, the SBD fencing method which with help of the linux watchdog mechanism provides a fast and reliable fencing tooling.
+When originally designing this solution, the Azure infrastructure did not provide a raw disk service that could be shared between nodes.  Fortunately, SUSE Linux enterprise provides built-in tooling to create an iSCSI server to provide this functionality.
 
-This requires one additional server to provide a iSCSI service.
+Thus, with the help of a shared raw disk and the Linux watchdog, SBD provides a fast and reliable fencing mechanism.
+
+NOTE: If an iSCSI server is used to implement the shared raw disk for SBD, one additional server is required.
 
 image::Azure_fence_iscsi.png[scaledwidth="80%"]
 
 // fixme - this is not implemented from the automation as of today
-Following recent improvements, there is now a method in the Azure API to "kill" a virtual machine, so that the fencing agent can make use of it and no additional iSCSI machine is needed if the fence agent is used.
-The drawback here is, in order to talk to the Azure API, there is a need for public network connection.
+Following recent improvements, there is now a method in the Azure API to "kill" a virtual machine.  The fencing agent can make use of this, and no additional iSCSI machine is needed.
+However, the drawback of using the Azure API for this is that a public network connection is needed.
 
 image::Azure_fence_arm.png[scaledwidth="80%"]
 
-So you can choose between two ways
-. SDB fencing with help of an iSCSI service
-. agent based fencing through API access
+So, you can choose between two methods: 
+
+* SDB fencing with the help of an iSCSI service
+* Agent based fencing through API access
+
+In the meantime, there is a third option.  Azure also provides a raw shared disks as a native service.
+As of the time of writing the document, only the SBD-fencing mechanism is implemented within the automation.
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-AWS Supports the use of the AWS EC2 STONITH mechanism.  This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff/reboot etc) EC2 instances as part of cluster operations.
+AWS Supports the use of the AWS EC2 STONITH mechanism.  This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff, reboot, etc.) EC2 instances as part of cluster operations.
 
-Behind the scenes, it uses the AWS CLI, EC2 Tags and IAM as a method to securely identify a node and then fence it. 
+Behind the scenes, it uses the AWS CLI, EC2 Tags, and IAM as a method to securely identify a node and then fence it.
 
-It requires internet connectivity to ensure the EC2 endpoint can be reached.
-
-A working STONITH method is mandatory to run a supported SUSE cluster on AWS.
+It requires Internet connectivity to ensure the EC2 endpoint can be reached.
 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+
+Google Cloud Supports the use of the GCE STONITH mechanism. This is shipped and supported with the SUSE HA Extension and has been specifically written to fence (poweroff, reboot, etc.) GCE instances as part of cluster operations.
+
+The GCE fencing mechanism uses the cutting-edge Google Python APIs. There is no longer a need to install the Google Cloud SDK in each HA cluster node to enable the fencing functions.
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt
 endif::[]
 
-===== Monitoring service
+IMPORTANT: A working STONITH method is mandatory to run a supported SUSE cluster!
 
-If the Monitoring Service is to be deployed as part of the Automation, an additional virtual machine for this service to support the he Prometheus and Grafana services used to provide this capability.
+==== Monitoring service
+
+If the Monitoring Service is to be deployed as part of the Automation, an additional virtual machine to support the Prometheus and Grafana services used to provide this capability.

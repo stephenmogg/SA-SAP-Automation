@@ -5,34 +5,34 @@
 Business Layer elements are used to model the operational organization of an enterprise in a technology-independent manner, whereas strategy elements are used to model the strategic direction and choices of the enterprise.
 
 * *_Who_* to engage with, inform and collaborate with
-* *_What_* key factors are important 
+* *_What_* key factors are important
 * and *_When_* to consider them
 
 Business Considerations for this solution, which teams/resources should be included and consulted.
 Who to engage with, inform, and collaborate with
-What key factors are important and 
+What key factors are important and
 When to consider them
 
 Determine landscape impact, Factors Flavors, Deployment types.
- 
+
 ////
 
-This document is targeted at consultants and end-customers who are deploying SAP Landscapes in the public cloud. Within cloud environments there is no strict separation of responsibility (e.g. Networking, DB, OS, Application), as most operations can be performed from a central control plane. However, this should not mean that this specialised knowledge is no longer needed. Functional teams still exist and will need to work together, this is often best acheived with a DevOps approach utilising Infrastructure-as-Code.
+This document is targeted at consultants and end-customers who are deploying SAP Landscapes in the public cloud. Within cloud environments there is no strict separation of responsibility (e.g., Networking, DB, OS, Application), as most operations can be performed from a central control plane.  However, this should not mean that this specialized knowledge is no longer needed.  Functional teams still exist and will need to work together, this is often best achieved with a DevOps approach utilizing Infrastructure-as-Code.
 
-This means that when implementing SAP in the cloud, knowledge will be required of the cloud infrastructure and the various possibilities that affords along with a good understanding of the operating system and the tooling surrounding it, e.g. High Availability (HA).  Finally an understanding around planning for the application usage and sizing is needed.
+When implementing SAP in the cloud, knowledge is required of the cloud infrastructure and the various possibilities this affords along with a good understanding of the operating system and the tooling surrounding it; e.g., High Availability (HA).  Finally, an understanding around planning for the application usage and sizing is needed.
 
-SAP architectures needs to be fine-tuned based on customer requirements around system availability i.e 99.99%, 99.95% or 99.9%.  Single Point of Failures (SPOF) in the components and services will need to be idenified and protected against, this is normally achieved with an HA Cluster.  Other SPOFs within the infrastructure will need to be protected using some form of redundancy.
+SAP architectures need to be fine-tuned based on customer requirements around system availability (i.e., 99.99%, 99.95% or 99.9%).  Each Single Point of Failures (SPOF) in the components and services will need to be identified and protected against.  This is normally achieved with an HA Cluster.  And, other SPOFs within the infrastructure will need to be protected against with some form of redundancy.
 
 If you look at a typical SAP implementation you will find:
 
 1. SAP Central Services (ASCS/ERS)
-2. a Database (e.g. SAP HANA)
+2. a Database (e.g., SAP HANA)
 3. a Primary Application Server (PAS)
 4. shared storage (NFS)
 
-In the above list, points 1, 2 and 4 are potential SPOF.
+In the above list, items 1, 2, and 4 are potential SPOFs.
 
-SUSE's SAP Automation will try to eliminate all of these single-point-of-failures by providing HA cluster implementations to ensure automated failover, data protection and higher system availability.
+SUSE's SAP Automation will try to eliminate all of these SPOFs by providing HA cluster implementations to ensure automated failover, data protection, and higher system availability.
 
 SAP Central Services (ASCS/ERS):: You need at least 2 nodes to configure an ASCS/ERS HA cluster. Depending on the SAP versions, you can configure the ASCS/ERS cluster in either ENSA 1 or ENSA 2 architecture which could be automated with the SUSE HA Extension (HAE).
 
@@ -40,17 +40,18 @@ Database layer:: You need at least 2 nodes to configure SAP HANA HA/DR cluster i
 
 Depending on the services used or what services are available from the cloud provider it could be that you need a third cluster providing a Highly Available NFS service.
 
-This is one of the main benefits of the SUSE SAP Automation project, all the required infrastructure and configuration can be created in order to maximize the SAP System availablity.
+This is one of the main benefits of the SUSE SAP Automation project: all the required infrastructure and configuration can be created in order to maximize the SAP System availablity.
+
 
 === SUSE SAP Automation Coverage
 
-SAP HANA and Netweaver applications can be deployed in many different scenarios and combinations between them. The automation is constructed from 'building blocks' which are modular and reusable and can be used to deploy a single install through to full cluster deployment.
+SAP HANA and Netweaver applications can be deployed in many different scenarios and combinations between them.  The automation is constructed from 'building blocks' which are modular and reusable and can be used to deploy a single install through to full cluster deployment.
 
 The following scenarios are supported:
 
 * HANA single node
-* HANA HA Scale-up System Replication 
-** Performance Optimized Scenario 
+* HANA HA Scale-up System Replication
+** Performance Optimized Scenario
 *** active/passive
 *** active/readonly
 ** Cost Optimized Scenario
@@ -59,173 +60,47 @@ The following scenarios are supported:
 * Netweaver HA with Enqueue Replication Version (ENSA1)
 * S/4 HANA
 
-SUSE Engineering continue to develop new scenarios based on the demands of customers and partners. 
+SUSE Engineering continues to develop new scenarios based on the demands of customers and partners.
 
 The overall deployment using SUSE SAP Automation looks as follows:
 
+////
+- The HA NFS Service with DRBD is used in Azure and GCP environments. AWS environment uses EFS file shares
+- The iSCSI server provides SBD disks is used only in the Azure environment. GCP and AWS environments use the cloud fencing agents (`fence_gce` and `fence_aws`)
+
+I would suggest one of the following:
+  1. Using separate diagrams for GCP and AWS. @Peter If you can share the original LibreOffice Impress slide, that would be great.
+  2. Mentioning that the HA NFS Service with DRBD and the iSCSI server are optional components depend on the Cloud Service Providers.
+////
+
 image::SAP_Overview.png[Instance overview,scaledwidth="80%"]
 
-//image::SA-Business.png[title="Solution Architecture - {useCase} Business", scaledwidth=80%]
+ifeval::[ "{cloud}" == "Azure" ]
+
+endif::[]
+
+ifeval::[ "{cloud}" == "GCP" ]
+
+endif::[]
+
+ifeval::[ "{cloud}" == "AWS" ]
+
+endif::[]
 
 === Prerequisites for SAP workloads in public clouds
 
 There are a few general prerequisites to ensure a supported SAP Landscape in public cloud environments:
 
-. An SAP license for the SAP software to be deployed is required.
+. License for the SAP software to be deployed is required.
 
-. A understanding of the resource requirements of the SAP workloads (via an SAP System Sizing exercise).
+. Ensure understanding of the resource requirements of the SAP workloads (via an SAP System Sizing exercise).
 
-. Certified instance types must be used based on the capacity required by SAP software.
+. Use certified instance types based on the capacity required by SAP software.
 
-. Ensure suitable network connectivity is provided (bandwidth, latency, and package loss) within the cloud environment for your SAP workloads.
+. Ensure suitable network connectivity is provided (bandwidth, latency, and packet loss) within the cloud environment for SAP workloads.
 
-. Only deploy certified operating systems on which the SAP workloads will run.
+. Deploy only certified operating systems on which the SAP workloads will run.
 
-. A good operational knowledge of the Linux OS, SAP systems operations and the cloud infrastructure is needed.
+. Have a good operational knowledge of the Linux OS, SAP systems operations, and the cloud infrastructure.
 
-. Where highly available solutions are deployed, a deep understanding of the HA concepts and tooling along with how this functions within along side the resiliency capability of the cloud infrastructure is required.  
-
-
-
-
-=== Roles and Collaboration
-
-FixMe - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Massa tincidunt nunc pulvinar sapien. Hendrerit dolor magna eget est lorem. Bibendum enim facilisis gravida neque convallis a cras semper auctor. Sit amet mattis vulputate enim nulla aliquet porttitor. Semper feugiat nibh sed pulvinar proin gravida. Tincidunt lobortis feugiat vivamus at augue eget arcu dictum varius. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin. Pretium quam vulputate dignissim suspendisse in. Lectus proin nibh nisl condimentum id venenatis a. Neque aliquam vestibulum morbi blandit cursus risus at ultrices mi.
-
-=== Processes and Functions
-
-FixMe - Egestas egestas fringilla phasellus faucibus scelerisque. Aliquet porttitor lacus luctus accumsan. Ornare arcu odio ut sem nulla pharetra diam. Interdum velit euismod in pellentesque massa. Nulla at volutpat diam ut. Volutpat sed cras ornare arcu dui vivamus arcu felis bibendum. Ut faucibus pulvinar elementum integer. Urna cursus eget nunc scelerisque. Quisque sagittis purus sit amet volutpat consequat mauris nunc. Quis varius quam quisque id diam. Pretium aenean pharetra magna ac placerat vestibulum lectus mauris ultrices. Purus faucibus ornare suspendisse sed. Placerat orci nulla pellentesque dignissim enim sit amet venenatis. Gravida neque convallis a cras semper auctor neque vitae tempus. Vel pharetra vel turpis nunc eget. Facilisis volutpat est velit egestas dui id ornare arcu odio. Aliquam vestibulum morbi blandit cursus risus at ultrices mi.
-
-=== Factors, Flavors and Deployment Types
-
-FixMe - Id diam maecenas ultricies mi eget mauris. Cras fermentum odio eu feugiat pretium nibh ipsum consequat. Mi sit amet mauris commodo. Quam nulla porttitor massa id neque aliquam vestibulum morbi blandit. Pretium viverra suspendisse potenti nullam ac tortor vitae purus faucibus. Diam donec adipiscing tristique risus nec feugiat in fermentum. Dui id ornare arcu odio ut sem nulla. Eu sem integer vitae justo. Elementum eu facilisis sed odio. Ut morbi tincidunt augue interdum velit euismod in pellentesque massa. Gravida neque convallis a cras semper. Tellus at urna condimentum mattis. Faucibus purus in massa tempor nec feugiat nisl pretium fusce. Ut lectus arcu bibendum at varius vel pharetra vel turpis. Velit egestas dui id ornare arcu odio ut sem. Faucibus interdum posuere lorem ipsum. In ante metus dictum at tempor commodo. Sed id semper risus in hendrerit gravida rutrum. Mauris pharetra et ultrices neque ornare aenean euismod. Sit amet tellus cras adipiscing enim eu turpis egestas pretium.
-
-////
-.Scope of Covered Factors, Flavors, and Deployment Types
-[width="80%",valign="middle",halign="center",options="header"]
-|===
-
-| |
-ifdef::Availability[ *_<<G_Availability,Availability>>_* |]
-ifdef::Performance[ *_<<G_Performance,Performance>>_* |]
-ifdef::Security[ *_<<G_Security,Security>>_* |]
-ifdef::Integrity[ *_<<G_Integrity,Integrity>>_* ]
-
-ifdef::PoC[]
-| *_<<G_PoC,Proof-of-Concept>>_*
-ifdef::Availability[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Availability[]
-ifdef::Performance[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Performance[]
-ifdef::Security[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Security[]
-ifdef::Integrity[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Integrity[]
-endif::PoC[]
-
-ifdef::Production[]
-|*_<<G_Production,Production>>_*
-ifdef::Availability[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Availability[]
-ifdef::Performance[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Performance[]
-ifdef::Security[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Security[]
-ifdef::Integrity[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Integrity[]
-endif::Production[]
-
-ifdef::Scaling[]
-|*_<<G_Scaling,Scaling>>_*
-ifdef::Availability[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Availability[]
-ifdef::Performance[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Performance[]
-ifdef::Security[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Security[]
-ifdef::Integrity[]
-^|
-ifdef::DT1[ <<G_DT1,DT1>> ] 
-ifdef::DT2[ <<G_DT2,DT2>> ] 
-endif::Integrity[]
-endif::Scaling[]
-
-|===
-////
-
-==== Factors
-
-ifdef::Availability[]
-[[B_Availability]]include::./SA-Availability.adoc[]
-endif::Availability[]
-
-ifdef::Performance[]
-[[B_Performance]]include::./SA-Performance.adoc[]
-endif::Performance[]
-
-ifdef::Security[]
-[[B_Security]]include::./SA-Security.adoc[]
-endif::Security[]
-
-ifdef::Integrity[]
-[[B_Integrity]]include::./SA-Integrity.adoc[]
-endif::Integrity[]
-
-==== Flavors 
-
-ifdef::PoC[]
-[[B_PoC]]include::./SA-PoC.adoc[]
-endif::PoC[]
-
-ifdef::Production[]
-[[B_Production]]include::./SA-Production.adoc[]
-endif::Production[]
-
-ifdef::Scaling[]
-[[B_Scaling]]include::./SA-Scaling.adoc[]
-endif::Scaling[]
-
-// rename DT* to more specific ones
-==== Deployment Types
-
-ifdef::DT1[]
-[[B_DT1]]include::./SA-DT1.adoc[]
-endif::DT1[]
-
-ifdef::DT2[]
-[[B_DT2]]include::./SA-DT2.adoc[]
-endif::DT2[]
-
+. Where highly available solutions are deployed, a deep understanding of the HA concepts, tooling, and how this functions within and alongside the resiliency capabilities of the cloud infrastructure are essential.

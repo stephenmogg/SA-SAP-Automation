@@ -206,10 +206,10 @@ The _Usage_ section provides you with a link to an OpenBuildServer (OBS) reposit
 +
 The value/link to the repository will need to be included within the Terraform variables (teraform.tfvars) file. So copy the line as described.
 
-. Next go to _Assets_ and download the _Source code_ as .zip or .tar.gz
+. Next, go to _Assets_ and download the _Source code_ as .zip or .tar.gz
 . Extract it into a folder on the local computer or the machine that will be used to create your environment
 . Go to this folder and into the subfolder for the cloud provider
-. Copy the file _terraform.tfvars.example_ to _terraform.tfvars_
+. Copy the file _terraform.tfvars.example_ to _terraform.tfvars_.
     There are many key-value variable pairs, some enabled and some disabled with a _=_ or a _#_ in front.
     In order to perform a simple deployment, only update the parameters as listed below.
 

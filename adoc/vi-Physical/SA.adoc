@@ -407,7 +407,44 @@ Finally, ensure the following lines are commented *out* using a #:
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
++
+Save your changes and run the following commands from the gcp directory:
++
+[subs="attributes,quotes"]
+----
+   mkdir -p ../salt/hana_node/files/sshkeys
+   ssh-keygen -t rsa -N '' -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+----
++
+Open the _terraform.tfvars_ file again to update the SSH keys names and paths:
++
+----
+# SSH private key file
+private_key_location = "../salt/sshkeys/cluster_rsa"
+
+# SSH public key file
+public_key_location = "../salt/sshkeys/cluster_rsa.pub"
+----
+
+. As the SAP Install Media is needed for the automatic deployment of HANA, we use the Google Cloud Storage Bucket to host the SAP HANA install media. The SAP HANA media will need to be copied to that Storage Bucket. If the SAP media is already extracted this will save time during the deployment.
++
+Modify the _terraform.tfvars_ file to point to the SAP Media that was uploaded to the Google Cloud Storage Bucket earlier:
++
+----
+# The name of the GCP storage bucket in your project that contains the SAP HANA installation files
+sap_hana_deployment_bucket = ""gcp-sap-testing-project-bucket/HANA/2.0/SPS04/51054413"
+----
++
+The _sap_hana_deployment_bucket_ variable should point to the directory where you have extracted the hana install files.
+There are more possibilities, but, for simplicity, have everything already extracted on your bucket.
++
+Disable the other hana variables by adding a '#' in front of them:
++
+----
+#hana_archive_file = "IMDB_SERVER.SAR"
+#hana_sapcar_exe = "SAPCAR"
+#hana_extract_dir = "/sapmedia/HDBSERVER"
+----
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

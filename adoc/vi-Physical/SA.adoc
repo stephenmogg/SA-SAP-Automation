@@ -168,8 +168,8 @@ _terraform.tfvars_:: is a variable definitions file which will gets automaticall
 
 _terraform.tfvars.example_:: is an example configuration file with many pre-filled values to set up the solution. *It can be used as a starting point for your own file.*
 
-_variables.tf_:: provides all input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
-Please have a deep look at all variable and the comments for it, to get aware whats is possible.
+_variables.tf_:: provides all input variables, including a short description, the type of the variable, and a default value which can be overwritten with the terraform.tfvars file.
+Please have a deep look at all variables and the comments for it, to get aware whats is possible.
 +
 E.g., the variable provisioner is like a switch to run either the Salt or Terraform portion only
 

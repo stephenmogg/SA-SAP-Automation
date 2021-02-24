@@ -263,9 +263,42 @@ https://aws.amazon.com/marketplace/server/procurement?productId=e9701ac9-43ee-4d
 If a different version of SLES for SAP is required, subscribe to the relevant version on the marketplace.
 
 endif::[]
-
++
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+
+.GCP SAP HANA Basic Infrastructure Configurations:
+========
+. Change the GCP Project ID to your one:
++
+----
+# GCP project id
+project = "gcp-sap-testing-project"
+----
+
+. Change the GCP Service Account Key to match the created one for your project:
++
+----
+# Service account key file name
+gcp_credentials_file = "gcp-testing-sa-key.json"
+----
+
+. Change the region in which to deploy the solution:
++
+----
+# Region where to deploy the configuration
+region = "europe-west4"
+----
+
+. To make it easier to start, change the image types for the SAP instances to pay-as-you-go (PAYG). In order to do this, set the hana VM type and OS image accordingly. The instances types can also be set depending on your requirements.
++
+----
+# Type of GCP VM (vCPUs and RAM)
+machine_type = "n1-highmem-32"
+
+# SAP HANA sles4sap image
+sles4sap_boot_image = "suse-sap-cloud/sles-15-sp2-sap-v20201208"
+----
+========
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -274,7 +307,7 @@ endif::[]
 
 . The next step is to provide ssh keys to access the machines that will be deployed.
 +
-SUSE recommends creating new sshkeys for the deployment. Both public and private keys will need to be provided, as they are copied to the cluster nodes during the deployment.
+SUSE recommends creating new SSH keys for the deployment. Both public and private keys will need to be provided, as they are copied to the cluster nodes during the deployment.
 +
 Change the two location variables and point them to your files.
 +

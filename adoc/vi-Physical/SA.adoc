@@ -21,8 +21,8 @@ ifeval::[ "{cloud}" == "AWS" ]
 {proj_ver}
 endif::[]
 of the Terraform part and v6 of the rpm packages for Salt formulas.
-New version could have more features or slightly changed files as shown here, but the general guidelines should
-still be applicable.
+The new versions could have more features or slightly changed files as shown here, but the general guidelines should still be applicable.
+====
 
 
 === Prerequisites

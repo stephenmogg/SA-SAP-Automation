@@ -62,7 +62,7 @@ ifeval::[ "{cloud}" == "GCP" ]
 . Create a Google Cloud Storage Bucket 
 //. Copy or write down the name of the Google Cloud Storage Bucket
 . Copy the SAP HANA install media to a folder in the created Google Cloud Storage Bucket
-. Extract the HANA install media
+. Extract the HANA install media (optional)
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -142,7 +142,7 @@ Providers are plugins and released independently from Terraform itself, this mea
 
 Each Terraform module must declare which providers it requires, so that Terraform can install and use them.
 
-Switching into a _cloud provider_ directory, shows one directory _modules_ and several _.tf_ files which together build the Terraform template.
+Switching into a _cloud provider_ directory shows one directory _modules_ and several _.tf_ files which together build the Terraform template.
 
 When creating Terraform configurations, best practice is to separate out parts of the configuration into individual .tf files. This provides better organization and readability.
 ----

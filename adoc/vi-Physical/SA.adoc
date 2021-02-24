@@ -933,7 +933,11 @@ These can be modified by editing the _main.tf_ file in the ~/aws/modules/hana_no
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+
+Google Cloud provides an overview of what is required to run SAP HANA on Google Cloud, and it provides details that you can use when planning the implementation of a new SAP HANA system.
+
+The SAP HANA planning guide (https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide) shows the certified machine types for SAP HANA, how to choose the attached disks to the HANA instances, HANA instances memory configurations etc..
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

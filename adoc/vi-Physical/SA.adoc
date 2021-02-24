@@ -554,7 +554,7 @@ In addition, it provides the _resources_ for the network setup, including VPCs, 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+In addition, it provides the _resources_ for the network setup, including VPCs, Subent, Firewall Rules, Public IPs etc.
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

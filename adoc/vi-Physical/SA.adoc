@@ -188,9 +188,17 @@ There is one additional file, _salt_provisioner.tf_, which is responsible for ha
 
 SUSE provides example Terraform template and Salt pillar files to provide an easy way to perform an initial simple deployment.
 
-. Open a browser and goto https://github.com/SUSE/ha-sap-terraform-deployments
+. Open a browser and go to https://github.com/SUSE/ha-sap-terraform-deployments
 . Click on _tags_
-. Click on _6.0.0_
+ifeval::[ "{cloud}" == "GCP" ]
+. Click on _{proj_gcp_ver}_
+endif::[]
+ifeval::[ "{cloud}" == "Azure" ]
+. Click on _{proj_ver}_
+endif::[]
+ifeval::[ "{cloud}" == "AWS" ]
+. Click on _{proj_ver}_
+endif::[]
 +
 What is new and what has changed can be seen from this page.  If older versions of the project are used, be sure to carefully review and understand the differences.
 +

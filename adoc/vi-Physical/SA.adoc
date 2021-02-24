@@ -445,6 +445,25 @@ Disable the other hana variables by adding a '#' in front of them:
 #hana_sapcar_exe = "SAPCAR"
 #hana_extract_dir = "/sapmedia/HDBSERVER"
 ----
+
+. Now we need to point to where the right packages for the v6 could be found. In the _terraform.tfvars_ file set the _ha_sap_deployment_repo_ variable as below:
++
+[subs="attributes,quotes"]
+----
+ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v6"
+----
+
+. If you want the additional monitoring server be deployed, simply uncomment the _monitoring_enabled_ variable:
++
+----
+monitoring_enabled = true
+----
+
+. As the last step, we enable a simplification parameter that tries to determine a few settings automatically. Still within the _terraform.tfvars_ file, scroll down to the end and uncomment the _pre_deployment_ parameter:
++
+----
+pre_deployment = true
+----
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

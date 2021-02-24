@@ -27,7 +27,7 @@ The new versions could have more features or slightly changed files as shown her
 
 === Prerequisites
 
-First make sure that all prerequisites are met:
+First, make sure that all prerequisites are met:
 
 ifeval::[ "{cloud}" == "Azure" ]
 
@@ -54,13 +54,15 @@ endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
 . Have a Google Cloud Platform account
-. Have a Service Account Key saved in the machine that will be used to initiate the environment. 
-. Have installed _terraform_ (v12) (it comes with SLES within the public cloud module)
-. Have the SAP HANA install media downloaded from SAP
-. Have created a Google Cloud Storage Bucket 
-. Copy or write down the name of the Google Cloud Storage Bucket
-. Copy the SAP HANA install media to the created Google Cloud Storage Bucket
-. Extract the HANA install media to the Google Cloud Storage Bucket
+//. Install the Google Cloud SDK command line tool _aws_
+. Create a Service Account with the 'Owner' role or the enough IAM rights to run the automation project
+. Create a Service Account Key and save it in the machine that will be used to initiate the environment
+. Install _terraform_ (v12) (it comes with SLES within the public cloud module)
+. Download the SAP HANA install media from SAP
+. Create a Google Cloud Storage Bucket 
+//. Copy or write down the name of the Google Cloud Storage Bucket
+. Copy the SAP HANA install media to a folder in the created Google Cloud Storage Bucket
+. Extract the HANA install media
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

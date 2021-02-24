@@ -466,11 +466,14 @@ It is possible to change other settings (e.g., passwords), but, for a simple tes
 
 We are now ready to run Terraform.
 
-[subs="attributes,quotes"]
+
+[subs="specialchars,attributes,quotes"]
 ----
+ifeval::[ "{cloud}" == "Azure" ]
     az login
+endif::[]
     terraform init
-    terraform workspace new yourprojectname
+    terraform workspace new <YOUR WORKSPACE NAME>
     terraform plan
     terraform apply
 ----

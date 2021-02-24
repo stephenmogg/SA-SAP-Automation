@@ -523,7 +523,15 @@ The instances are currently provisioned with a public IP address as part of the 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+If all goes well, after ~40 Minutes, a fully configured HANA System Replication Cluster will have been deployed.
+
+The instances are currently provisioned with a public IP address as part of the deployment, you can ssh to them directly using the _root_ user.
+
+
+[subs="specialchars,attributes,quotes"]
+----
+$ ssh root@_<PUBLIC IP ADDRESS OF THE HANA NODE>_
+----
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

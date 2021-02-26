@@ -184,6 +184,7 @@ These are the recommended filenames for a minimal module, even if they are empty
 
 There is one additional file, _salt_provisioner.tf_, which is responsible for handing over the needed values to the Salt building blocks. This is achieved by using a special Terraform resource called _null_provider_, which remotely runs the Salt pillar to configure the instances and execute the application installation for the building block.
 
+// fixme - we should replace the simple install with the unified paper from stephen
 === Simple Install
 
 SUSE provides example Terraform template and Salt pillar files to provide an easy way to perform an initial simple deployment.
@@ -482,57 +483,52 @@ It is possible to change other settings (e.g., passwords), but, for a simple tes
 
 . Save any changes to the file and and go back to the main directory.
 
-
 We are now ready to run Terraform.
 
+ifeval::[ "{cloud}" == "Azure" ]
 
 [subs="specialchars,attributes,quotes"]
 ----
-ifeval::[ "{cloud}" == "Azure" ]
     az login
 endif::[]
+----
+
+[subs="specialchars,attributes,quotes"]
+----
     terraform init
-    terraform workspace new <YOUR WORKSPACE NAME>
+    terraform workspace new <YOUR WORKSPACE or PROJECT NAME>
     terraform plan
     terraform apply
 ----
 
-ifeval::[ "{cloud}" == "Azure" ]
-
 If all goes well, after ~40 minutes (depending on the speed of the instances) you will have an installed and running HANA System Replication Cluster.
 
+ifeval::[ "{cloud}" == "Azure" ]
 As a jumphost with a public ip address is created as part of the deployment, it is possible to log in to any virtual machine as part of the deployment from your machine with
 
 [subs="attributes,quotes"]
 ----
   ssh -J adminuser@jumphost adminuser@targethost
 ----
-
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-
-If all goes well, after ~30-40 Minutes a fully configured HANA System Replication Cluster will have been deployed.
-
 The instances are currently provisioned with a public IP address as part of the deployment, you can ssh to them directly using the ec2-user.
 
 ----
     ssh ec2-user@public_ip_of_hana_node
 ----
-
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-If all goes well, after ~40 Minutes, a fully configured HANA System Replication Cluster will have been deployed.
-
 The instances are currently provisioned with a public IP address as part of the deployment, you can ssh to them directly using the _root_ user.
-
 
 [subs="specialchars,attributes,quotes"]
 ----
 $ ssh root@_<PUBLIC IP ADDRESS OF THE HANA NODE>_
 ----
 endif::[]
+
 
 ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt

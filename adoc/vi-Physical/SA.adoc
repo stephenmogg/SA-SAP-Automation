@@ -490,8 +490,8 @@ ifeval::[ "{cloud}" == "Azure" ]
 [subs="specialchars,attributes,quotes"]
 ----
     az login
-endif::[]
 ----
+endif::[]
 
 [subs="specialchars,attributes,quotes"]
 ----

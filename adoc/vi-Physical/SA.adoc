@@ -9,10 +9,21 @@ The physical elements are included as an extension to the Technology Layer for m
 The SAP automation consists of several building blocks, this section is in two parts, infrastructure deployment with Terraform and configuration management with Salt.
 
 [NOTE]
----
-As the project is under active development to improve it and make it simpler to use, this document focuses on the project version 6.0.0 for the Terraform section and v6 of the rpm packages for Salt formulas.
-New versions may have additional features or different files than shown here, but the general guidelines should still be applicable.
----
+====
+As the project is under active development to make it better and simpler to use, this document focuses on the project version
+ifeval::[ "{cloud}" == "GCP" ]
+{proj_gcp_ver}
+endif::[]
+ifeval::[ "{cloud}" == "Azure" ]
+{proj_ver}
+endif::[]
+ifeval::[ "{cloud}" == "AWS" ]
+{proj_ver}
+endif::[]
+of the Terraform part and v6 of the rpm packages for Salt formulas.
+New version could have more features or slightly changed files as shown here, but the general guidelines should
+still be applicable.
+
 
 === Prerequisites
 
@@ -42,7 +53,14 @@ ifeval::[ "{cloud}" == "AWS" ]
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP - GCP storage
+. Have a Google Cloud Platform account
+. Have a Service Account Key saved in the machine that will be used to initiate the environment. 
+. Have installed _terraform_ (v12) (it comes with SLES within the public cloud module)
+. Have the SAP HANA install media downloaded from SAP
+. Have created a Google Cloud Storage Bucket 
+. Copy or write down the name of the Google Cloud Storage Bucket
+. Copy the SAP HANA install media to the created Google Cloud Storage Bucket
+. Extract the HANA install media to the Google Cloud Storage Bucket
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -50,6 +68,8 @@ Libvirt - NFS share
 endif::[]
 
 SUSE recommends to use the following directory structure:
+//fixme check directory structure
+
 ----
 version
   ├SWPM

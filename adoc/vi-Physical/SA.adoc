@@ -21,13 +21,13 @@ ifeval::[ "{cloud}" == "AWS" ]
 {proj_ver}
 endif::[]
 of the Terraform part and v6 of the rpm packages for Salt formulas.
-New version could have more features or slightly changed files as shown here, but the general guidelines should
-still be applicable.
+The new versions could have more features or slightly changed files as shown here, but the general guidelines should still be applicable.
+====
 
 
 === Prerequisites
 
-First make sure that all prerequisites are met:
+First, make sure that all prerequisites are met:
 
 ifeval::[ "{cloud}" == "Azure" ]
 
@@ -54,13 +54,15 @@ endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
 . Have a Google Cloud Platform account
-. Have a Service Account Key saved in the machine that will be used to initiate the environment. 
-. Have installed _terraform_ (v12) (it comes with SLES within the public cloud module)
-. Have the SAP HANA install media downloaded from SAP
-. Have created a Google Cloud Storage Bucket 
-. Copy or write down the name of the Google Cloud Storage Bucket
-. Copy the SAP HANA install media to the created Google Cloud Storage Bucket
-. Extract the HANA install media to the Google Cloud Storage Bucket
+//. Install the Google Cloud SDK command line tool _aws_
+. Create a Service Account with the 'Owner' role or the enough IAM rights to run the automation project
+. Create a Service Account Key and save it in the machine that will be used to initiate the environment
+. Install _terraform_ (v12) (it comes with SLES within the public cloud module)
+. Download the SAP HANA install media from SAP
+. Create a Google Cloud Storage Bucket 
+//. Copy or write down the name of the Google Cloud Storage Bucket
+. Copy the SAP HANA install media to a folder in the created Google Cloud Storage Bucket
+. Extract the HANA install media (optional)
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -140,7 +142,7 @@ Providers are plugins and released independently from Terraform itself, this mea
 
 Each Terraform module must declare which providers it requires, so that Terraform can install and use them.
 
-Switching into a _cloud provider_ directory, shows one directory _modules_ and several _.tf_ files which together build the Terraform template.
+Switching into a _cloud provider_ directory shows one directory _modules_ and several _.tf_ files which together build the Terraform template.
 
 When creating Terraform configurations, best practice is to separate out parts of the configuration into individual .tf files. This provides better organization and readability.
 ----
@@ -166,8 +168,8 @@ _terraform.tfvars_:: is a variable definitions file which will gets automaticall
 
 _terraform.tfvars.example_:: is an example configuration file with many pre-filled values to set up the solution. *It can be used as a starting point for your own file.*
 
-_variables.tf_:: provides all input variables, including a short description, the type of the variable and a default value which can be overwritten with the terraform.tfvars file.
-Please have a deep look at all variable and the comments for it, to get aware whats is possible.
+_variables.tf_:: provides all input variables, including a short description, the type of the variable, and a default value which can be overwritten with the terraform.tfvars file.
+Please have a deep look at all variables and the comments for it, to get aware whats is possible.
 +
 E.g., the variable provisioner is like a switch to run either the Salt or Terraform portion only
 
@@ -182,13 +184,22 @@ These are the recommended filenames for a minimal module, even if they are empty
 
 There is one additional file, _salt_provisioner.tf_, which is responsible for handing over the needed values to the Salt building blocks. This is achieved by using a special Terraform resource called _null_provider_, which remotely runs the Salt pillar to configure the instances and execute the application installation for the building block.
 
+// fixme - we should replace the simple install with the unified paper from stephen
 === Simple Install
 
 SUSE provides example Terraform template and Salt pillar files to provide an easy way to perform an initial simple deployment.
 
-. Open a browser and goto https://github.com/SUSE/ha-sap-terraform-deployments
+. Open a browser and go to https://github.com/SUSE/ha-sap-terraform-deployments
 . Click on _tags_
-. Click on _6.0.0_
+ifeval::[ "{cloud}" == "GCP" ]
+. Click on _{proj_gcp_ver}_
+endif::[]
+ifeval::[ "{cloud}" == "Azure" ]
+. Click on _{proj_ver}_
+endif::[]
+ifeval::[ "{cloud}" == "AWS" ]
+. Click on _{proj_ver}_
+endif::[]
 +
 What is new and what has changed can be seen from this page.  If older versions of the project are used, be sure to carefully review and understand the differences.
 +
@@ -196,10 +207,10 @@ The _Usage_ section provides you with a link to an OpenBuildServer (OBS) reposit
 +
 The value/link to the repository will need to be included within the Terraform variables (teraform.tfvars) file. So copy the line as described.
 
-. Next go to _Assets_ and download the _Source code_ as .zip or .tar.gz
-. Extract it into a folder on the local computer
+. Next, go to _Assets_ and download the _Source code_ as .zip or .tar.gz
+. Extract it into a folder on the local computer or the machine that will be used to create your environment
 . Go to this folder and into the subfolder for the cloud provider
-. Copy the file _terraform.tfvars.example_ to _terraform.tfvars_
+. Copy the file _terraform.tfvars.example_ to _terraform.tfvars_.
     There are many key-value variable pairs, some enabled and some disabled with a _=_ or a _#_ in front.
     In order to perform a simple deployment, only update the parameters as listed below.
 
@@ -253,9 +264,42 @@ https://aws.amazon.com/marketplace/server/procurement?productId=e9701ac9-43ee-4d
 If a different version of SLES for SAP is required, subscribe to the relevant version on the marketplace.
 
 endif::[]
-
++
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+
+.GCP SAP HANA Basic Infrastructure Configurations:
+========
+. Change the GCP Project ID to your one:
++
+----
+# GCP project id
+project = "gcp-sap-testing-project"
+----
+
+. Change the GCP Service Account Key to match the created one for your project:
++
+----
+# Service account key file name
+gcp_credentials_file = "gcp-testing-sa-key.json"
+----
+
+. Change the region in which to deploy the solution:
++
+----
+# Region where to deploy the configuration
+region = "europe-west4"
+----
+
+. To make it easier to start, change the image types for the SAP instances to pay-as-you-go (PAYG). In order to do this, set the hana VM type and OS image accordingly. The instances types can also be set depending on your requirements.
++
+----
+# Type of GCP VM (vCPUs and RAM)
+machine_type = "n1-highmem-32"
+
+# SAP HANA sles4sap image
+sles4sap_boot_image = "suse-sap-cloud/sles-15-sp2-sap-v20201208"
+----
+========
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -264,7 +308,7 @@ endif::[]
 
 . The next step is to provide ssh keys to access the machines that will be deployed.
 +
-SUSE recommends creating new sshkeys for the deployment. Both public and private keys will need to be provided, as they are copied to the cluster nodes during the deployment.
+SUSE recommends creating new SSH keys for the deployment. Both public and private keys will need to be provided, as they are copied to the cluster nodes during the deployment.
 +
 Change the two location variables and point them to your files.
 +
@@ -364,7 +408,63 @@ Finally, ensure the following lines are commented *out* using a #:
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
++
+Save your changes and run the following commands from the gcp directory:
++
+[subs="attributes,quotes"]
+----
+   mkdir -p ../salt/hana_node/files/sshkeys
+   ssh-keygen -t rsa -N '' -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+----
++
+Open the _terraform.tfvars_ file again to update the SSH keys names and paths:
++
+----
+# SSH private key file
+private_key_location = "../salt/sshkeys/cluster_rsa"
+
+# SSH public key file
+public_key_location = "../salt/sshkeys/cluster_rsa.pub"
+----
+
+. As the SAP Install Media is needed for the automatic deployment of HANA, we use the Google Cloud Storage Bucket to host the SAP HANA install media. The SAP HANA media will need to be copied to that Storage Bucket. If the SAP media is already extracted this will save time during the deployment.
++
+Modify the _terraform.tfvars_ file to point to the SAP Media that was uploaded to the Google Cloud Storage Bucket earlier:
++
+----
+# The name of the GCP storage bucket in your project that contains the SAP HANA installation files
+sap_hana_deployment_bucket = ""gcp-sap-testing-project-bucket/HANA/2.0/SPS04/51054413"
+----
++
+The _sap_hana_deployment_bucket_ variable should point to the directory where you have extracted the hana install files.
+There are more possibilities, but, for simplicity, have everything already extracted on your bucket.
++
+Disable the other hana variables by adding a '#' in front of them:
++
+----
+#hana_archive_file = "IMDB_SERVER.SAR"
+#hana_sapcar_exe = "SAPCAR"
+#hana_extract_dir = "/sapmedia/HDBSERVER"
+----
+
+. Now we need to point to where the right packages for the v6 could be found. In the _terraform.tfvars_ file set the _ha_sap_deployment_repo_ variable as below:
++
+[subs="attributes,quotes"]
+----
+ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v6"
+----
+
+. If you want the additional monitoring server be deployed, simply uncomment the _monitoring_enabled_ variable:
++
+----
+monitoring_enabled = true
+----
+
+. As the last step, we enable a simplification parameter that tries to determine a few settings automatically. Still within the _terraform.tfvars_ file, scroll down to the end and uncomment the _pre_deployment_ parameter:
++
+----
+pre_deployment = true
+----
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -383,55 +483,52 @@ It is possible to change other settings (e.g., passwords), but, for a simple tes
 
 . Save any changes to the file and and go back to the main directory.
 
-
 We are now ready to run Terraform.
 
 ifeval::[ "{cloud}" == "Azure" ]
 
-[subs="attributes,quotes"]
+[subs="specialchars,attributes,quotes"]
 ----
     az login
+endif::[]
+----
+
+[subs="specialchars,attributes,quotes"]
+----
     terraform init
-    terraform workspace new yourprojectname
+    terraform workspace new <YOUR WORKSPACE or PROJECT NAME>
     terraform plan
     terraform apply
 ----
 
-
 If all goes well, after ~40 minutes (depending on the speed of the instances) you will have an installed and running HANA System Replication Cluster.
 
+ifeval::[ "{cloud}" == "Azure" ]
 As a jumphost with a public ip address is created as part of the deployment, it is possible to log in to any virtual machine as part of the deployment from your machine with
 
 [subs="attributes,quotes"]
 ----
   ssh -J adminuser@jumphost adminuser@targethost
 ----
-
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-
-[subs="attributes,quotes"]
-----
-    terraform init
-    terraform workspace new yourprojectname
-    terraform plan
-    terraform apply
-----
-
-If all goes well, after ~30-40 Minutes a fully configured HANA System Replication Cluster will have been deployed.
-
 The instances are currently provisioned with a public IP address as part of the deployment, you can ssh to them directly using the ec2-user.
 
 ----
     ssh ec2-user@public_ip_of_hana_node
 ----
-
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+The instances are currently provisioned with a public IP address as part of the deployment, you can ssh to them directly using the _root_ user.
+
+[subs="specialchars,attributes,quotes"]
+----
+$ ssh root@_<PUBLIC IP ADDRESS OF THE HANA NODE>_
+----
 endif::[]
+
 
 ifeval::[ "{cloud}" == "Libvirt" ]
 Libvirt
@@ -453,7 +550,7 @@ In addition, it provides the _resources_ for the network setup, including VPCs, 
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+In addition, it provides the _resources_ for the network setup, including VPCs, Subent, Firewall Rules, Public IPs etc.
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -509,22 +606,21 @@ Example based on `10.0.0.0/16` address range (VPC address range) and `192.168.1.
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
 
-Example based on `10.0.0.0/24` VPC address range. The virtual addresses must be outside of the VPC address range.
+Within GCP, the Availability Zones (AZ) of a VPC get used for the HA scenario. The Cluster subnet can be stretched over multiple AZs within the same region. The floating virtual IP address is created with help of a special resource agent _gcp-vpc-move-ip_, which changes the routing table entry of a virtual router for VPC so the floating IP address is outside of the VPC and AZs.
 
-[with="70%",options="header"]
+.Autogenerated addresses example based on '10.0.0.0/24' VPC Subnet address range and '10.74.0.0/24' subnet as `virtual_address_range` (the default value)
+[with="80%",options="header"]
 |==========================
 | Name | Substituted variable | Addresses | Comments
-| Iscsi server | `iscsi_srv_ip` | `10.0.0.4` |
 | Monitoring | `monitoring_srv_ip` | `10.0.0.5` |
 | Hana ips | `hana_ips` | `10.0.0.10`, `10.0.0.11` |
-| Hana cluster vip | `hana_cluster_vip` | `10.0.2.12` | Only used if HA is enabled in HANA
+| Hana cluster vip | `hana_cluster_vip` | `10.0.1.12` | Only used if HA is enabled in HANA
 | Hana cluster vip secondary | `hana_cluster_vip_secondary` | `10.0.1.13` | Only used if the Active/Active setup is used
 | DRBD ips | `drbd_ips` | `10.0.0.20`, `10.0.0.21` |
 | DRBD cluster vip | `drbd_cluster_vip` | `10.0.1.22` |
 | Netweaver ips | `netweaver_ips` | `10.0.0.30`, `10.0.0.31`, `10.0.0.32`, `10.0.0.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines
-| Netweaver virtual ips | `netweaver_virtual_ips` | `10.0.1.34`, `10.0.1.35`, `10.0.1.36`, `10.0.1.37` | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses
+| Netweaver virtual ips | `netweaver_virtual_ips` | `10.0.1.34`, `10.0.1.35`, `10.0.1.36`, `10.0.1.37` | 
 |==========================
 endif::[]
 
@@ -833,7 +929,11 @@ These can be modified by editing the _main.tf_ file in the ~/aws/modules/hana_no
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
-GCP
+
+Google Cloud provides an overview of what is required to run SAP HANA on Google Cloud, and it provides details that you can use when planning the implementation of a new SAP HANA system.
+
+The SAP HANA planning guide (https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide) shows the certified machine types for SAP HANA, how to choose the attached disks to the HANA instances, HANA instances memory configurations etc..
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]
@@ -1418,7 +1518,21 @@ Fencing in the cluster will be provided by the EC2 Fencing capability.  This mec
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
- GCP
+
+===== NFS service
+
+To build an HA-NFS service, we use the above described _habootstrap-formula_ together with _drbd-formula_ to mirror the data between two nodes and the _linux nfs-server: packages been setup with the SaltStack _nfs_formula ( see https://github.com/saltstack-formulas/nfs-formula )
+
+DRBD®– software is a distributed replicated storage system for the Linux platform. It is implemented as a kernel driver, several userspace management applications, and some shell scripts. So think about it as "RAID-1 over network."
+
+Details are available at the SUSE documentation page for the SLE HA Extension
+https://documentation.suse.com/sle-ha/15-SP2/single-html/SLE-HA-nfs-quick/#art-sleha-nfs-quick
+
+
+==== Fencing service
+
+Fencing in the cluster will be provided by the GCE Fencing capability.  This mechanism uses the GCP API framework to fence nodes as required. No additional SUSE Infrastructure needs to be deployed.
+
 endif::[]
 
 ifeval::[ "{cloud}" == "Libvirt" ]

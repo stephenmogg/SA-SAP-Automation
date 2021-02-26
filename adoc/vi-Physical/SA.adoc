@@ -366,6 +366,8 @@ It is possible to change other settings (e.g., passwords), but, for a simple tes
 
 We are now ready to run Terraform.
 
+ifeval::[ "{cloud}" == "Azure" ]
+
 [subs="attributes,quotes"]
 ----
     az login
@@ -375,7 +377,6 @@ We are now ready to run Terraform.
     terraform apply
 ----
 
-ifeval::[ "{cloud}" == "Azure" ]
 
 If all goes well, after ~40 minutes (depending on the speed of the instances) you will have an installed and running HANA System Replication Cluster.
 
@@ -389,6 +390,14 @@ As a jumphost with a public ip address is created as part of the deployment, it 
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
+
+[subs="attributes,quotes"]
+----
+    terraform init
+    terraform workspace new yourprojectname
+    terraform plan
+    terraform apply
+----
 
 If all goes well, after ~30-40 Minutes a fully configured HANA System Replication Cluster will have been deployed.
 

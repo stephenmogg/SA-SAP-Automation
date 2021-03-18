@@ -18,7 +18,7 @@ ifeval::[ "{cloud}" == "Azure" ]
 {proj_ver}
 endif::[]
 ifeval::[ "{cloud}" == "AWS" ]
-{proj_ver}
+{proj_aws_ver}
 endif::[]
 of the Terraform part and v6 of the rpm packages for Salt formulas.
 The new versions could have more features or slightly changed files as shown here, but the general guidelines should still be applicable.
@@ -198,7 +198,7 @@ ifeval::[ "{cloud}" == "Azure" ]
 . Click on _{proj_ver}_
 endif::[]
 ifeval::[ "{cloud}" == "AWS" ]
-. Click on _{proj_ver}_
+. Click on _{proj_aws_ver}_
 endif::[]
 +
 What is new and what has changed can be seen from this page.  If older versions of the project are used, be sure to carefully review and understand the differences.

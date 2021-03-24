@@ -459,7 +459,6 @@ Libvirt
 endif::[]
 
 We are nearly done, so take a moment to save your changes before proceeding.
-
 . Go one directory up, change to the _pillar_example_ directory, and then change to the _automatic_ directory.  Here you can see 3 additional subdirectories. They provide the configuration variables for the relevant services. This _automatic_ folder will work for all cloud providers we support today, which is why it is more complex.
 
 . For a simple deployment, which uses only HANA, please switch to the _hana_ directory and open the file _hana_sls_.

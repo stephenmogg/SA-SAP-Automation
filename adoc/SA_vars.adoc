@@ -24,8 +24,8 @@ endif::[]
 
 
 // could be "Azure","AWS","GCE" or "libvirt"
-:cloud: Azure
-//:cloud: AWS
+//:cloud: Azure
+:cloud: AWS
 //:cloud: GCP
 
 // Variables used within the text

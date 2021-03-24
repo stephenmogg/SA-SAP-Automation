@@ -240,7 +240,7 @@ endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
 
-Change the region in which to deploy the solution.
+. Change the region in which to deploy the solution.
 
 ----
 aws_region = "eu-central-1"

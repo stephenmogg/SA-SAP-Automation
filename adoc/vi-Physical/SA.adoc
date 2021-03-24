@@ -252,13 +252,8 @@ To make it easier to start, change the images types for the SAP instances to pay
     hana_os_image = "suse-sles-sap-15-sp2"
     hana_os_owner = "679593333241"
 +
-To automatically deploy PAYG instances from the AWS Marketplace, be sure to 'Subscribe' to the offering.
-
-A link for SLES for SAP 15 SP2 can be found here.
-https://aws.amazon.com/marketplace/server/procurement?productId=e9701ac9-43ee-4dda-b944-17c6c231c8db
-
-If a different version of SLES for SAP is required, subscribe to the relevant version on the marketplace.
-
+To automatically deploy PAYG instances from the AWS Marketplace, be sure to 'Subscribe' to the offering.  A link for SLES for SAP 15 SP2 can be found here.
+https://aws.amazon.com/marketplace/server/procurement?productId=e9701ac9-43ee-4dda-b944-17c6c231c8db  If a different version of SLES for SAP is required, subscribe to the relevant version on the marketplace.
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
@@ -368,7 +363,6 @@ by removing the _#_.
 endif::[]
 
 ifeval::[ "{cloud}" == "AWS" ]
-
 . Provide credentials to enable Terraform to deploy infrastructure on the AWS cloud.
 +
     aws_credentials = "~/.aws/credentials"
@@ -397,7 +391,6 @@ ifeval::[ "{cloud}" == "AWS" ]
     # aws_access_key_id = my-access-key-id
     # aws_secret_access_key = my-secret-access-key
 +
-
 endif::[]
 
 ifeval::[ "{cloud}" == "GCP" ]
